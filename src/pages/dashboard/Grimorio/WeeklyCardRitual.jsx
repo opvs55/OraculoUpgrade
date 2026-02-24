@@ -93,14 +93,14 @@ export default function WeeklyCardRitual({
                   className={styles.ritualLinkButton}
                   onClick={() => onFilterByCard(cardDetails.nome)}
                 >
-                  Ver leituras com esta carta
+                  Entender esta carta
                 </button>
                 <button
                   type="button"
                   className={styles.ritualLinkButton}
                   onClick={onRelateRecent}
                 >
-                  Relacionar com minhas últimas leituras
+                  Usar na Leitura Geral
                 </button>
               </div>
             </>

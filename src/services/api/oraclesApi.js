@@ -64,9 +64,51 @@ export const oraclesApi = {
     return postJson('unifiedReadings', payload, { withAuth: true });
   },
 
-  getUnifiedReadingById(readingId) {
-    return requestApi(`${API_V1_ENDPOINTS.unifiedReadings}/${readingId}`, {
+  async getCentralRequirements() {
+    return requestApi(resolveEndpointSequence('centralRequirements'), {
       method: 'GET',
+      headers: await getAuthHeaders(),
     });
+  },
+
+  generateCentralReading(payload) {
+    return postJson('centralGenerate', payload, { withAuth: true });
+  },
+
+  async getUnifiedReadings(params = {}) {
+    const authHeaders = await getAuthHeaders();
+    const searchParams = new URLSearchParams();
+
+    Object.entries(params).forEach(([key, value]) => {
+      if (value !== undefined && value !== null && value !== '') {
+        searchParams.append(key, String(value));
+      }
+    });
+
+    const query = searchParams.toString();
+    const endpoint = `${API_V1_ENDPOINTS.unifiedReadingsMe}${query ? `?${query}` : ''}`;
+
+    return requestApi(endpoint, {
+      method: 'GET',
+      headers: authHeaders,
+    });
+  },
+
+  async getUnifiedReadingById(readingId) {
+    return requestApi(`${API_V1_ENDPOINTS.unifiedReadingsV2}/${readingId}`, {
+      method: 'GET',
+      headers: await getAuthHeaders(),
+    });
+  },
+
+  async getMyNatalChart() {
+    return requestApi(resolveEndpointSequence('natalChartMe'), {
+      method: 'GET',
+      headers: await getAuthHeaders(),
+    });
+  },
+
+  saveNatalChart(payload) {
+    return postJson('natalChartUpsert', payload, { withAuth: true });
   },
 };

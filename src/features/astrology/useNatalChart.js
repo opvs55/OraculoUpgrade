@@ -1,8 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useAuth } from '../../context/AuthContext';
 import { oraclesApi } from '../../services/api/oraclesApi';
-import { supabase } from '../../supabaseClient';
-import { saveOrGetNatalChart } from '../../services/supabase/oraclesRepo';
 
 export function useNatalChart() {
   const queryClient = useQueryClient();
@@ -12,32 +10,11 @@ export function useNatalChart() {
   const natalQuery = useQuery({
     queryKey: ['astrology', 'natal-chart', userId],
     enabled: !!userId,
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from('natal_charts')
-        .select('*')
-        .eq('user_id', userId)
-        .maybeSingle();
-
-      if (error) throw error;
-      return data;
-    },
+    queryFn: () => oraclesApi.getMyNatalChart(),
   });
 
   const generateNatalChart = useMutation({
-    mutationFn: async (payload) => {
-      const apiData = await oraclesApi.getNatalChart(payload);
-
-      return saveOrGetNatalChart({
-        userId,
-        payload: {
-          birth_date: payload?.user?.birth_date,
-          birth_time: payload?.user?.birth_time,
-          birth_city: payload?.user?.birth_city,
-          chart_data: apiData,
-        },
-      });
-    },
+    mutationFn: (payload) => oraclesApi.saveNatalChart(payload),
     onSuccess: (data) => {
       queryClient.setQueryData(['astrology', 'natal-chart', userId], data);
     },

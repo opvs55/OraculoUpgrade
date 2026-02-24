@@ -21,6 +21,7 @@ const WelcomePage = lazy(() => import('../pages/WelcomePage'));
 const TarotPage = lazy(() => import('../pages/TarotPage'));
 const NumerologyPage = lazy(() => import('../pages/NumerologyPage.jsx'));
 const AstrologyPage = lazy(() => import('../pages/AstrologyPage'));
+const GeneralOraclePage = lazy(() => import('../pages/GeneralOraclePage'));
 
 // Autenticação
 const CadastroPage = lazy(() => import('../pages/auth/CadastroPage'));
@@ -73,6 +74,8 @@ function AppRoutes() {
           <Route path="/biblioteca" element={<CardLibraryPage />} />
           <Route path="/biblioteca/:cardSlug" element={<LearningCardDetailPage />} />
           <Route path="/comunidade" element={<CommunityFeedPage />} />
+          <Route path="/oraculo/geral" element={<GeneralOraclePage />} />
+          <Route path="/oraculo/geral/:id" element={<GeneralOraclePage />} />
         </Route>
 
       </Routes>
