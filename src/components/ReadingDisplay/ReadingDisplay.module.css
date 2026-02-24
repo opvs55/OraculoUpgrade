@@ -1,0 +1,227 @@
+.container {
+  background-color: transparent;
+  padding: 1rem;
+  width: 100%;
+  max-width: 100%;
+  margin: 0.5rem auto;
+  font-family: 'Lato', sans-serif;
+}
+
+/* --- Estilos para a Leitura Estruturada --- */
+
+.header {
+  text-align: center;
+  margin-bottom: 3rem;
+  padding-bottom: 2rem;
+  border-bottom: 1px solid #2c2c54;
+}
+
+.contextTitle {
+  font-family: 'Cinzel', serif;
+  color: #a0a0a0;
+  font-size: 1.2rem;
+  font-weight: normal;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-bottom: 1rem;
+}
+
+.mainTitle {
+  font-family: 'Cinzel', serif;
+  color: #E1B382;
+  font-size: 2.8rem;
+  margin-bottom: 1.5rem;
+  line-height: 1.2;
+}
+
+.summary {
+  font-size: 1.2rem;
+  color: #e0e0e0;
+  font-style: italic;
+  max-width: 700px;
+  margin: 0 auto;
+  line-height: 1.7;
+}
+
+.analysisGrid {
+  display: grid;
+  /* Esta linha já é semi-responsiva, mas vamos melhorá-la */
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 2rem;
+  margin-bottom: 3rem;
+}
+
+.analysisCard {
+  background-color: rgba(26, 26, 46, 0.5);
+  border: 1px solid #2c2c54;
+  border-radius: 8px;
+  padding: 1.5rem;
+  transition: all 0.3s ease;
+}
+
+.analysisCard:hover {
+  transform: translateY(-5px);
+  border-color: #E1B382;
+}
+
+.cardPositionTitle {
+  font-family: 'Cinzel', serif;
+  color: #E1B382;
+  font-size: 1.3rem;
+  margin-top: 0;
+  margin-bottom: 1rem;
+  border-bottom: 1px solid #2c2c54;
+  padding-bottom: 0.5rem;
+}
+
+.analysisCard p {
+  color: #e0e0e0;
+  line-height: 1.8;
+  font-size: 1.1rem;
+  margin: 0;
+}
+
+.finalAdvice {
+  background-color: rgba(225, 179, 130, 0.05);
+  border-left: 4px solid #E1B382;
+  padding: 2rem;
+  border-radius: 8px;
+}
+
+.adviceTitle {
+  font-family: 'Cinzel', serif;
+  color: #E1B382;
+  font-size: 1.5rem;
+  margin-top: 0;
+  margin-bottom: 1rem;
+}
+
+.finalAdvice p {
+  color: #e0e0e0;
+  font-size: 1.1rem;
+  line-height: 1.8;
+  margin: 0;
+}
+
+
+/* --- Estilos para Leitura Simples (Fallback) --- */
+
+.simpleText p {
+  color: #e0e0e0;
+  font-size: 1.1rem;
+  line-height: 1.8;
+  margin-bottom: 1.5em;
+}
+
+.cardNameHighlight {
+  color: #FAD02E;
+  font-family: 'Cinzel', serif;
+  font-weight: bold;
+}
+
+
+/* =================================================================== */
+/* --- MEDIA QUERIES PARA RESPONSIVIDADE --- */
+/* =================================================================== */
+
+/* Para Telas de Tablet (menores que 1024px) */
+@media (max-width: 1024px) {
+  .container {
+    max-width: 90%; /* Ocupa mais da tela */
+  }
+
+  .mainTitle {
+    font-size: 2.5rem; /* Título principal um pouco menor */
+  }
+
+  .analysisGrid {
+    gap: 1.5rem; /* Espaçamento entre os cards um pouco menor */
+  }
+}
+
+/* Para Telas de Celular (menores que 768px) */
+@media (max-width: 768px) {
+  .container {
+    margin: 1rem auto; /* Menos margem no topo e embaixo */
+    padding: 0.5rem;
+  }
+
+  .header {
+    margin-bottom: 2rem;
+    padding-bottom: 1.5rem;
+  }
+
+  .contextTitle {
+    font-size: 1rem; /* Título de contexto menor */
+  }
+
+  .mainTitle {
+    font-size: 2rem; /* Título principal bem menor */
+  }
+
+  .summary {
+    font-size: 1.1rem; /* Resumo menor */
+  }
+
+  .analysisGrid {
+    /* A MÁGICA ACONTECE AQUI: Força uma única coluna */
+    grid-template-columns: 1fr;
+    gap: 1rem;
+    margin-bottom: 2rem;
+  }
+
+  .analysisCard, .finalAdvice {
+    padding: 1rem; /* Menos preenchimento interno */
+  }
+
+  .cardPositionTitle, .adviceTitle {
+    font-size: 1.2rem;
+  }
+
+  .analysisCard p, .finalAdvice p, .simpleText p {
+    font-size: 1rem; /* Texto um pouco menor para caber melhor */
+  }
+}
+
+
+
+/* =================================================================== */
+/* --- ESTILOS PARA O TEMPLO DE AFRODITE --- */
+/* =================================================================== */
+
+.aphroditeGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr; /* Duas colunas de tamanho igual */
+  gap: 2rem;
+  margin-bottom: 3rem;
+  align-items: start;
+}
+
+.perspectiveSection {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.perspectiveTitle {
+  font-family: 'Cinzel', serif;
+  color: #c7a37e; /* Um tom mais suave de dourado */
+  text-align: center;
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+/* --- Adicionando Responsividade para o Templo de Afrodite --- */
+
+@media (max-width: 768px) {
+  /* ... (seus outros estilos de media query para celular) ... */
+
+  /* Faz as colunas do Templo de Afrodite se empilharem */
+  .aphroditeGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .perspectiveTitle {
+    font-size: 1.3rem;
+  }
+}

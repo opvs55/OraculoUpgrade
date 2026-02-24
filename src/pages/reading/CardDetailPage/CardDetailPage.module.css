@@ -1,0 +1,176 @@
+.pageContainer {
+  padding: 2rem;
+  max-width: 1200px;
+}
+
+.backLink {
+  display: inline-block;
+  margin-bottom: 2rem;
+  color: #E1B382;
+  text-decoration: none;
+  font-weight: bold;
+  transition: color 0.2s;
+}
+
+.backLink:hover {
+  color: #fff;
+}
+
+.layoutGrid {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: 3rem;
+  align-items: start;
+  margin-bottom: 3rem;
+}
+
+.leftColumn {
+  position: sticky;
+  top: 120px;
+  display: flex;
+  justify-content: center;
+}
+
+.cardImage {
+  width: 100%;
+  max-width: 350px;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7);
+}
+
+.inverted {
+  transform: rotate(180deg);
+}
+
+.rightColumn {
+  display: flex;
+  flex-direction: column;
+}
+
+.positionName {
+  font-size: 1.2rem;
+  color: #C36E97;
+  font-family: 'Lato', sans-serif;
+  font-weight: 400;
+  text-transform: uppercase;
+  margin: 0;
+}
+
+.cardName {
+  font-family: 'Cinzel', serif;
+  font-size: 3.5rem;
+  color: #E1B382;
+  margin: 0.5rem 0;
+}
+
+.cardType {
+  font-size: 1rem;
+  color: #a0a0a0;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  margin-bottom: 2rem;
+  padding-bottom: 2rem;
+  border-bottom: 1px solid #2c2c54;
+  width: 100%;
+}
+
+.interpretationBox {
+  background-color: rgba(225, 179, 130, 0.05);
+  border-left: 3px solid #E1B382;
+  padding: 1.5rem;
+  border-radius: 8px;
+  margin-bottom: 2rem;
+}
+
+.interpretationBox h4 {
+  font-family: 'Cinzel', serif;
+  margin: 0 0 1rem 0;
+  color: #E1B382;
+}
+
+.interpretationBox p {
+  margin: 0;
+  font-style: italic;
+  line-height: 1.7;
+  color: #e0e0e0;
+}
+
+.keywordsGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+}
+
+.keywordTitle {
+  font-family: 'Cinzel', serif;
+  color: #c7a37e;
+  font-size: 1.1rem;
+  border-bottom: 1px solid #2c2c54;
+  padding-bottom: 0.5rem;
+  margin: 0 0 1rem 0;
+}
+
+.keywordsGrid ul {
+  list-style: '✧ ';
+  padding-left: 1.2rem;
+  margin: 0;
+}
+
+.keywordsGrid li {
+  color: #e0e0e0;
+  margin-bottom: 0.5rem;
+}
+
+.meaningsSection {
+  margin-top: 2rem;
+  padding-top: 2rem;
+  border-top: 1px solid #2c2c54;
+}
+
+.meaning {
+  margin-bottom: 2.5rem;
+}
+
+.meaningTitle {
+  font-family: 'Cinzel', serif;
+  font-size: 1.8rem;
+  color: #E1B382;
+  margin-bottom: 1rem;
+}
+
+.meaning p {
+  font-size: 1.1rem;
+  line-height: 1.9;
+  color: #e0e0e0;
+  text-align: justify;
+}
+
+.notFound {
+  text-align: center;
+  padding: 4rem 2rem;
+}
+
+/* Responsividade */
+@media (max-width: 992px) {
+  .layoutGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .leftColumn {
+    position: static;
+    margin-bottom: 2rem;
+  }
+
+  .cardImage {
+    max-width: 250px;
+  }
+  
+  .rightColumn {
+    align-items: center;
+    text-align: center;
+  }
+  
+  .interpretationBox, .keywordsGrid {
+    text-align: left;
+  }
+}
