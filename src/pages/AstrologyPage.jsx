@@ -1,20 +1,18 @@
-import React, { useEffect, useMemo, useState } from 'react';
-import { useAuth } from '../context/AuthContext';
+import React, { useEffect, useState } from 'react';
 import { useNatalChart } from '../features/astrology/useNatalChart';
 import styles from './AstrologyPage.module.css';
 
 const defaultFormState = {
-  name: '',
   birthDate: '',
   birthTime: '',
   birthCity: '',
-  timezone: 'America/Sao_Paulo',
-  sunSign: '',
-  focusArea: 'geral',
+  birthCountry: 'Brasil',
+  birthTimezone: 'America/Sao_Paulo',
+  zodiacSystem: 'tropical',
+  houseSystem: 'placidus',
 };
 
 function AstrologyPage() {
-  const { user, profile } = useAuth();
   const [formData, setFormData] = useState(defaultFormState);
   const [formError, setFormError] = useState('');
   const {
@@ -27,15 +25,20 @@ function AstrologyPage() {
     errorGeneratingNatalChart,
   } = useNatalChart();
 
-  const displayName = useMemo(() => {
-    return formData.name || profile?.full_name || user?.user_metadata?.full_name || user?.email || '';
-  }, [formData.name, profile?.full_name, user?.email, user?.user_metadata?.full_name]);
-
   useEffect(() => {
-    if (!formData.name && profile?.full_name) {
-      setFormData((prev) => ({ ...prev, name: profile.full_name }));
-    }
-  }, [profile?.full_name, formData.name]);
+    if (!natalChart) return;
+
+    setFormData((prev) => ({
+      ...prev,
+      birthDate: natalChart.birth_date || prev.birthDate,
+      birthTime: natalChart.birth_time || prev.birthTime,
+      birthCity: natalChart.birth_city || prev.birthCity,
+      birthCountry: natalChart.birth_country || prev.birthCountry,
+      birthTimezone: natalChart.birth_timezone || prev.birthTimezone,
+      zodiacSystem: natalChart.zodiac_system || prev.zodiacSystem,
+      houseSystem: natalChart.house_system || prev.houseSystem,
+    }));
+  }, [natalChart]);
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -43,41 +46,28 @@ function AstrologyPage() {
   };
 
   const buildPayload = () => ({
-    user: {
-      id: user?.id ?? 'guest',
-      name: displayName || 'Visitante',
-      sun_sign: formData.sunSign || undefined,
-      birth_date: formData.birthDate,
-      birth_time: formData.birthTime || undefined,
-      birth_city: formData.birthCity,
-      timezone: formData.timezone,
-    },
-    focus_area: formData.focusArea,
+    birth_date: formData.birthDate,
+    birth_time: formData.birthTime || null,
+    birth_city: formData.birthCity,
+    birth_country: formData.birthCountry,
+    birth_timezone: formData.birthTimezone,
+    zodiac_system: formData.zodiacSystem,
+    house_system: formData.houseSystem,
   });
 
   const handleSubmit = async (event) => {
     event.preventDefault();
     setFormError('');
 
-    if (!formData.birthDate) {
-      setFormError('Informe sua data de nascimento.');
-      return;
-    }
-
-    if (!formData.birthCity) {
-      setFormError('Informe a cidade de nascimento.');
-      return;
-    }
-
-    if (!formData.timezone) {
-      setFormError('Informe o fuso horário.');
+    if (!formData.birthDate || !formData.birthCity || !formData.birthTimezone) {
+      setFormError('Informe data, cidade e fuso horário para gerar o mapa astral.');
       return;
     }
 
     try {
       await generateNatalChart(buildPayload());
     } catch (error) {
-      setFormError(error.message || 'Não foi possível gerar o mapa astral.');
+      setFormError(error.message || 'Não foi possível salvar o mapa astral.');
     }
   };
 
@@ -95,19 +85,19 @@ function AstrologyPage() {
           <p className={styles.eyebrow}>Oráculos</p>
           <h1 className={styles.title}>Mapa Astral</h1>
           <p className={styles.subtitle}>
-            Gere um resumo simbólico do seu mapa astral com base nos dados de nascimento.
+            Salve seus dados natais para enriquecer leituras futuras e gerar sínteses mais precisas.
           </p>
         </header>
 
         <form className={styles.form} onSubmit={handleSubmit}>
           <div className={styles.formGrid}>
-            <label className={styles.field}><span>Nome</span><input type="text" name="name" value={displayName} onChange={handleChange} placeholder="Como você prefere ser chamado" /></label>
             <label className={styles.field}><span>Data de nascimento</span><input type="date" name="birthDate" value={formData.birthDate} onChange={handleChange} required /></label>
             <label className={styles.field}><span>Hora de nascimento (opcional)</span><input type="time" name="birthTime" value={formData.birthTime} onChange={handleChange} /></label>
-            <label className={styles.field}><span>Cidade de nascimento</span><input type="text" name="birthCity" value={formData.birthCity} onChange={handleChange} placeholder="Ex: São Paulo, BR" required /></label>
-            <label className={styles.field}><span>Fuso horário</span><input type="text" name="timezone" value={formData.timezone} onChange={handleChange} placeholder="Ex: America/Sao_Paulo" required /></label>
-            <label className={styles.field}><span>Signo solar (opcional)</span><input type="text" name="sunSign" value={formData.sunSign} onChange={handleChange} placeholder="Ex: Aquário" /></label>
-            <label className={styles.field}><span>Área de foco</span><select name="focusArea" value={formData.focusArea} onChange={handleChange}><option value="geral">Geral</option><option value="amor">Amor</option><option value="carreira">Carreira</option><option value="bem-estar">Bem-estar</option></select></label>
+            <label className={styles.field}><span>Cidade de nascimento</span><input type="text" name="birthCity" value={formData.birthCity} onChange={handleChange} required /></label>
+            <label className={styles.field}><span>País de nascimento</span><input type="text" name="birthCountry" value={formData.birthCountry} onChange={handleChange} required /></label>
+            <label className={styles.field}><span>Fuso horário</span><input type="text" name="birthTimezone" value={formData.birthTimezone} onChange={handleChange} required /></label>
+            <label className={styles.field}><span>Sistema zodiacal</span><select name="zodiacSystem" value={formData.zodiacSystem} onChange={handleChange}><option value="tropical">Tropical</option><option value="sidereal">Sideral</option></select></label>
+            <label className={styles.field}><span>Sistema de casas</span><select name="houseSystem" value={formData.houseSystem} onChange={handleChange}><option value="placidus">Placidus</option><option value="whole_sign">Whole Sign</option><option value="koch">Koch</option></select></label>
           </div>
 
           {combinedError && (
@@ -121,7 +111,7 @@ function AstrologyPage() {
 
           <div className={styles.actions}>
             <button type="submit" className={styles.primaryButton} disabled={isGeneratingNatalChart}>
-              {isGeneratingNatalChart ? 'Gerando mapa...' : 'Gerar mapa astral'}
+              {isGeneratingNatalChart ? 'Salvando mapa...' : 'Salvar mapa astral'}
             </button>
             <button type="button" className={styles.secondaryButton} onClick={handleReset}>
               Limpar
@@ -133,15 +123,15 @@ function AstrologyPage() {
           {(isGeneratingNatalChart || isLoadingNatalChart) && (
             <div className={styles.loadingCard}>
               <span className={styles.loadingPulse} />
-              <p>Interpretando seu mapa astral. Aguarde alguns instantes.</p>
+              <p>Carregando seu mapa astral.</p>
             </div>
           )}
 
           {!isGeneratingNatalChart && natalChart && (
             <div className={styles.resultCard}>
               <div className={styles.resultHeader}>
-                <h2>Seu resumo astral</h2>
-                <p>Confira a leitura completa e salve os pontos-chave.</p>
+                <h2>Resumo salvo</h2>
+                <p>Dados persistidos no backend do Oráculo Central.</p>
               </div>
               <pre className={styles.resultContent}>{JSON.stringify(natalChart.chart_data || natalChart, null, 2)}</pre>
             </div>

@@ -25,6 +25,24 @@ const endpointConfig = {
   astrologyNatalChart: {
     v1: '/api/v1/astrology/natal-chart',
   },
+  centralRequirements: {
+    v1: '/api/v1/oracles/central/requirements',
+  },
+  centralGenerate: {
+    v1: '/api/v1/oracles/central/generate',
+  },
+  unifiedReadingsMe: {
+    v1: '/api/v1/unified-readings/me',
+  },
+  unifiedReadingsV2: {
+    v1: '/api/v1/unified-readings',
+  },
+  natalChartMe: {
+    v1: '/api/v1/natal-chart/me',
+  },
+  natalChartUpsert: {
+    v1: '/api/v1/natal-chart/upsert',
+  },
   runesReadings: {
     v1: '/api/v1/oracles/runes/readings',
   },

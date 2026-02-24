@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { useUserProfile } from '../../hooks/useUserProfile'; 
 import { useRecentReadings } from '../../hooks/useRecentReadings';
@@ -17,6 +17,7 @@ import styles from './MeuGrimorioPage.module.css';
 
 function MeuGrimorioPage() { 
   const [videoAtualIndex, setVideoAtualIndex] = useState(() => Math.floor(Math.random() * 2));
+  const navigate = useNavigate();
   const { user } = useAuth();
   const { profile } = useUserProfile(user?.id);
   const { data: recentReadings = [], isLoading: isLoadingRecent, isError: isErrorRecent, refetch } = useRecentReadings(user?.id, 1);
@@ -129,11 +130,8 @@ function MeuGrimorioPage() {
               isRevealing={isRevealing}
               isSessionLoading={isSessionLoading}
               errorMessage={errorMessage}
-              onFilterByCard={(cardName) => {
-                setCardFilter(cardName);
-                setSearchTerm('');
-              }}
-              onRelateRecent={() => setPeriod('30d')}
+              onFilterByCard={() => navigate('/biblioteca')}
+              onRelateRecent={() => navigate('/oraculo/geral', { state: { source: 'weekly-card' } })}
             />
 
             <section className={styles.continueSection}>

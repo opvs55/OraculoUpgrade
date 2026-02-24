@@ -2,6 +2,7 @@
 
 import React from 'react';
 import styles from './ReadingDisplay.module.css';
+import { POSICOES_CRUZ_CELTA_META } from '../../constants/tarotConstants';
 
 // Componente para renderizar a interpretação estruturada (3 cartas) - SEM MUDANÇAS
 const StructuredInterpretation = ({ data }) => {
@@ -133,7 +134,7 @@ const PathChoiceInterpretation = ({ data }) => {
 };
 
 // <<< MUDANÇA PRINCIPAL: Componente da Cruz Celta com Layout VERTICAL >>>
-const CelticCrossInterpretation = ({ data }) => {
+const CelticCrossInterpretation = ({ data, cards = [] }) => {
   const { titulo_leitura, resumo_geral, analise_cartas, conselho_final } = data;
 
   if (!analise_cartas || !resumo_geral) {
@@ -156,7 +157,23 @@ const CelticCrossInterpretation = ({ data }) => {
           <React.Fragment key={index}>
             {/* Mantemos o card para cada análise */}
             <div className={styles.analysisCard}>
-              <h4 className={styles.cardPositionTitle}>{analise.posicao}</h4>
+              <div className={styles.celticCardHeader}>
+                {(cards[index]?.image || cards[index]?.img) && (
+                  <img
+                    src={cards[index]?.image || cards[index]?.img}
+                    alt={cards[index]?.name || `Carta ${index + 1}`}
+                    className={styles.celticCardThumb}
+                  />
+                )}
+                <div>
+                  <h4 className={styles.cardPositionTitle}>{analise.posicao || POSICOES_CRUZ_CELTA_META[index]?.title}</h4>
+                  <p className={styles.celticCardName}>
+                    {cards[index]?.name || cards[index]?.nome || 'Carta não identificada'}
+                    {(cards[index]?.isReversed || cards[index]?.invertida) ? ' (Invertida)' : ''}
+                  </p>
+                  <p className={styles.celticShortMeaning}>{POSICOES_CRUZ_CELTA_META[index]?.shortMeaning}</p>
+                </div>
+              </div>
               <p>{analise.texto}</p>
             </div>
 
@@ -217,7 +234,7 @@ function ReadingDisplay({ readingData }) {
       case 'pathChoice':
         return <div className={styles.container}><PathChoiceInterpretation data={structuredData} /></div>;
       case 'celticCross':
-        return <div className={styles.container}><CelticCrossInterpretation data={structuredData} /></div>;
+        return <div className={styles.container}><CelticCrossInterpretation data={structuredData} cards={readingData?.cards} /></div>;
       case 'threeCards':
       default:
         return <div className={styles.container}><StructuredInterpretation data={structuredData} /></div>;
