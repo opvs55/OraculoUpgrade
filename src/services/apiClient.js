@@ -7,7 +7,6 @@ export const API_ENDPOINTS = {
   tarotCardMeaning: API_V1_ENDPOINTS.tarotCardMeaning,
   numerologyReading: API_V1_ENDPOINTS.numerologyPersonal,
   numerologyWeekly: API_V1_ENDPOINTS.numerologyWeekly,
-  astrologyNatalChart: API_V1_ENDPOINTS.astrologyNatalChart,
   runesReading: API_V1_ENDPOINTS.runesReadings,
   iChingReading: API_V1_ENDPOINTS.iChingReadings,
   unifiedReadings: API_V1_ENDPOINTS.unifiedReadings,

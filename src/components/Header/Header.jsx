@@ -135,10 +135,10 @@ function Header() {
               Numerologia
             </NavLink>
             <NavLink
-              to="/mapa-astral"
+              to="/oraculo/geral"
               className={({ isActive }) => (isActive ? `${styles.navLink} ${styles.activeLink}` : styles.navLink)}
             >
-              Mapa Astral
+              Leitura Geral
             </NavLink>
           </>
         )}
@@ -220,8 +220,8 @@ function Header() {
             <NavLink to="/numerologia" className={styles.mobileLink} onClick={handleCloseMenu}>
               Numerologia
             </NavLink>
-            <NavLink to="/mapa-astral" className={styles.mobileLink} onClick={handleCloseMenu}>
-              Mapa Astral
+            <NavLink to="/oraculo/geral" className={styles.mobileLink} onClick={handleCloseMenu}>
+              Leitura Geral
             </NavLink>
             <NavLink to="/meu-grimorio" className={styles.mobileLink} onClick={handleCloseMenu}>
               Grimório

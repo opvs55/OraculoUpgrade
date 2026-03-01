@@ -3,11 +3,27 @@ import { Link, useNavigate, useParams } from 'react-router-dom';
 import { useUnifiedReading } from '../features/unified/useUnifiedReading';
 import styles from './GeneralOraclePage.module.css';
 
-const requirementsLabels = [
-  { key: 'has_profile', label: 'Perfil', action: '/perfil/editar' },
-  { key: 'has_natal_chart', label: 'Mapa Astral', action: '/mapa-astral' },
-  { key: 'has_numerology', label: 'Numerologia', action: '/numerologia' },
-  { key: 'has_weekly_card', label: 'Carta da Semana (opcional)', action: '/tarot' },
+const requirementMeta = {
+  has_tarot: { label: 'Tarot', action: '/tarot', cta: 'Fazer leitura de tarot' },
+  has_tarot_weekly: { label: 'Tarot semanal', action: '/tarot', cta: 'Fazer tarot semanal' },
+  has_weekly_card: { label: 'Carta da Semana (tarot)', action: '/tarot', cta: 'Revelar carta da semana' },
+  has_numerology: { label: 'Numerologia', action: '/numerologia', cta: 'Preencher numerologia' },
+  has_numerology_weekly: { label: 'Numerologia semanal', action: '/numerologia', cta: 'Gerar numerologia semanal' },
+  has_runes: { label: 'Runas', action: '/runas', cta: 'Gerar runas semanais' },
+  has_runes_weekly: { label: 'Runas semanais', action: '/runas', cta: 'Gerar runas semanais' },
+  has_iching: { label: 'I Ching', action: '/iching', cta: 'Gerar I Ching semanal' },
+  has_iching_weekly: { label: 'I Ching semanal', action: '/iching', cta: 'Gerar I Ching semanal' },
+};
+
+const orderedKeys = [
+  'has_weekly_card',
+  'has_numerology_weekly',
+  'has_runes_weekly',
+  'has_iching_weekly',
+  'has_tarot',
+  'has_numerology',
+  'has_runes',
+  'has_iching',
 ];
 
 function FieldSection({ title, content }) {
@@ -45,10 +61,35 @@ export default function GeneralOraclePage() {
   const currentReading = id ? unifiedReading : latestReadings[0];
   const finalReading = currentReading?.final_reading || currentReading?.finalReading || currentReading;
 
-  const canGenerate = requirements?.can_generate_general_reading !== false;
+  const requirementsChecklist = useMemo(() => {
+    if (!requirements || typeof requirements !== 'object') return [];
+
+    const entries = Object.entries(requirements)
+      .filter(([key, value]) => key.startsWith('has_') && typeof value === 'boolean' && key !== 'has_natal_chart')
+      .map(([key, value]) => ({
+        key,
+        done: value,
+        label: requirementMeta[key]?.label || key.replace('has_', '').replace(/_/g, ' '),
+        action: requirementMeta[key]?.action,
+        cta: requirementMeta[key]?.cta || 'Completar requisito',
+      }));
+
+    return entries.sort((a, b) => {
+      const indexA = orderedKeys.indexOf(a.key);
+      const indexB = orderedKeys.indexOf(b.key);
+      const safeA = indexA === -1 ? Number.MAX_SAFE_INTEGER : indexA;
+      const safeB = indexB === -1 ? Number.MAX_SAFE_INTEGER : indexB;
+      return safeA - safeB;
+    });
+  }, [requirements]);
+
+  const pendingActions = requirementsChecklist.filter((item) => !item.done && item.action);
+  const canGenerate = requirements?.can_generate_general_reading === true;
 
   const handleGenerate = async (event) => {
     event.preventDefault();
+    if (!canGenerate) return;
+
     const response = await generateCentralReading({
       focus_area: focusArea,
       question: question || undefined,
@@ -66,8 +107,8 @@ export default function GeneralOraclePage() {
   return (
     <div className={`content_wrapper ${styles.page}`}>
       <header className={styles.header}>
-        <h1>Leitura Geral</h1>
-        <p>Síntese central dos seus oráculos e dados já registrados no seu grimório.</p>
+        <h1>Leitura Geral Semanal</h1>
+        <p>Síntese central da semana com Tarot + Numerologia + Runas + I Ching.</p>
       </header>
 
       <section className={styles.card}>
@@ -75,29 +116,29 @@ export default function GeneralOraclePage() {
         {isLoadingRequirements && <p>Carregando requisitos...</p>}
         {!isLoadingRequirements && (
           <ul className={styles.checklist}>
-            {requirementsLabels.map((item) => (
+            {requirementsChecklist.map((item) => (
               <li key={item.key}>
                 <span>{item.label}</span>
-                <strong>{requirements?.[item.key] ? 'OK' : 'Pendente'}</strong>
+                <strong>{item.done ? 'OK' : 'Pendente'}</strong>
               </li>
             ))}
           </ul>
         )}
 
-        {!canGenerate && (
+        {!canGenerate && !isLoadingRequirements && (
           <div className={styles.requirementsWarning}>
-            <p>Você ainda não tem dados suficientes para gerar a Leitura Geral.</p>
+            <p>Leitura semanal bloqueada até concluir todos os requisitos obrigatórios.</p>
             <div className={styles.actionsLinks}>
-              <Link to="/mapa-astral">Completar mapa astral</Link>
-              <Link to="/numerologia">Preencher numerologia</Link>
-              <Link to="/tarot">Fazer leitura de tarot</Link>
+              {pendingActions.map((item) => (
+                <Link key={item.key} to={item.action}>{item.cta}</Link>
+              ))}
             </div>
           </div>
         )}
       </section>
 
       <section className={styles.card}>
-        <h2>Gerar nova leitura</h2>
+        <h2>Gerar Leitura Geral</h2>
         <form className={styles.form} onSubmit={handleGenerate}>
           <label>
             Área de foco
@@ -116,7 +157,7 @@ export default function GeneralOraclePage() {
               placeholder="Ex: O que devo priorizar nesta fase?"
             />
           </label>
-          <button type="submit" disabled={!canGenerate || isGeneratingCentralReading}>
+          <button type="submit" disabled={!canGenerate || isGeneratingCentralReading || isLoadingRequirements}>
             {isGeneratingCentralReading ? 'Gerando...' : 'Gerar Leitura Geral'}
           </button>
         </form>
