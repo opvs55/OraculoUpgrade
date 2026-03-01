@@ -35,11 +35,11 @@ function QuickActionsGrid() {
         </article>
 
         <article className={styles.actionCard}>
-          <div className={styles.actionIcon}>🪐</div>
-          <h3>Mapa Astral</h3>
-          <p>Receba um resumo simbólico do seu mapa com foco semanal.</p>
-          <Link to="/mapa-astral" className={styles.actionButtonSecondary}>
-            Gerar mapa astral
+          <div className={styles.actionIcon}>🧭</div>
+          <h3>Leitura Geral</h3>
+          <p>Gere uma síntese dos seus oráculos e veja direcionamentos práticos.</p>
+          <Link to="/oraculo/geral" className={styles.actionButtonSecondary}>
+            Abrir leitura geral
           </Link>
         </article>
       </div>

@@ -22,9 +22,6 @@ const endpointConfig = {
   numerologyWeekly: {
     v1: '/api/v1/numerology/weekly',
   },
-  astrologyNatalChart: {
-    v1: '/api/v1/astrology/natal-chart',
-  },
   centralRequirements: {
     v1: '/api/v1/oracles/central/requirements',
   },
@@ -37,17 +34,17 @@ const endpointConfig = {
   unifiedReadingsV2: {
     v1: '/api/v1/unified-readings',
   },
-  natalChartMe: {
-    v1: '/api/v1/natal-chart/me',
-  },
-  natalChartUpsert: {
-    v1: '/api/v1/natal-chart/upsert',
-  },
   runesReadings: {
     v1: '/api/v1/oracles/runes/readings',
   },
+  runesWeeklyGenerate: {
+    v1: '/api/v1/oracles/runes/weekly/generate',
+  },
   iChingReadings: {
     v1: '/api/v1/oracles/iching/readings',
+  },
+  ichingWeeklyGenerate: {
+    v1: '/api/v1/oracles/iching/weekly/generate',
   },
   unifiedReadings: {
     v1: '/api/v1/unified/readings',

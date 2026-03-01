@@ -20,8 +20,9 @@ import ProfilePage from '../pages/profile/ProfilePage';
 const WelcomePage = lazy(() => import('../pages/WelcomePage'));
 const TarotPage = lazy(() => import('../pages/TarotPage'));
 const NumerologyPage = lazy(() => import('../pages/NumerologyPage.jsx'));
-const AstrologyPage = lazy(() => import('../pages/AstrologyPage'));
 const GeneralOraclePage = lazy(() => import('../pages/GeneralOraclePage'));
+const RunesPage = lazy(() => import('../pages/runes/RunesPage'));
+const IChingPage = lazy(() => import('../pages/iching/IChingPage'));
 
 // Autenticação
 const CadastroPage = lazy(() => import('../pages/auth/CadastroPage'));
@@ -52,7 +53,6 @@ function AppRoutes() {
         <Route path="/" element={<WelcomePage />} />
         <Route path="/tarot" element={<TarotPage />} />
         <Route path="/numerologia" element={<NumerologyPage />} />
-        <Route path="/mapa-astral" element={<AstrologyPage />} />
         
         {/* Rotas de Autenticação */}
         <Route path="/cadastro" element={<CadastroPage />} />
@@ -76,6 +76,8 @@ function AppRoutes() {
           <Route path="/comunidade" element={<CommunityFeedPage />} />
           <Route path="/oraculo/geral" element={<GeneralOraclePage />} />
           <Route path="/oraculo/geral/:id" element={<GeneralOraclePage />} />
+          <Route path="/runas" element={<RunesPage />} />
+          <Route path="/iching" element={<IChingPage />} />
         </Route>
 
       </Routes>

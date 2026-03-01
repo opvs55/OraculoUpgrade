@@ -48,16 +48,20 @@ export const oraclesApi = {
     return postJson('numerologyWeekly', payload, { withAuth: true });
   },
 
-  getNatalChart(payload) {
-    return postJson('astrologyNatalChart', payload, { withAuth: true });
-  },
-
   getRunesReading(payload) {
     return postJson('runesReadings', payload, { withAuth: true });
   },
 
+  generateRunesWeekly(payload = {}) {
+    return postJson('runesWeeklyGenerate', payload, { withAuth: true });
+  },
+
   getIChingReading(payload) {
     return postJson('iChingReadings', payload, { withAuth: true });
+  },
+
+  generateIChingWeekly(payload = {}) {
+    return postJson('ichingWeeklyGenerate', payload, { withAuth: true });
   },
 
   createUnifiedReading(payload) {
@@ -99,16 +103,5 @@ export const oraclesApi = {
       method: 'GET',
       headers: await getAuthHeaders(),
     });
-  },
-
-  async getMyNatalChart() {
-    return requestApi(resolveEndpointSequence('natalChartMe'), {
-      method: 'GET',
-      headers: await getAuthHeaders(),
-    });
-  },
-
-  saveNatalChart(payload) {
-    return postJson('natalChartUpsert', payload, { withAuth: true });
   },
 };
