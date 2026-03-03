@@ -128,50 +128,6 @@ function NumerologyPage() {
 
     return (
       <div className={styles.resultsContainer}>
-        <div className={styles.lifePathNumberDisplay}>
-          {resultData?.life_path_number ?? '?'}
-        </div>
-        <div className={styles.resultContent}>
-          <h2 className={styles.resultTitle}>Sua Análise Numerológica</h2>
-          <p className={styles.resultDate}>Data Analisada: {formattedDate}</p>
-          {resultData?.warning && <p className={styles.warningMessage}>{resultData.warning}</p>}
-
-          {/* Card: Caminho de Vida */}
-          <div className={`${styles.resultCard} ${styles.lifePathCard}`}>
-            <h3 className={styles.cardTitle}>
-              Caminho de Vida: {resultData?.life_path_number ?? 'N/A'}
-            </h3>
-            <div className={styles.cardSubSection}>
-              <h4>Essência da Jornada:</h4>
-              {renderFormattedText(lifePathParts.essence)}
-            </div>
-            {lifePathParts.light && (
-              <div className={styles.cardSubSection}>
-                <h4 className={styles.lightTitle}>Luz (Pontos Fortes):</h4>
-                {renderFormattedText(lifePathParts.light)}
-              </div>
-            )}
-            {lifePathParts.shadow && (
-              <div className={styles.cardSubSection}>
-                 <h4 className={styles.shadowTitle}>Sombra (Desafios):</h4>
-                {renderFormattedText(lifePathParts.shadow)}
-              </div>
-            )}
-            {lifePathParts.mission && (
-              <div className={styles.cardSubSection}>
-                 <h4 className={styles.missionTitle}>Missão:</h4>
-                {renderFormattedText(lifePathParts.mission)}
-              </div>
-            )}
-          </div>
-
-          {/* Card: Número do Aniversário */}
-          <div className={`${styles.resultCard} ${styles.birthdayCard}`}>
-            <h3 className={styles.cardTitle}>Número do Aniversário: {resultData?.birthday_number ?? 'N/A'} (Dia {dayOfMonth})</h3>
-            <div className={styles.cardSubSection}>
-              {renderFormattedText(resultData?.birthday_meaning || 'Significado não disponível.')}
-            </div>
-          </div>
 
           {/* Placeholder: Significado Secreto */}
           {resultData?.birthday_secret_meaning && (
