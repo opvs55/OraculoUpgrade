@@ -67,10 +67,25 @@
   gap: 16px;
 }
 
-.resultCard h2 {
+.messageCard {
+  border: 1px solid rgba(225, 179, 130, 0.28);
+  border-radius: 14px;
+  padding: 16px;
+  background: linear-gradient(145deg, rgba(40, 28, 54, 0.65), rgba(24, 18, 37, 0.7));
+}
+
+.messageCard h2 {
+  margin: 0 0 8px;
+  color: #f0ce9f;
+  font-size: clamp(1.35rem, 2.2vw, 1.8rem);
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-weight: 600;
+}
+
+.messageCard p {
   margin: 0;
-  color: #e9c99f;
-  font-size: 1.45rem;
+  line-height: 1.65;
+  color: rgba(244, 239, 230, 0.92);
 }
 
 .sectionBlock {
@@ -112,37 +127,24 @@
   background: rgba(225, 179, 130, 0.08);
 }
 
-.footerText {
-  margin: 0;
-  padding-top: 4px;
-  font-size: 0.82rem;
-  color: rgba(244, 239, 230, 0.65);
+.disclaimer {
+  font-size: 0.85rem;
+  opacity: 0.78;
 }
 
-.primaryButton,
-.secondaryButton {
+.primaryButton {
   width: fit-content;
   border-radius: 10px;
   padding: 10px 14px;
   font-weight: 600;
   cursor: pointer;
   transition: transform 0.2s ease, opacity 0.2s ease;
-}
-
-.primaryButton {
   border: none;
   color: #1f182f;
   background: #e1b382;
 }
 
-.secondaryButton {
-  border: 1px solid rgba(225, 179, 130, 0.5);
-  background: transparent;
-  color: #f3d6b6;
-}
-
-.primaryButton:disabled,
-.secondaryButton:disabled {
+.primaryButton:disabled {
   opacity: 0.6;
   cursor: not-allowed;
 }
@@ -160,41 +162,7 @@
   background: rgba(90, 22, 28, 0.28);
 }
 
-.advancedBox {
-  margin-top: 20px;
-  padding-top: 14px;
-  border-top: 1px solid rgba(225, 179, 130, 0.2);
-  display: grid;
-  gap: 10px;
-}
-
-.toggleLabel {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 0.9rem;
-  color: rgba(244, 239, 230, 0.86);
-}
-
 .inlineError {
   margin-top: 12px;
   color: #ffb4b4;
-}
-
-.techDetails {
-  margin-top: 16px;
-}
-
-.techDetails summary {
-  cursor: pointer;
-  color: rgba(225, 179, 130, 0.88);
-}
-
-.techDetails pre {
-  margin: 10px 0 0;
-  border-radius: 10px;
-  padding: 12px;
-  max-height: 320px;
-  overflow: auto;
-  background: rgba(0, 0, 0, 0.34);
 }

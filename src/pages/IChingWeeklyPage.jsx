@@ -1,9 +1,10 @@
-import React, { useMemo, useState } from 'react';
+import React, { useMemo } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import DecorativeDivider from '../components/common/DecorativeDivider/DecorativeDivider';
 import Loader from '../components/common/Loader/Loader';
 import { useAuth } from '../hooks/useAuth';
 import { oraclesApi } from '../services/api/oraclesApi';
+import HexagramDisplay from '../components/iching/HexagramDisplay';
 import styles from './IChingWeeklyPage.module.css';
 
 const toList = (value) => {
@@ -24,6 +25,7 @@ const normalizeWeeklyData = (payload) => {
   return {
     status: source?.status ?? module?.status ?? null,
     weekRef: source?.week_ref ?? module?.week_ref ?? null,
+    cached: Boolean(source?.cached ?? module?.cached),
     module,
     output: module?.output_payload ?? module?.outputPayload ?? {},
   };
@@ -33,7 +35,6 @@ export default function IChingWeeklyPage() {
   const { user } = useAuth();
   const userId = user?.id;
   const queryClient = useQueryClient();
-  const [allowRegenerate, setAllowRegenerate] = useState(false);
 
   const weeklyQuery = useQuery({
     queryKey: ['oracles', 'iching', 'weekly', 'me', userId],
@@ -50,18 +51,17 @@ export default function IChingWeeklyPage() {
 
   const normalized = useMemo(() => normalizeWeeklyData(weeklyQuery.data), [weeklyQuery.data]);
 
-  const status = normalized.status;
-  const module = normalized.module;
-  const output = normalized.output;
+  const { status, module, output } = normalized;
   const hasModule = !!module;
   const isStatusOk = hasModule && status === 'ok';
   const isStatusError = hasModule && status === 'error';
 
-  const title = output?.titulo || output?.title || output?.hexagrama || output?.nome || 'I Ching Semanal';
-  const themes = toList(output?.temas || output?.themes);
-  const advice = toList(output?.conselhos || output?.advice);
-  const summary = output?.resumo || output?.summary;
-  const guideQuestion = output?.pergunta_guia || output?.guide_question;
+  const headline = output?.headline || 'Mensagem da semana';
+  const summary = output?.summary;
+  const themes = toList(output?.themes);
+  const recommendedActions = toList(output?.recommended_actions);
+  const disclaimer = output?.disclaimer;
+  const hexagramLines = Array.isArray(output?.lines) ? output.lines : [];
 
   const handleGenerate = (forceRegenerate = false) => {
     generateMutation.mutate({
@@ -84,6 +84,7 @@ export default function IChingWeeklyPage() {
 
         {weeklyQuery.isError && (
           <div className={styles.errorCard}>
+            <h2>Falha ao carregar a leitura semanal</h2>
             <p>{weeklyQuery.error?.message || 'Não foi possível carregar seu módulo semanal de I Ching.'}</p>
             <button type="button" className={styles.primaryButton} onClick={() => weeklyQuery.refetch()}>
               Tentar novamente
@@ -97,11 +98,18 @@ export default function IChingWeeklyPage() {
               <>
                 <div className={styles.statusRow}>
                   <span className={styles.badge}>Semanal • {normalized.weekRef || 'Semana atual'}</span>
-                  <span className={styles.cacheInfo}>Já gerado nesta semana</span>
+                  {normalized.cached && <span className={styles.cacheInfo}>Já gerado nesta semana</span>}
                 </div>
 
                 <div className={styles.resultCard}>
-                  <h2>{title}</h2>
+                  <div className={styles.messageCard}>
+                    <h2>{headline}</h2>
+                    {summary && <p>{summary}</p>}
+                  </div>
+
+                  <HexagramDisplay lines={hexagramLines} />
+
+                  {/* TODO: alinhar backend para sempre enviar output_payload.lines com as 6 linhas do hexagrama. */}
 
                   {themes.length > 0 && (
                     <div className={styles.sectionBlock}>
@@ -114,32 +122,23 @@ export default function IChingWeeklyPage() {
                     </div>
                   )}
 
-                  {summary && (
+                  {recommendedActions.length > 0 && (
                     <div className={styles.sectionBlock}>
-                      <h3>Resumo</h3>
-                      <p>{summary}</p>
-                    </div>
-                  )}
-
-                  {advice.length > 0 && (
-                    <div className={styles.sectionBlock}>
-                      <h3>Conselhos</h3>
+                      <h3>Ações recomendadas</h3>
                       <ul>
-                        {advice.map((item) => (
+                        {recommendedActions.map((item) => (
                           <li key={item}>{item}</li>
                         ))}
                       </ul>
                     </div>
                   )}
 
-                  {guideQuestion && (
+                  {disclaimer && (
                     <div className={styles.sectionBlock}>
-                      <h3>Pergunta guia</h3>
-                      <p>{guideQuestion}</p>
+                      <h3>Nota</h3>
+                      <p className={styles.disclaimer}>{disclaimer}</p>
                     </div>
                   )}
-
-                  <p className={styles.footerText}>Gerado para {normalized.weekRef || 'a semana atual'}.</p>
                 </div>
               </>
             )}
@@ -173,40 +172,10 @@ export default function IChingWeeklyPage() {
               </div>
             )}
 
-            {isStatusOk && (
-              <div className={styles.advancedBox}>
-                <label className={styles.toggleLabel}>
-                  <input
-                    type="checkbox"
-                    checked={allowRegenerate}
-                    onChange={(event) => setAllowRegenerate(event.target.checked)}
-                  />
-                  Ativar opções avançadas
-                </label>
-                {allowRegenerate && (
-                  <button
-                    type="button"
-                    className={styles.secondaryButton}
-                    onClick={() => handleGenerate(true)}
-                    disabled={generateMutation.isPending}
-                  >
-                    {generateMutation.isPending ? 'Regenerando...' : 'Gerar novamente'}
-                  </button>
-                )}
-              </div>
-            )}
-
             {generateMutation.isError && (
               <p className={styles.inlineError}>
                 {generateMutation.error?.message || 'Não foi possível gerar sua leitura de I Ching.'}
               </p>
-            )}
-
-            {hasModule && (
-              <details className={styles.techDetails}>
-                <summary>Ver dados técnicos</summary>
-                <pre>{JSON.stringify(output, null, 2)}</pre>
-              </details>
             )}
           </>
         )}

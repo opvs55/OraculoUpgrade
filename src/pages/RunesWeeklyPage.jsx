@@ -1,9 +1,10 @@
-import React, { useMemo, useState } from 'react';
+import React, { useMemo } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import DecorativeDivider from '../components/common/DecorativeDivider/DecorativeDivider';
 import Loader from '../components/common/Loader/Loader';
 import { useAuth } from '../hooks/useAuth';
 import { oraclesApi } from '../services/api/oraclesApi';
+import RunesCast from '../components/runes/RunesCast';
 import styles from './RunesWeeklyPage.module.css';
 
 const toList = (value) => {
@@ -24,6 +25,7 @@ const normalizeWeeklyData = (payload) => {
   return {
     status: source?.status ?? module?.status ?? null,
     weekRef: source?.week_ref ?? module?.week_ref ?? null,
+    cached: Boolean(source?.cached ?? module?.cached),
     module,
     output: module?.output_payload ?? module?.outputPayload ?? {},
   };
@@ -33,7 +35,6 @@ export default function RunesWeeklyPage() {
   const { user } = useAuth();
   const userId = user?.id;
   const queryClient = useQueryClient();
-  const [allowRegenerate, setAllowRegenerate] = useState(false);
 
   const weeklyQuery = useQuery({
     queryKey: ['oracles', 'runes', 'weekly', 'me', userId],
@@ -50,24 +51,17 @@ export default function RunesWeeklyPage() {
 
   const normalized = useMemo(() => normalizeWeeklyData(weeklyQuery.data), [weeklyQuery.data]);
 
-  const status = normalized.status;
-  const module = normalized.module;
-  const output = normalized.output;
+  const { status, module, output } = normalized;
   const hasModule = !!module;
   const isStatusOk = hasModule && status === 'ok';
   const isStatusError = hasModule && status === 'error';
 
-  const runesDrawn =
-    output?.runes_sorteadas || output?.runas_sorteadas || output?.runes_drawn || output?.runes || [];
-
-  const themes = toList(output?.temas || output?.themes);
-  const advice = toList(output?.conselhos || output?.conselho || output?.advice);
-  const meanings =
-    (Array.isArray(output?.significados) && output.significados) ||
-    (Array.isArray(output?.meanings) && output.meanings) ||
-    [];
-
-  const shadow = output?.sombra || output?.atencao || output?.atenção || output?.shadow;
+  const headline = output?.headline || 'Mensagem da semana';
+  const summary = output?.summary;
+  const themes = toList(output?.themes);
+  const recommendedActions = toList(output?.recommended_actions);
+  const disclaimer = output?.disclaimer;
+  const runeSymbols = Array.isArray(output?.runes) ? output.runes : [];
 
   const handleGenerate = (forceRegenerate = false) => {
     generateMutation.mutate({
@@ -90,6 +84,7 @@ export default function RunesWeeklyPage() {
 
         {weeklyQuery.isError && (
           <div className={styles.errorCard}>
+            <h2>Falha ao carregar a leitura semanal</h2>
             <p>{weeklyQuery.error?.message || 'Não foi possível carregar seu módulo semanal de Runas.'}</p>
             <button type="button" className={styles.primaryButton} onClick={() => weeklyQuery.refetch()}>
               Tentar novamente
@@ -103,31 +98,18 @@ export default function RunesWeeklyPage() {
               <>
                 <div className={styles.statusRow}>
                   <span className={styles.badge}>Semanal • {normalized.weekRef || 'Semana atual'}</span>
-                  <span className={styles.cacheInfo}>Já gerado nesta semana</span>
+                  {normalized.cached && <span className={styles.cacheInfo}>Já gerado nesta semana</span>}
                 </div>
 
                 <div className={styles.resultCard}>
-                  <h2>Runas sorteadas</h2>
-                  <div className={styles.runeRow}>
-                    {toList(runesDrawn).map((rune) => (
-                      <span key={rune} className={styles.runeChip}>{rune}</span>
-                    ))}
+                  <div className={styles.messageCard}>
+                    <h2>{headline}</h2>
+                    {summary && <p>{summary}</p>}
                   </div>
 
-                  {meanings.length > 0 && (
-                    <div className={styles.meaningsGrid}>
-                      {meanings.map((meaning, index) => {
-                        const title = meaning?.runa || meaning?.nome || `Runa ${index + 1}`;
-                        const text = meaning?.significado || meaning?.interpretacao || meaning?.texto;
-                        return (
-                          <article className={styles.meaningCard} key={`${title}-${index}`}>
-                            <h3>{title}</h3>
-                            <p>{text || 'Sem descrição disponível.'}</p>
-                          </article>
-                        );
-                      })}
-                    </div>
-                  )}
+                  <RunesCast runes={runeSymbols} />
+
+                  {/* TODO: alinhar backend para sempre enviar output_payload.runes (3 posições) nesta página. */}
 
                   {themes.length > 0 && (
                     <div className={styles.sectionBlock}>
@@ -140,25 +122,23 @@ export default function RunesWeeklyPage() {
                     </div>
                   )}
 
-                  {advice.length > 0 && (
+                  {recommendedActions.length > 0 && (
                     <div className={styles.sectionBlock}>
-                      <h3>Conselho</h3>
+                      <h3>Ações recomendadas</h3>
                       <ul>
-                        {advice.map((item) => (
+                        {recommendedActions.map((item) => (
                           <li key={item}>{item}</li>
                         ))}
                       </ul>
                     </div>
                   )}
 
-                  {shadow && (
+                  {disclaimer && (
                     <div className={styles.sectionBlock}>
-                      <h3>Atenção / Sombra</h3>
-                      <p>{shadow}</p>
+                      <h3>Nota</h3>
+                      <p className={styles.disclaimer}>{disclaimer}</p>
                     </div>
                   )}
-
-                  <p className={styles.footerText}>Gerado para {normalized.weekRef || 'a semana atual'}.</p>
                 </div>
               </>
             )}
@@ -192,40 +172,10 @@ export default function RunesWeeklyPage() {
               </div>
             )}
 
-            {isStatusOk && (
-              <div className={styles.advancedBox}>
-                <label className={styles.toggleLabel}>
-                  <input
-                    type="checkbox"
-                    checked={allowRegenerate}
-                    onChange={(event) => setAllowRegenerate(event.target.checked)}
-                  />
-                  Ativar opções avançadas
-                </label>
-                {allowRegenerate && (
-                  <button
-                    type="button"
-                    className={styles.secondaryButton}
-                    onClick={() => handleGenerate(true)}
-                    disabled={generateMutation.isPending}
-                  >
-                    {generateMutation.isPending ? 'Regenerando...' : 'Gerar novamente'}
-                  </button>
-                )}
-              </div>
-            )}
-
             {generateMutation.isError && (
               <p className={styles.inlineError}>
                 {generateMutation.error?.message || 'Não foi possível gerar sua leitura de runas.'}
               </p>
-            )}
-
-            {hasModule && (
-              <details className={styles.techDetails}>
-                <summary>Ver dados técnicos</summary>
-                <pre>{JSON.stringify(output, null, 2)}</pre>
-              </details>
             )}
           </>
         )}
