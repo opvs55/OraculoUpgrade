@@ -134,7 +134,7 @@ const PathChoiceInterpretation = ({ data }) => {
 };
 
 // <<< MUDANÇA PRINCIPAL: Componente da Cruz Celta com Layout VERTICAL >>>
-const CelticCrossInterpretation = ({ data, cards = [] }) => {
+const CelticCrossInterpretation = ({ data, cardsData = [] }) => {
   const { titulo_leitura, resumo_geral, analise_cartas, conselho_final } = data;
 
   if (!analise_cartas || !resumo_geral) {
@@ -157,19 +157,21 @@ const CelticCrossInterpretation = ({ data, cards = [] }) => {
           <React.Fragment key={index}>
             {/* Mantemos o card para cada análise */}
             <div className={styles.analysisCard}>
-              <div className={styles.celticCardHeader}>
-                {(cards[index]?.image || cards[index]?.img) && (
+              <div className={styles.positionCardMeta}>
+                {(cardsData[index]?.image || cardsData[index]?.img) ? (
                   <img
-                    src={cards[index]?.image || cards[index]?.img}
-                    alt={cards[index]?.name || `Carta ${index + 1}`}
-                    className={styles.celticCardThumb}
+                    src={cardsData[index]?.image || cardsData[index]?.img}
+                    alt={cardsData[index]?.name || cardsData[index]?.nome || `Carta ${index + 1}`}
+                    className={`${styles.positionCardThumb} ${(cardsData[index]?.isReversed || cardsData[index]?.invertida) ? styles.positionCardThumbInverted : ''}`}
                   />
+                ) : (
+                  <div className={styles.positionCardThumbPlaceholder} />
                 )}
                 <div>
                   <h4 className={styles.cardPositionTitle}>{analise.posicao || POSICOES_CRUZ_CELTA_META[index]?.title}</h4>
-                  <p className={styles.celticCardName}>
-                    {cards[index]?.name || cards[index]?.nome || 'Carta não identificada'}
-                    {(cards[index]?.isReversed || cards[index]?.invertida) ? ' (Invertida)' : ''}
+                  <p className={styles.positionCardName}>
+                    {cardsData[index]?.name || cardsData[index]?.nome || 'Carta não identificada'}
+                    {(cardsData[index]?.isReversed || cardsData[index]?.invertida) ? ' (Invertida)' : ''}
                   </p>
                   <p className={styles.celticShortMeaning}>{POSICOES_CRUZ_CELTA_META[index]?.shortMeaning}</p>
                 </div>
@@ -234,7 +236,7 @@ function ReadingDisplay({ readingData }) {
       case 'pathChoice':
         return <div className={styles.container}><PathChoiceInterpretation data={structuredData} /></div>;
       case 'celticCross':
-        return <div className={styles.container}><CelticCrossInterpretation data={structuredData} cards={readingData?.cards} /></div>;
+        return <div className={styles.container}><CelticCrossInterpretation data={structuredData} cardsData={readingData?.cards_data || []} /></div>;
       case 'threeCards':
       default:
         return <div className={styles.container}><StructuredInterpretation data={structuredData} /></div>;
