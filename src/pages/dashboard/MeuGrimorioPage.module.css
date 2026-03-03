@@ -202,6 +202,106 @@
   font-weight: 600;
 }
 
+
+
+.oraclesSummarySection {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.oracleMiniCard {
+  background: rgba(18, 16, 33, 0.75);
+  border: 1px solid rgba(225, 179, 130, 0.24);
+  border-radius: 16px;
+  padding: 1.2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.oracleMiniTitle {
+  margin: 0;
+  color: #E1B382;
+  font-family: 'Cinzel', serif;
+  font-size: 1.1rem;
+}
+
+.oracleBadge {
+  align-self: flex-start;
+  background: rgba(225, 179, 130, 0.12);
+  border: 1px solid rgba(225, 179, 130, 0.35);
+  border-radius: 999px;
+  color: #f4d7b3;
+  font-size: 0.75rem;
+  letter-spacing: 0.03em;
+  padding: 0.3rem 0.7rem;
+}
+
+.runesMiniVisual {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.runeMiniStone {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 1px solid rgba(225, 179, 130, 0.4);
+  background: rgba(13, 12, 29, 0.7);
+  color: #f6e3ca;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+}
+
+.hexagramMiniWrap {
+  transform: scale(0.58);
+  transform-origin: left top;
+  width: 128px;
+  height: 108px;
+  overflow: hidden;
+}
+
+.hexagramMiniWrap :global(section) {
+  margin: 0;
+}
+
+.oracleHeadline {
+  margin: 0;
+  color: #e9dfd2;
+  font-size: 0.92rem;
+  line-height: 1.35;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.oracleEmpty {
+  margin: 0;
+  color: #cdbfae;
+  font-size: 0.92rem;
+}
+
+.oracleLink,
+.oracleLinkPrimary {
+  align-self: flex-start;
+  text-decoration: none;
+  border-radius: 10px;
+  padding: 0.55rem 1rem;
+  font-weight: 600;
+}
+
+.oracleLink {
+  border: 1px solid rgba(225, 179, 130, 0.45);
+  color: #E1B382;
+}
+
+.oracleLinkPrimary {
+  background: #E1B382;
+  color: #0D0C1D;
+}
 .continueSection {
   background: rgba(18, 16, 33, 0.75);
   border: 1px solid rgba(225, 179, 130, 0.2);
@@ -664,7 +764,10 @@
     margin: 0 auto;
   }
 
-  .continueCard,
+  .oraclesSummarySection {
+    grid-template-columns: 1fr;
+  }
+
   .historyContent,
   .historyHeader {
     flex-direction: column;
