@@ -1,0 +1,52 @@
+.hexagram {
+  display: grid;
+  gap: 10px;
+  padding: 14px;
+  border: 1px solid rgba(225, 179, 130, 0.22);
+  border-radius: 12px;
+  background: linear-gradient(180deg, rgba(31, 22, 45, 0.8), rgba(20, 15, 30, 0.85));
+}
+
+.hexLine {
+  --line-delay-ms: 0ms;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  opacity: 0;
+  transform: translateY(5px);
+  animation: lineIn 460ms ease forwards;
+  animation-delay: var(--line-delay-ms);
+}
+
+.segment {
+  height: 8px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #f5d3a5, #d19e5e);
+  box-shadow: 0 0 8px rgba(225, 179, 130, 0.4);
+}
+
+.full {
+  width: min(260px, 72%);
+}
+
+.half {
+  width: min(116px, 32%);
+}
+
+.gap {
+  width: 24px;
+}
+
+@keyframes lineIn {
+  from {
+    opacity: 0;
+    transform: translateY(5px) scaleX(0.94);
+    filter: brightness(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scaleX(1);
+    filter: brightness(1);
+  }
+}

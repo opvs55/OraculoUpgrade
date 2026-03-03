@@ -1,0 +1,11 @@
+.cast {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+@media (max-width: 860px) {
+  .cast {
+    grid-template-columns: 1fr;
+  }
+}
