@@ -117,10 +117,6 @@ function NumerologyPage() {
   return (
     <div className={`content_wrapper ${styles.pageContainer}`}>
       <div className={styles.content}>
-        <h1 className={styles.mainTitle}>Numerologia Pessoal</h1>
-        <p className={styles.subtitle}>Descubra os números que guiam sua jornada através da sua data de nascimento.</p>
-        
-        {/* Renderiza o conteúdo (Loading, Erro, Form ou Resultados) */}
         {renderContent()}
       </div>
     </div>

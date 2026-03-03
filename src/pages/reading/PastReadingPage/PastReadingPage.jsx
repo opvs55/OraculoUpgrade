@@ -1,6 +1,6 @@
 // src/pages/reading/PastReadingPage/PastReadingPage.jsx (VERSÃO CORRIGIDA+)
 
-import React, { useMemo } from 'react';
+import React from 'react';
 import { useParams, Link, useLocation } from 'react-router-dom';
 import { useSingleReading } from '../../../hooks/useReadings';
 import styles from './PastReadingPage.module.css';
@@ -8,8 +8,6 @@ import Loader from '../../../components/common/Loader/Loader';
 import ReadingDisplay from '../../../components/ReadingDisplay/ReadingDisplay';
 import { useAuth } from '../../../context/AuthContext';
 import GuestPrompt from '../../../components/GuestPrompt/GuestPrompt';
-import Chat from '../../../components/Chat/Chat';
-import DecorativeDivider from '../../../components/common/DecorativeDivider/DecorativeDivider';
 import ReadingInteractionBar from '../../../components/ReadingInteractionBar/ReadingInteractionBar';
 import CommentsSection from '../../../components/CommentsSection/CommentsSection';
 
@@ -76,28 +74,6 @@ function PastReadingPage() {
   const error = hookError;
   const currentReading = temporaryReadingData || readingFromHook;
 
-  // O 'useMemo' para o 'chatContext' agora usa a função auxiliar mais robusta
-  const chatContext = useMemo(() => {
-    if (!currentReading) return "Contexto da leitura indisponível.";
-
-    const questionText = getQuestionText(currentReading.question, currentReading.spread_type); // << Já usa a função corrigida
-
-    let mainInterpretationText = "Interpretação principal não disponível.";
-    if (currentReading.interpretation_data?.interpretationType === 'structured') {
-        mainInterpretationText = currentReading.interpretation_data.data?.interpretacao?.resumo ||
-                                 currentReading.interpretation_data.data?.resumo_geral ||
-                                 currentReading.interpretation_data.data?.comparativo_final ||
-                                 "Resumo estruturado não encontrado.";
-    } else if (currentReading.main_interpretation) {
-        mainInterpretationText = currentReading.main_interpretation;
-    }
-
-    const cardsText = currentReading.cards_data
-      ? currentReading.cards_data.map((card, i) => `${i + 1}. ${card.nome} ${card.invertida ? '(Inv)' : ''}`).join(', ')
-      : "Cartas não disponíveis.";
-
-    return `A pergunta foi: "${questionText}". As cartas sorteadas foram: ${cardsText}. A interpretação principal/resumo foi: "${mainInterpretationText}"`;
-  }, [currentReading]);
 
 
   // --- RENDERIZAÇÃO --- (O resto do componente permanece igual)
@@ -199,16 +175,6 @@ function PastReadingPage() {
           </div>
         )}
         
-        {/* --- 3. SEÇÃO PRIVADA (Só o Dono) --- */}
-        {!isTemporary && isOwner && (
-          <div className={styles.privateSection}>
-            <DecorativeDivider />
-            <h3 className={styles.privateTitle}>Aprofunde sua Leitura (Privado)</h3>
-            <p className={styles.privateNotice}>Somente você pode ver este chat com a I.A.</p>
-            <Chat chatContext={chatContext} readingId={currentReading.id} />
-          </div>
-        )}
-
       </div> {/* Fim .container */}
     </div> // Fim .content_wrapper
   );
