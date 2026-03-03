@@ -19,7 +19,8 @@ const toList = (value) => {
 };
 
 const normalizeWeeklyData = (payload) => {
-  const source = payload?.data ?? payload ?? {};
+  const root = payload ?? {};
+  const source = root?.data?.data ?? root?.data ?? root;
   const module = source?.module ?? null;
 
   return {
@@ -27,7 +28,7 @@ const normalizeWeeklyData = (payload) => {
     weekRef: source?.week_ref ?? module?.week_ref ?? null,
     cached: Boolean(source?.cached ?? module?.cached),
     module,
-    output: module?.output_payload ?? module?.outputPayload ?? {},
+    outputPayload: module?.output_payload ?? module?.outputPayload ?? {},
   };
 };
 
@@ -51,17 +52,16 @@ export default function RunesWeeklyPage() {
 
   const normalized = useMemo(() => normalizeWeeklyData(weeklyQuery.data), [weeklyQuery.data]);
 
-  const { status, module, output } = normalized;
+  const { status, module, outputPayload } = normalized;
   const hasModule = !!module;
   const isStatusOk = hasModule && status === 'ok';
   const isStatusError = hasModule && status === 'error';
 
-  const headline = output?.headline || 'Mensagem da semana';
-  const summary = output?.summary;
-  const themes = toList(output?.themes);
-  const recommendedActions = toList(output?.recommended_actions);
-  const disclaimer = output?.disclaimer;
-  const runeSymbols = Array.isArray(output?.runes) ? output.runes : [];
+  const headline = outputPayload?.headline || 'Mensagem da semana';
+  const summary = outputPayload?.summary;
+  const themes = toList(outputPayload?.themes);
+  const recommendedActions = toList(outputPayload?.recommended_actions);
+  const disclaimer = outputPayload?.disclaimer;
 
   const handleGenerate = (forceRegenerate = false) => {
     generateMutation.mutate({
@@ -107,9 +107,7 @@ export default function RunesWeeklyPage() {
                     {summary && <p>{summary}</p>}
                   </div>
 
-                  <RunesCast runes={runeSymbols} />
-
-                  {/* TODO: alinhar backend para sempre enviar output_payload.runes (3 posições) nesta página. */}
+                  <RunesCast runes={outputPayload?.runes || []} />
 
                   {themes.length > 0 && (
                     <div className={styles.sectionBlock}>

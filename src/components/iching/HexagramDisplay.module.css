@@ -1,10 +1,28 @@
-.hexagram {
+.hexagramCard {
+  position: relative;
+  border: 1px solid rgba(225, 179, 130, 0.28);
+  border-radius: 16px;
+  padding: 22px 18px;
+  background:
+    radial-gradient(circle at 50% -15%, rgba(227, 186, 127, 0.16), transparent 55%),
+    linear-gradient(170deg, rgba(33, 24, 47, 0.9), rgba(18, 14, 29, 0.92));
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.06),
+    0 16px 34px rgba(0, 0, 0, 0.34);
+  overflow: hidden;
+}
+
+.glowHalo {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 50% 38%, rgba(243, 208, 153, 0.18), transparent 58%);
+  pointer-events: none;
+}
+
+.linesFrame {
+  position: relative;
   display: grid;
-  gap: 10px;
-  padding: 14px;
-  border: 1px solid rgba(225, 179, 130, 0.22);
-  border-radius: 12px;
-  background: linear-gradient(180deg, rgba(31, 22, 45, 0.8), rgba(20, 15, 30, 0.85));
+  gap: 12px;
 }
 
 .hexLine {
@@ -12,37 +30,46 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 10px;
+  gap: 12px;
   opacity: 0;
-  transform: translateY(5px);
-  animation: lineIn 460ms ease forwards;
+  transform: translateY(8px);
+  animation: lineIn 520ms cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
   animation-delay: var(--line-delay-ms);
 }
 
 .segment {
-  height: 8px;
+  position: relative;
+  height: 9px;
   border-radius: 999px;
-  background: linear-gradient(90deg, #f5d3a5, #d19e5e);
-  box-shadow: 0 0 8px rgba(225, 179, 130, 0.4);
+  background: linear-gradient(90deg, #f5d8ab 0%, #d7a161 55%, #f5d8ab 100%);
+  box-shadow: 0 0 14px rgba(232, 183, 117, 0.35);
+}
+
+.segment::after {
+  content: '';
+  position: absolute;
+  inset: 1px 8%;
+  border-radius: inherit;
+  background: linear-gradient(180deg, rgba(255, 244, 225, 0.54), rgba(255, 244, 225, 0));
 }
 
 .full {
-  width: min(260px, 72%);
+  width: min(280px, 76%);
 }
 
 .half {
-  width: min(116px, 32%);
+  width: min(120px, 34%);
 }
 
 .gap {
-  width: 24px;
+  width: clamp(16px, 3vw, 26px);
 }
 
 @keyframes lineIn {
   from {
     opacity: 0;
-    transform: translateY(5px) scaleX(0.94);
-    filter: brightness(0.9);
+    transform: translateY(8px) scaleX(0.92);
+    filter: brightness(0.86);
   }
   to {
     opacity: 1;
