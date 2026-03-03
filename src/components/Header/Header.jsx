@@ -135,6 +135,18 @@ function Header() {
               Numerologia
             </NavLink>
             <NavLink
+              to="/runas"
+              className={({ isActive }) => (isActive ? `${styles.navLink} ${styles.activeLink}` : styles.navLink)}
+            >
+              Runas
+            </NavLink>
+            <NavLink
+              to="/iching"
+              className={({ isActive }) => (isActive ? `${styles.navLink} ${styles.activeLink}` : styles.navLink)}
+            >
+              I Ching
+            </NavLink>
+            <NavLink
               to="/oraculo/geral"
               className={({ isActive }) => (isActive ? `${styles.navLink} ${styles.activeLink}` : styles.navLink)}
             >
@@ -219,6 +231,12 @@ function Header() {
             </NavLink>
             <NavLink to="/numerologia" className={styles.mobileLink} onClick={handleCloseMenu}>
               Numerologia
+            </NavLink>
+            <NavLink to="/runas" className={styles.mobileLink} onClick={handleCloseMenu}>
+              Runas
+            </NavLink>
+            <NavLink to="/iching" className={styles.mobileLink} onClick={handleCloseMenu}>
+              I Ching
             </NavLink>
             <NavLink to="/oraculo/geral" className={styles.mobileLink} onClick={handleCloseMenu}>
               Leitura Geral

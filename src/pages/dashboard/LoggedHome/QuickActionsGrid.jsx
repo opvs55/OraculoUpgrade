@@ -34,6 +34,24 @@ function QuickActionsGrid() {
           </Link>
         </article>
 
+
+        <article className={styles.actionCard}>
+          <div className={styles.actionIcon}>ᚠ</div>
+          <h3>Runas</h3>
+          <p>Ative sua leitura semanal de runas para fortalecer a síntese geral.</p>
+          <Link to="/runas" className={styles.actionButtonSecondary}>
+            Gerar runas
+          </Link>
+        </article>
+
+        <article className={styles.actionCard}>
+          <div className={styles.actionIcon}>☯️</div>
+          <h3>I Ching</h3>
+          <p>Consulte o I Ching da semana e complemente seus direcionamentos.</p>
+          <Link to="/iching" className={styles.actionButtonSecondary}>
+            Gerar I Ching
+          </Link>
+        </article>
         <article className={styles.actionCard}>
           <div className={styles.actionIcon}>🧭</div>
           <h3>Leitura Geral</h3>

@@ -21,8 +21,8 @@ const WelcomePage = lazy(() => import('../pages/WelcomePage'));
 const TarotPage = lazy(() => import('../pages/TarotPage'));
 const NumerologyPage = lazy(() => import('../pages/NumerologyPage.jsx'));
 const GeneralOraclePage = lazy(() => import('../pages/GeneralOraclePage'));
-const RunesPage = lazy(() => import('../pages/runes/RunesPage'));
-const IChingPage = lazy(() => import('../pages/iching/IChingPage'));
+const RunesWeeklyPage = lazy(() => import('../pages/RunesWeeklyPage'));
+const IChingWeeklyPage = lazy(() => import('../pages/IChingWeeklyPage'));
 
 // Autenticação
 const CadastroPage = lazy(() => import('../pages/auth/CadastroPage'));
@@ -76,8 +76,8 @@ function AppRoutes() {
           <Route path="/comunidade" element={<CommunityFeedPage />} />
           <Route path="/oraculo/geral" element={<GeneralOraclePage />} />
           <Route path="/oraculo/geral/:id" element={<GeneralOraclePage />} />
-          <Route path="/runas" element={<RunesPage />} />
-          <Route path="/iching" element={<IChingPage />} />
+          <Route path="/runas" element={<RunesWeeklyPage />} />
+          <Route path="/iching" element={<IChingWeeklyPage />} />
         </Route>
 
       </Routes>
