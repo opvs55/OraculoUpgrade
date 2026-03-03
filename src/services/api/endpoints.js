@@ -40,11 +40,17 @@ const endpointConfig = {
   runesWeeklyGenerate: {
     v1: '/api/v1/oracles/runes/weekly/generate',
   },
+  runesWeeklyMe: {
+    v1: '/api/v1/oracles/runes/weekly/me',
+  },
   iChingReadings: {
     v1: '/api/v1/oracles/iching/readings',
   },
   ichingWeeklyGenerate: {
     v1: '/api/v1/oracles/iching/weekly/generate',
+  },
+  ichingWeeklyMe: {
+    v1: '/api/v1/oracles/iching/weekly/me',
   },
   unifiedReadings: {
     v1: '/api/v1/unified/readings',

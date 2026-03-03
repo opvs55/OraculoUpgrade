@@ -56,12 +56,26 @@ export const oraclesApi = {
     return postJson('runesWeeklyGenerate', payload, { withAuth: true });
   },
 
+  async getMyRunesWeekly() {
+    return requestApi(resolveEndpointSequence('runesWeeklyMe'), {
+      method: 'GET',
+      headers: await getAuthHeaders(),
+    });
+  },
+
   getIChingReading(payload) {
     return postJson('iChingReadings', payload, { withAuth: true });
   },
 
   generateIChingWeekly(payload = {}) {
     return postJson('ichingWeeklyGenerate', payload, { withAuth: true });
+  },
+
+  async getMyIChingWeekly() {
+    return requestApi(resolveEndpointSequence('ichingWeeklyMe'), {
+      method: 'GET',
+      headers: await getAuthHeaders(),
+    });
   },
 
   createUnifiedReading(payload) {
