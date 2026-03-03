@@ -19,7 +19,8 @@ const toList = (value) => {
 };
 
 const normalizeWeeklyData = (payload) => {
-  const source = payload?.data ?? payload ?? {};
+  const root = payload ?? {};
+  const source = root?.data?.data ?? root?.data ?? root;
   const module = source?.module ?? null;
 
   return {
@@ -27,7 +28,7 @@ const normalizeWeeklyData = (payload) => {
     weekRef: source?.week_ref ?? module?.week_ref ?? null,
     cached: Boolean(source?.cached ?? module?.cached),
     module,
-    output: module?.output_payload ?? module?.outputPayload ?? {},
+    outputPayload: module?.output_payload ?? module?.outputPayload ?? {},
   };
 };
 
@@ -51,17 +52,18 @@ export default function IChingWeeklyPage() {
 
   const normalized = useMemo(() => normalizeWeeklyData(weeklyQuery.data), [weeklyQuery.data]);
 
-  const { status, module, output } = normalized;
+  const { status, module, outputPayload } = normalized;
   const hasModule = !!module;
   const isStatusOk = hasModule && status === 'ok';
   const isStatusError = hasModule && status === 'error';
 
-  const headline = output?.headline || 'Mensagem da semana';
-  const summary = output?.summary;
-  const themes = toList(output?.themes);
-  const recommendedActions = toList(output?.recommended_actions);
-  const disclaimer = output?.disclaimer;
-  const hexagramLines = Array.isArray(output?.lines) ? output.lines : [];
+  const headline = outputPayload?.headline || 'Mensagem da semana';
+  const summary = outputPayload?.summary;
+  const themes = toList(outputPayload?.themes);
+  const recommendedActions = toList(outputPayload?.recommended_actions);
+  const disclaimer = outputPayload?.disclaimer;
+  const hexagramLines = Array.isArray(outputPayload?.lines) ? outputPayload.lines : [];
+  const hasHexagramLines = hexagramLines.length === 6;
 
   const handleGenerate = (forceRegenerate = false) => {
     generateMutation.mutate({
@@ -107,9 +109,11 @@ export default function IChingWeeklyPage() {
                     {summary && <p>{summary}</p>}
                   </div>
 
-                  <HexagramDisplay lines={hexagramLines} />
-
-                  {/* TODO: alinhar backend para sempre enviar output_payload.lines com as 6 linhas do hexagrama. */}
+                  {hasHexagramLines ? (
+                    <HexagramDisplay lines={hexagramLines} />
+                  ) : (
+                    <p className={styles.soonNote}>Hexagrama visual disponível em breve.</p>
+                  )}
 
                   {themes.length > 0 && (
                     <div className={styles.sectionBlock}>
