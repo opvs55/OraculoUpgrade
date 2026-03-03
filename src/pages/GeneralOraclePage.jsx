@@ -84,6 +84,43 @@ export default function GeneralOraclePage() {
   }, [requirements]);
 
   const pendingActions = requirementsChecklist.filter((item) => !item.done && item.action);
+
+  const suggestedActions = useMemo(() => {
+    const baseActions = Array.isArray(requirements?.suggested_actions) ? requirements.suggested_actions : [];
+    const normalized = new Set(baseActions.filter((action) => typeof action === 'string' && action.length > 0));
+
+    if (requirements?.has_runes_weekly === false || requirements?.has_runes === false) {
+      normalized.add('/runas');
+    }
+
+    if (requirements?.has_iching_weekly === false || requirements?.has_iching === false) {
+      normalized.add('/iching');
+    }
+
+    return Array.from(normalized);
+  }, [requirements]);
+
+  const suggestedActionLinks = useMemo(() => {
+    if (suggestedActions.length === 0) return [];
+
+    const fromChecklist = pendingActions
+      .filter((item) => suggestedActions.includes(item.action))
+      .map((item) => ({ to: item.action, label: item.cta }));
+
+    const fallbackByPath = {
+      '/runas': 'Gerar runas semanais',
+      '/iching': 'Gerar I Ching semanal',
+    };
+
+    const existing = new Set(fromChecklist.map((item) => item.to));
+
+    const fallback = suggestedActions
+      .filter((path) => !existing.has(path))
+      .map((path) => ({ to: path, label: fallbackByPath[path] || 'Completar requisito' }));
+
+    return [...fromChecklist, ...fallback];
+  }, [pendingActions, suggestedActions]);
+
   const canGenerate = requirements?.can_generate_general_reading === true;
 
   const handleGenerate = async (event) => {
@@ -129,8 +166,8 @@ export default function GeneralOraclePage() {
           <div className={styles.requirementsWarning}>
             <p>Leitura semanal bloqueada até concluir todos os requisitos obrigatórios.</p>
             <div className={styles.actionsLinks}>
-              {pendingActions.map((item) => (
-                <Link key={item.key} to={item.action}>{item.cta}</Link>
+              {suggestedActionLinks.map((item) => (
+                <Link key={item.to} to={item.to}>{item.label}</Link>
               ))}
             </div>
           </div>
