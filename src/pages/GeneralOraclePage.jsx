@@ -1,46 +1,22 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
+import GeneralReadingView from '../components/oracle/GeneralReadingView';
 import { useUnifiedReading } from '../features/unified/useUnifiedReading';
 import styles from './GeneralOraclePage.module.css';
 
 const requirementMeta = {
-  has_tarot: { label: 'Tarot', action: '/tarot', cta: 'Fazer leitura de tarot' },
-  has_tarot_weekly: { label: 'Tarot semanal', action: '/tarot', cta: 'Fazer tarot semanal' },
-  has_weekly_card: { label: 'Carta da Semana (tarot)', action: '/tarot', cta: 'Revelar carta da semana' },
-  has_numerology: { label: 'Numerologia', action: '/numerologia', cta: 'Preencher numerologia' },
-  has_numerology_weekly: { label: 'Numerologia semanal', action: '/numerologia', cta: 'Gerar numerologia semanal' },
-  has_runes: { label: 'Runas', action: '/runas', cta: 'Gerar runas semanais' },
-  has_runes_weekly: { label: 'Runas semanais', action: '/runas', cta: 'Gerar runas semanais' },
-  has_iching: { label: 'I Ching', action: '/iching', cta: 'Gerar I Ching semanal' },
-  has_iching_weekly: { label: 'I Ching semanal', action: '/iching', cta: 'Gerar I Ching semanal' },
+  has_weekly_card: { label: 'Tarot', action: '/tarot', cta: 'Ir para Tarot' },
+  has_numerology_weekly: { label: 'Numerologia', action: '/numerologia', cta: 'Ir para Numerologia' },
+  has_runes_weekly: { label: 'Runas', action: '/runas', cta: 'Ir para Runas' },
+  has_iching_weekly: { label: 'I Ching', action: '/iching', cta: 'Ir para I Ching' },
 };
 
-const orderedKeys = [
-  'has_weekly_card',
-  'has_numerology_weekly',
-  'has_runes_weekly',
-  'has_iching_weekly',
-  'has_tarot',
-  'has_numerology',
-  'has_runes',
-  'has_iching',
-];
-
-function FieldSection({ title, content }) {
-  if (!content) return null;
-  return (
-    <section className={styles.resultSection}>
-      <h3>{title}</h3>
-      <p>{content}</p>
-    </section>
-  );
-}
+const fallbackActionOrder = ['/tarot', '/numerologia', '/runas', '/iching'];
 
 export default function GeneralOraclePage() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const [focusArea, setFocusArea] = useState('geral');
-  const [question, setQuestion] = useState('');
+  const [generatedReading, setGeneratedReading] = useState(null);
 
   const {
     requirements,
@@ -53,173 +29,112 @@ export default function GeneralOraclePage() {
     isLoadingUnifiedReading,
   } = useUnifiedReading({ readingId: id, listParams: { limit: 10 } });
 
+  useEffect(() => {
+    let mounted = true;
+
+    if (id) return undefined;
+
+    const loadCentralReading = async () => {
+      try {
+        const response = await generateCentralReading({});
+        if (!mounted) return;
+        setGeneratedReading(response || null);
+      } catch {
+        if (!mounted) return;
+        setGeneratedReading(null);
+      }
+    };
+
+    loadCentralReading();
+
+    return () => {
+      mounted = false;
+    };
+  }, [id, generateCentralReading]);
+
   const latestReadings = useMemo(() => {
     if (Array.isArray(unifiedReadings)) return unifiedReadings;
     return unifiedReadings?.items || unifiedReadings?.data || [];
   }, [unifiedReadings]);
 
-  const currentReading = id ? unifiedReading : latestReadings[0];
-  const finalReading = currentReading?.final_reading || currentReading?.finalReading || currentReading;
+  const detailReading = id ? unifiedReading : null;
+  const currentReading = detailReading || generatedReading || latestReadings[0];
+  const finalReading = currentReading?.final_reading || currentReading?.finalReading || null;
 
-  const requirementsChecklist = useMemo(() => {
-    if (!requirements || typeof requirements !== 'object') return [];
+  const weekRef = currentReading?.week_ref || currentReading?.weekRef;
+  const cached = currentReading?.cached === true;
 
-    const entries = Object.entries(requirements)
-      .filter(([key, value]) => key.startsWith('has_') && typeof value === 'boolean' && key !== 'has_natal_chart')
-      .map(([key, value]) => ({
-        key,
-        done: value,
-        label: requirementMeta[key]?.label || key.replace('has_', '').replace(/_/g, ' '),
-        action: requirementMeta[key]?.action,
-        cta: requirementMeta[key]?.cta || 'Completar requisito',
-      }));
+  const canGenerate = currentReading?.can_generate ?? requirements?.can_generate_general_reading ?? true;
 
-    return entries.sort((a, b) => {
-      const indexA = orderedKeys.indexOf(a.key);
-      const indexB = orderedKeys.indexOf(b.key);
-      const safeA = indexA === -1 ? Number.MAX_SAFE_INTEGER : indexA;
-      const safeB = indexB === -1 ? Number.MAX_SAFE_INTEGER : indexB;
-      return safeA - safeB;
-    });
-  }, [requirements]);
+  const missingChecklist = useMemo(() => {
+    if (!canGenerate) {
+      const missingByFlags = Object.entries(requirementMeta)
+        .filter(([key]) => requirements?.[key] === false)
+        .map(([key, meta]) => ({ key, ...meta }));
 
-  const pendingActions = requirementsChecklist.filter((item) => !item.done && item.action);
+      const rawMissing = Array.isArray(currentReading?.missing_requirements)
+        ? currentReading.missing_requirements
+        : [];
 
-  const suggestedActions = useMemo(() => {
-    const baseActions = Array.isArray(requirements?.suggested_actions) ? requirements.suggested_actions : [];
-    const normalized = new Set(baseActions.filter((action) => typeof action === 'string' && action.length > 0));
+      const missingByResponse = rawMissing
+        .map((item) => requirementMeta[item])
+        .filter(Boolean)
+        .map((meta) => ({ key: meta.label, ...meta }));
 
-    if (requirements?.has_runes_weekly === false || requirements?.has_runes === false) {
-      normalized.add('/runas');
+      const unique = new Map();
+      [...missingByFlags, ...missingByResponse].forEach((item) => {
+        unique.set(item.action, item);
+      });
+
+      if (unique.size > 0) return Array.from(unique.values());
+
+      return fallbackActionOrder.map((action) => {
+        const item = Object.values(requirementMeta).find((meta) => meta.action === action);
+        return item || { label: action, action, cta: 'Completar requisito' };
+      });
     }
 
-    if (requirements?.has_iching_weekly === false || requirements?.has_iching === false) {
-      normalized.add('/iching');
-    }
-
-    return Array.from(normalized);
-  }, [requirements]);
-
-  const suggestedActionLinks = useMemo(() => {
-    if (suggestedActions.length === 0) return [];
-
-    const fromChecklist = pendingActions
-      .filter((item) => suggestedActions.includes(item.action))
-      .map((item) => ({ to: item.action, label: item.cta }));
-
-    const fallbackByPath = {
-      '/runas': 'Gerar runas semanais',
-      '/iching': 'Gerar I Ching semanal',
-    };
-
-    const existing = new Set(fromChecklist.map((item) => item.to));
-
-    const fallback = suggestedActions
-      .filter((path) => !existing.has(path))
-      .map((path) => ({ to: path, label: fallbackByPath[path] || 'Completar requisito' }));
-
-    return [...fromChecklist, ...fallback];
-  }, [pendingActions, suggestedActions]);
-
-  const canGenerate = requirements?.can_generate_general_reading === true;
-
-  const handleGenerate = async (event) => {
-    event.preventDefault();
-    if (!canGenerate) return;
-
-    const response = await generateCentralReading({
-      focus_area: focusArea,
-      question: question || undefined,
-    });
-
-    const readingId = response?.id || response?.reading_id;
-    if (readingId) {
-      navigate(`/oraculo/geral/${readingId}`);
-      return;
-    }
-
-    navigate('/oraculo/geral');
-  };
+    return [];
+  }, [canGenerate, requirements, currentReading]);
 
   return (
     <div className={`content_wrapper ${styles.page}`}>
       <header className={styles.header}>
         <h1>Leitura Geral Semanal</h1>
         <p>Síntese central da semana com Tarot + Numerologia + Runas + I Ching.</p>
+        <div className={styles.statusRow}>
+          <span className={styles.statusBadge}>Semanal • {weekRef || '—'}</span>
+          {cached && <span className={styles.cachedBadge}>Já gerado nesta semana</span>}
+        </div>
       </header>
 
-      <section className={styles.card}>
-        <h2>Checklist de requisitos</h2>
-        {isLoadingRequirements && <p>Carregando requisitos...</p>}
-        {!isLoadingRequirements && (
+      {!canGenerate && !isLoadingRequirements && (
+        <section className={styles.card}>
+          <h2>Requisitos pendentes</h2>
+          <p>Conclua os oráculos semanais para liberar a leitura geral premium.</p>
           <ul className={styles.checklist}>
-            {requirementsChecklist.map((item) => (
-              <li key={item.key}>
+            {missingChecklist.map((item) => (
+              <li key={`${item.label}-${item.action}`}>
                 <span>{item.label}</span>
-                <strong>{item.done ? 'OK' : 'Pendente'}</strong>
+                <Link to={item.action}>{item.cta}</Link>
               </li>
             ))}
           </ul>
-        )}
-
-        {!canGenerate && !isLoadingRequirements && (
-          <div className={styles.requirementsWarning}>
-            <p>Leitura semanal bloqueada até concluir todos os requisitos obrigatórios.</p>
-            <div className={styles.actionsLinks}>
-              {suggestedActionLinks.map((item) => (
-                <Link key={item.to} to={item.to}>{item.label}</Link>
-              ))}
-            </div>
-          </div>
-        )}
-      </section>
+        </section>
+      )}
 
       <section className={styles.card}>
-        <h2>Gerar Leitura Geral</h2>
-        <form className={styles.form} onSubmit={handleGenerate}>
-          <label>
-            Área de foco
-            <select value={focusArea} onChange={(e) => setFocusArea(e.target.value)}>
-              <option value="geral">Geral</option>
-              <option value="amor">Amor</option>
-              <option value="carreira">Carreira</option>
-              <option value="espiritualidade">Espiritualidade</option>
-            </select>
-          </label>
-          <label>
-            Pergunta (opcional)
-            <textarea
-              value={question}
-              onChange={(e) => setQuestion(e.target.value)}
-              placeholder="Ex: O que devo priorizar nesta fase?"
-            />
-          </label>
-          <button type="submit" disabled={!canGenerate || isGeneratingCentralReading || isLoadingRequirements}>
-            {isGeneratingCentralReading ? 'Gerando...' : 'Gerar Leitura Geral'}
-          </button>
-        </form>
-      </section>
-
-      <section className={styles.card}>
-        <h2>Resultado</h2>
-        {(isLoadingUnifiedReading || isGeneratingCentralReading) && <p>Canalizando interpretação...</p>}
-        {!isLoadingUnifiedReading && !finalReading && <p>Gere uma leitura para visualizar a síntese.</p>}
-        {finalReading && (
-          <div className={styles.resultWrapper}>
-            <h3>{finalReading.title || 'Leitura Geral'}</h3>
-            <FieldSection title="Visão geral" content={finalReading.overview} />
-            <FieldSection title="Forças" content={finalReading.strengths} />
-            <FieldSection title="Pontos de atenção" content={finalReading.cautions} />
-            <FieldSection title="Direcionamento" content={finalReading.guidance} />
-            <FieldSection title="Mensagem final" content={finalReading.closing_message} />
-            {Array.isArray(finalReading.sources_used) && (
-              <div className={styles.sources}>
-                {finalReading.sources_used.map((source) => (
-                  <span key={source}>{source}</span>
-                ))}
-              </div>
-            )}
-          </div>
+        <h2>Resultado da semana</h2>
+        {(isGeneratingCentralReading || isLoadingUnifiedReading) && <p>Canalizando interpretação...</p>}
+        {!isGeneratingCentralReading && !isLoadingUnifiedReading && !finalReading && canGenerate && (
+          <p>Não foi possível obter a leitura desta semana agora.</p>
+        )}
+        {finalReading && <GeneralReadingView finalReading={finalReading} />}
+        {import.meta.env.DEV && currentReading && (
+          <details className={styles.devRaw}>
+            <summary>DEBUG (oculto): payload bruto</summary>
+            <pre>{JSON.stringify(currentReading, null, 2)}</pre>
+          </details>
         )}
       </section>
 
