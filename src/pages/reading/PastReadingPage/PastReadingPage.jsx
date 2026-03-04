@@ -126,6 +126,7 @@ function PastReadingPage() {
   const isOwner = user && currentReading.user_id === user.id;
   const isTemporary = currentReading.id.startsWith('temp-');
   const authorUsername = currentReading.profiles?.username || (isOwner ? user.profile?.username : 'desconhecido');
+  const pinnedCommentId = currentReading?.interpretation_data?.pinned_comment_id || null;
 
 
   return (
@@ -167,7 +168,12 @@ function PastReadingPage() {
                 </div>
                 
                 <div className={styles.commentsColumn}>
-                  <CommentsSection readingId={currentReading.id} />
+                  <CommentsSection
+                    readingId={currentReading.id}
+                    isOwner={isOwner}
+                    pinnedCommentId={pinnedCommentId}
+                    reading={currentReading}
+                  />
                 </div>
 
               </div>

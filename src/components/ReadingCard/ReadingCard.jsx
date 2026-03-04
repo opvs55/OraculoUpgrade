@@ -2,6 +2,8 @@
 
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { useQuery } from '@tanstack/react-query';
+import { supabase } from '../../supabaseClient';
 import styles from './ReadingCard.module.css';
 
 // Função auxiliar para encontrar a carta de maior destaque
@@ -31,6 +33,24 @@ function ReadingCard({ reading }) {
   const highlightCard = getHighlightCard(reading.cards_data);
   const starCount = reading.stars?.[0]?.count ?? 0;
   const commentCount = reading.comments?.[0]?.count ?? 0;
+  const pinnedCommentId = reading?.interpretation_data?.pinned_comment_id || null;
+
+  const { data: pinnedCommentPreview } = useQuery({
+    queryKey: ['readingPinnedPreview', reading.id, pinnedCommentId],
+    queryFn: async () => {
+      if (!pinnedCommentId) return null;
+      const { data, error } = await supabase
+        .from('comments')
+        .select('id, comment_text')
+        .eq('id', pinnedCommentId)
+        .eq('reading_id', reading.id)
+        .single();
+
+      if (error) return null;
+      return data;
+    },
+    enabled: !!pinnedCommentId,
+  });
 
   // --- A MUDANÇA ESTÁ AQUI ---
   // Construímos a URL completa para garantir que o navegador a encontre.
@@ -67,6 +87,11 @@ function ReadingCard({ reading }) {
             <span>@{reading.profiles?.username || 'Anônimo'}</span>
           </div>
           <h3 className={styles.title}>{reading.shared_title}</h3>
+          {pinnedCommentPreview?.comment_text && (
+            <p className={styles.pinnedPreview}>
+              ✨ Destaque: {pinnedCommentPreview.comment_text}
+            </p>
+          )}
           <div className={styles.stats}>
             <span className={styles.statItem}>⭐ {starCount}</span>
             <span className={styles.statItem}>💬 {commentCount}</span>

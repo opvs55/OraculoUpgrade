@@ -5,6 +5,7 @@ import { useQueryClient, useMutation } from '@tanstack/react-query';
 import { useReadingStars } from '../../hooks/useReadingStars';
 import { supabase } from '../../supabaseClient';
 import Modal from '../common/Modal/Modal';
+import { getCurrentRitualTags } from '../../utils/communityRitual';
 
 import modalStyles from '../common/Modal/Modal.module.css';
 import styles from './ReadingInteractionBar.module.css';
@@ -15,7 +16,9 @@ function ReadingInteractionBar({ reading, user, isOwner }) {
 
   const [isShareModalOpen, setIsShareModalOpen] = useState(false);
   const [shareTitleInput, setShareTitleInput] = useState(reading.shared_title || '');
+  const [publishInRitual, setPublishInRitual] = useState(false);
   const [shareError, setShareError] = useState('');
+  const { tags: ritualTags } = getCurrentRitualTags();
 
   const {
     totalStars,
@@ -38,7 +41,7 @@ function ReadingInteractionBar({ reading, user, isOwner }) {
         .update(updates)
         .eq('id', readingId)
         .eq('user_id', user.id)
-        .select('is_public, shared_title')
+        .select('is_public, shared_title, tags')
         .single();
 
       if (error) throw error;
@@ -52,6 +55,7 @@ function ReadingInteractionBar({ reading, user, isOwner }) {
       
       setIsShareModalOpen(false);
       setShareTitleInput(variables.updates.shared_title || '');
+      setPublishInRitual(false);
     },
     onError: (error) => {
       console.error("Erro ao atualizar leitura:", error);
@@ -71,6 +75,7 @@ function ReadingInteractionBar({ reading, user, isOwner }) {
     } else {
       setShareTitleInput(reading.shared_title || '');
       setShareError('');
+      setPublishInRitual(false);
       setIsShareModalOpen(true);
     }
   };
@@ -82,8 +87,13 @@ function ReadingInteractionBar({ reading, user, isOwner }) {
       return;
     }
     setShareError('');
+    const baseTags = Array.isArray(reading.tags) ? reading.tags : [];
+    const nextTags = publishInRitual
+      ? Array.from(new Set([...baseTags, ...ritualTags]))
+      : baseTags;
+
     updateReadingMutation.mutate({
-      updates: { is_public: true, shared_title: shareTitleInput.trim() }
+      updates: { is_public: true, shared_title: shareTitleInput.trim(), tags: nextTags }
     });
   };
 
@@ -160,6 +170,15 @@ function ReadingInteractionBar({ reading, user, isOwner }) {
             className={modalStyles.textarea}
           />
           {shareError && <p className={modalStyles.error}>{shareError}</p>}
+          <label className={modalStyles.checkboxRow}>
+            <input
+              type="checkbox"
+              checked={publishInRitual}
+              onChange={(e) => setPublishInRitual(e.target.checked)}
+              disabled={updateReadingMutation.isPending}
+            />
+            Publicar no Ritual da Semana (adiciona tags automáticas).
+          </label>
           <div className={modalStyles.modalActions}>
             <button
               type="button"

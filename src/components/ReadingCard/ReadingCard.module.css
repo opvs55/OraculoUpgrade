@@ -101,6 +101,21 @@
   min-height: 50px;
 }
 
+.pinnedPreview {
+  margin: -0.2rem 0 0.9rem;
+  padding: 0.55rem 0.65rem;
+  border-radius: 8px;
+  border: 1px solid rgba(225, 179, 130, 0.25);
+  background: rgba(225, 179, 130, 0.08);
+  color: var(--color-text-secondary);
+  font-size: 0.85rem;
+  line-height: 1.4;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
 .stats {
   display: flex;
   justify-content: flex-end;

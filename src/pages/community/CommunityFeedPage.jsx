@@ -3,10 +3,12 @@ import Masonry from 'react-masonry-css';
 import { usePublicReadings } from '../../hooks/useReadings';
 import ReadingCard from '../../components/ReadingCard/ReadingCard';
 import Loader from '../../components/common/Loader/Loader';
+import { getCurrentRitualTags } from '../../utils/communityRitual';
 import styles from './CommunityFeedPage.module.css';
 
 function CommunityFeedPage() {
   const [sortBy, setSortBy] = useState({ column: 'created_at', ascending: false });
+  const { weekRef, ritualTag, tags: ritualTags } = getCurrentRitualTags();
 
   const {
     pages,
@@ -16,9 +18,16 @@ function CommunityFeedPage() {
     fetchNextPage,
     hasNextPage,
     isFetchingNextPage
-  } = usePublicReadings(sortBy);
+  } = usePublicReadings({ sortBy, ritualTags });
 
-  const readings = pages.flatMap(page => page.data);
+  const readings = pages
+    .flatMap(page => page.data)
+    .sort((a, b) => {
+      const aIsRitual = Array.isArray(a.tags) && a.tags.includes(ritualTag);
+      const bIsRitual = Array.isArray(b.tags) && b.tags.includes(ritualTag);
+      if (aIsRitual === bIsRitual) return 0;
+      return aIsRitual ? -1 : 1;
+    });
 
   const breakpointColumnsObj = {
     default: 4,
@@ -32,6 +41,15 @@ function CommunityFeedPage() {
       <header className={styles.header}>
         <h1 className={styles.title}>Leituras da Comunidade</h1>
         <p className={styles.subtitle}>Explore as jornadas e insights compartilhados por outros consulentes.</p>
+
+        <section className={styles.ritualCard}>
+          <p className={styles.ritualEyebrow}>Ritual da Semana</p>
+          <h2 className={styles.ritualTitle}>Círculo Grimório • {weekRef}</h2>
+          <p className={styles.ritualText}>
+            Nesta semana, o foco da comunidade está em compartilhar leituras com a vibração do ritual coletivo.
+          </p>
+          <p className={styles.ritualTagHint}>Tag ativa: <strong>{ritualTag}</strong></p>
+        </section>
         
         <div className={styles.controls}>
           <span>Ordenar por:</span>
