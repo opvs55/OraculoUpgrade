@@ -44,6 +44,18 @@
   margin-top: 1rem;
 }
 
+.resultHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.resultHeader h2 {
+  margin: 0;
+}
+
 .errorCard {
   background: linear-gradient(145deg, rgba(44, 20, 28, 0.92), rgba(24, 16, 30, 0.95));
   border: 1px solid rgba(225, 179, 130, 0.45);
@@ -74,6 +86,12 @@
 
 .retryButton:hover {
   background: rgba(225, 179, 130, 0.25);
+}
+
+.stableModeHint {
+  margin: 0.75rem 0;
+  font-size: 0.9rem;
+  color: #d8c4a0;
 }
 
 .checklist {
