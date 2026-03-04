@@ -1,6 +1,6 @@
 // src/pages/reading/PastReadingPage/PastReadingPage.jsx (VERSÃO CORRIGIDA+)
 
-import React from 'react';
+import React, { useRef } from 'react';
 import { useParams, Link, useLocation } from 'react-router-dom';
 import { useSingleReading } from '../../../hooks/useReadings';
 import styles from './PastReadingPage.module.css';
@@ -73,7 +73,7 @@ function PastReadingPage() {
   const isError = isHookError;
   const error = hookError;
   const currentReading = temporaryReadingData || readingFromHook;
-
+  const commentsRef = useRef(null);
 
 
   // --- RENDERIZAÇÃO --- (O resto do componente permanece igual)
@@ -127,7 +127,11 @@ function PastReadingPage() {
   const isTemporary = currentReading.id.startsWith('temp-');
   const authorUsername = currentReading.profiles?.username || (isOwner ? user.profile?.username : 'desconhecido');
   const pinnedCommentId = currentReading?.interpretation_data?.pinned_comment_id || null;
+  const communityPrompt = currentReading?.interpretation_data?.community_prompt || null;
 
+  const handleScrollToComments = () => {
+    commentsRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  };
 
   return (
     <div className="content_wrapper">
@@ -167,7 +171,18 @@ function PastReadingPage() {
                   />
                 </div>
                 
-                <div className={styles.commentsColumn}>
+                <div className={styles.commentsColumn} ref={commentsRef}>
+                  {communityPrompt?.question && (
+                    <div className={styles.communityPromptCallout}>
+                      <p>
+                        Pedido do autor: interprete a posição {communityPrompt.position || 'geral'}.
+                      </p>
+                      <p className={styles.promptQuestion}>“{communityPrompt.question}”</p>
+                      <button type="button" onClick={handleScrollToComments} className={styles.replyButton}>
+                        Responder
+                      </button>
+                    </div>
+                  )}
                   <CommentsSection
                     readingId={currentReading.id}
                     isOwner={isOwner}
