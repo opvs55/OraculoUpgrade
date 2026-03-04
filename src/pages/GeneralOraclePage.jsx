@@ -60,11 +60,13 @@ export default function GeneralOraclePage() {
   }, [unifiedReadings]);
 
   const detailReading = id ? unifiedReading : null;
-  const currentReading = detailReading || generatedReading || latestReadings[0];
+  const currentWeeklyReading = detailReading || generatedReading;
+  const currentReading = currentWeeklyReading;
   const finalReading = currentReading?.final_reading || currentReading?.finalReading || null;
 
   const weekRef = currentReading?.week_ref || currentReading?.weekRef;
   const cached = currentReading?.cached === true;
+  const aiFailed = currentReading?.ai_failed === true;
 
   const canGenerate = currentReading?.can_generate ?? requirements?.can_generate_general_reading ?? true;
 
@@ -126,7 +128,14 @@ export default function GeneralOraclePage() {
       )}
 
       <section className={styles.card}>
-        <h2>Resultado da semana</h2>
+        <div className={styles.resultHeader}>
+          <h2>Resultado da Semana</h2>
+          {!id && canGenerate && (
+            <button type="button" onClick={loadCentralReading} className={styles.retryButton}>
+              Gerar Leitura Geral
+            </button>
+          )}
+        </div>
         {(isGeneratingCentralReading || isLoadingUnifiedReading) && <p>Canalizando interpretação...</p>}
         {!isGeneratingCentralReading && uiError && canGenerate && (
           <div className={styles.errorCard} role="alert">
@@ -140,6 +149,7 @@ export default function GeneralOraclePage() {
         {!isGeneratingCentralReading && !isLoadingUnifiedReading && !finalReading && !uiError && canGenerate && (
           <p>Não foi possível obter a leitura desta semana agora.</p>
         )}
+        {aiFailed && finalReading && <p className={styles.stableModeHint}>Síntese gerada em modo estável</p>}
         {finalReading && <GeneralReadingView finalReading={finalReading} />}
         {import.meta.env.DEV && currentReading && (
           <details className={styles.devRaw}>
