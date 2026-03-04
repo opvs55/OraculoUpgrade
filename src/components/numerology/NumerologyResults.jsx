@@ -48,7 +48,6 @@ function NumerologyResults({ resultData, onReset, isResetting, errorResetting })
   const dateObj = dateStr ? new Date(dateStr + 'T00:00:00') : null;
   const isValidDate = dateObj instanceof Date && !isNaN(dateObj.getTime());
   const formattedDate = isValidDate ? dateObj.toLocaleString('pt-BR') : 'Data Inválida';
-  const dayOfMonth = isValidDate ? dateObj.getDate() : 'NaN';
 
   // --- 3. LÓGICA DE PARSING (Arquétipo Secreto) ---
   // Esta é a chave: lida com JSON novo e texto antigo
@@ -178,7 +177,6 @@ function NumerologyResults({ resultData, onReset, isResetting, errorResetting })
         {resultData?.life_path_number ?? '?'}
       </div>
       <div className={styles.resultContent}>
-        <h2 className={styles.resultTitle}>Sua Análise Numerológica</h2>
         <p className={styles.resultDate}>Data Analisada: {formattedDate}</p>
         {resultData?.warning && <p className={styles.warningMessage}>{resultData.warning}</p>}
 
@@ -196,14 +194,6 @@ function NumerologyResults({ resultData, onReset, isResetting, errorResetting })
           {lifePathParts.mission && (<div className={styles.cardSubSection}> <h4 className={styles.missionTitle}>Missão:</h4> {renderFormattedText(lifePathParts.mission)} </div>)}
         </div>
 
-        {/* Card: Número do Aniversário */}
-        <div className={`${styles.resultCard} ${styles.birthdayCard}`}>
-          <h3 className={styles.cardTitle}>Número do Aniversário: {resultData?.birthday_number ?? 'N/A'} (Dia {dayOfMonth})</h3>
-          <div className={styles.cardSubSection}>
-            {renderFormattedText(resultData?.birthday_meaning || 'Significado não disponível.')}
-          </div>
-        </div>
-        
         {/* Card: Significado Secreto (Agora com Grelha) */}
         {renderArchetypeCard()}
 

@@ -44,6 +44,38 @@
   margin-top: 1rem;
 }
 
+.errorCard {
+  background: linear-gradient(145deg, rgba(44, 20, 28, 0.92), rgba(24, 16, 30, 0.95));
+  border: 1px solid rgba(225, 179, 130, 0.45);
+  border-radius: 12px;
+  padding: 1rem;
+  margin-top: 0.9rem;
+}
+
+.errorCard h3 {
+  margin: 0 0 0.35rem;
+  color: #f2c58f;
+}
+
+.errorCard p {
+  margin: 0;
+  color: #f3e4cf;
+}
+
+.retryButton {
+  margin-top: 0.85rem;
+  border: 1px solid rgba(225, 179, 130, 0.6);
+  border-radius: 999px;
+  background: rgba(225, 179, 130, 0.14);
+  color: #f8e5c0;
+  padding: 0.4rem 0.9rem;
+  cursor: pointer;
+}
+
+.retryButton:hover {
+  background: rgba(225, 179, 130, 0.25);
+}
+
 .checklist {
   list-style: none;
   padding: 0;
