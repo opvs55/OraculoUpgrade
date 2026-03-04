@@ -8,6 +8,7 @@ import styles from './CommunityFeedPage.module.css';
 
 function CommunityFeedPage() {
   const [sortBy, setSortBy] = useState({ column: 'created_at', ascending: false });
+  const [feedMode, setFeedMode] = useState('ritual');
   const { weekRef, ritualTag, tags: ritualTags } = getCurrentRitualTags();
 
   const {
@@ -20,14 +21,16 @@ function CommunityFeedPage() {
     isFetchingNextPage
   } = usePublicReadings({ sortBy, ritualTags });
 
-  const readings = pages
-    .flatMap(page => page.data)
-    .sort((a, b) => {
-      const aIsRitual = Array.isArray(a.tags) && a.tags.includes(ritualTag);
-      const bIsRitual = Array.isArray(b.tags) && b.tags.includes(ritualTag);
-      if (aIsRitual === bIsRitual) return 0;
-      return aIsRitual ? -1 : 1;
-    });
+  const allReadings = pages.flatMap(page => page.data);
+  const readings = (feedMode === 'ritual'
+    ? allReadings.filter((reading) => Array.isArray(reading.tags) && reading.tags.includes(ritualTag))
+    : allReadings
+  ).sort((a, b) => {
+    const aIsRitual = Array.isArray(a.tags) && a.tags.includes(ritualTag);
+    const bIsRitual = Array.isArray(b.tags) && b.tags.includes(ritualTag);
+    if (aIsRitual === bIsRitual) return 0;
+    return aIsRitual ? -1 : 1;
+  });
 
   const breakpointColumnsObj = {
     default: 4,
@@ -49,8 +52,24 @@ function CommunityFeedPage() {
             Nesta semana, o foco da comunidade está em compartilhar leituras com a vibração do ritual coletivo.
           </p>
           <p className={styles.ritualTagHint}>Tag ativa: <strong>{ritualTag}</strong></p>
+          <div className={styles.feedToggle}>
+            <button
+              onClick={() => setFeedMode('ritual')}
+              className={feedMode === 'ritual' ? styles.active : ''}
+              type="button"
+            >
+              Ritual
+            </button>
+            <button
+              onClick={() => setFeedMode('general')}
+              className={feedMode === 'general' ? styles.active : ''}
+              type="button"
+            >
+              Feed Geral
+            </button>
+          </div>
         </section>
-        
+
         <div className={styles.controls}>
           <span>Ordenar por:</span>
           <button
@@ -67,11 +86,15 @@ function CommunityFeedPage() {
           </button>
         </div>
       </header>
-      
+
       {isLoading && <Loader customText="Buscando no Oráculo Coletivo..." />}
       {isError && <p className={styles.error}>Ocorreu um erro: {error.message}</p>}
 
-      {!isLoading && readings.length === 0 && (
+      {!isLoading && readings.length === 0 && feedMode === 'ritual' && (
+        <p className={styles.empty}>Seja o primeiro a publicar no Ritual</p>
+      )}
+
+      {!isLoading && readings.length === 0 && feedMode === 'general' && (
         <p className={styles.empty}>Ainda não há leituras na comunidade. Seja o primeiro a compartilhar!</p>
       )}
 
@@ -84,7 +107,7 @@ function CommunityFeedPage() {
           <ReadingCard key={reading.id} reading={reading} />
         ))}
       </Masonry>
-      
+
       {hasNextPage && (
         <div className={styles.loadMoreContainer}>
           <button

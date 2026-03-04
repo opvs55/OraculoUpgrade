@@ -59,6 +59,35 @@
   font-size: 0.9rem;
 }
 
+
+.feedToggle {
+  display: inline-flex;
+  gap: 0.5rem;
+  margin-top: 1rem;
+  background-color: rgba(13, 12, 29, 0.45);
+  border-radius: 20px;
+  padding: 0.3rem;
+}
+
+.feedToggle button {
+  background: none;
+  border: none;
+  color: var(--color-text-primary);
+  font-weight: 600;
+  border-radius: 16px;
+  padding: 0.45rem 0.9rem;
+  cursor: pointer;
+}
+
+.feedToggle button.active {
+  background-color: var(--color-primary-main);
+  color: var(--color-text-on-primary);
+}
+
+.feedToggle button:hover:not(.active) {
+  background-color: var(--color-background-hover);
+}
+
 .controls {
   display: flex;
   justify-content: center;

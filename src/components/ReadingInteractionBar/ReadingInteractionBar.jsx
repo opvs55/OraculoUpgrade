@@ -10,6 +10,35 @@ import { getCurrentRitualTags } from '../../utils/communityRitual';
 import modalStyles from '../common/Modal/Modal.module.css';
 import styles from './ReadingInteractionBar.module.css';
 
+const getPositionOptions = (spreadType, cardsData = []) => {
+  const optionsBySpread = {
+    threeCards: ['Passado', 'Presente', 'Futuro'],
+    celticCross: [
+      'Situação Atual',
+      'Desafio',
+      'Base da Questão',
+      'Passado Recente',
+      'Objetivo Consciente',
+      'Futuro Próximo',
+      'Você',
+      'Ambiente',
+      'Esperanças/Medos',
+      'Desfecho'
+    ],
+    templeOfAphrodite: ['Energia Principal', 'Consulente', 'Outro', 'Conexão', 'Bloqueio', 'Conselho', 'Potencial'],
+    pathChoice: ['Caminho 1', 'Caminho 2', 'Conselho Central']
+  };
+
+  const spreadOptions = optionsBySpread[spreadType];
+  if (Array.isArray(spreadOptions)) return spreadOptions;
+
+  if (Array.isArray(cardsData) && cardsData.length > 0) {
+    return cardsData.map((_, index) => `Posição ${index + 1}`);
+  }
+
+  return [];
+};
+
 function ReadingInteractionBar({ reading, user, isOwner }) {
   const queryClient = useQueryClient();
   const readingId = reading.id;
@@ -17,8 +46,11 @@ function ReadingInteractionBar({ reading, user, isOwner }) {
   const [isShareModalOpen, setIsShareModalOpen] = useState(false);
   const [shareTitleInput, setShareTitleInput] = useState(reading.shared_title || '');
   const [publishInRitual, setPublishInRitual] = useState(false);
+  const [requestInterpretation, setRequestInterpretation] = useState(false);
+  const [promptPosition, setPromptPosition] = useState('');
   const [shareError, setShareError] = useState('');
   const { tags: ritualTags } = getCurrentRitualTags();
+  const positionOptions = getPositionOptions(reading.spread_type, reading.cards_data);
 
   const {
     totalStars,
@@ -41,7 +73,7 @@ function ReadingInteractionBar({ reading, user, isOwner }) {
         .update(updates)
         .eq('id', readingId)
         .eq('user_id', user.id)
-        .select('is_public, shared_title, tags')
+        .select('is_public, shared_title, tags, interpretation_data')
         .single();
 
       if (error) throw error;
@@ -56,6 +88,8 @@ function ReadingInteractionBar({ reading, user, isOwner }) {
       setIsShareModalOpen(false);
       setShareTitleInput(variables.updates.shared_title || '');
       setPublishInRitual(false);
+      setRequestInterpretation(false);
+      setPromptPosition('');
     },
     onError: (error) => {
       console.error("Erro ao atualizar leitura:", error);
@@ -76,6 +110,8 @@ function ReadingInteractionBar({ reading, user, isOwner }) {
       setShareTitleInput(reading.shared_title || '');
       setShareError('');
       setPublishInRitual(false);
+      setRequestInterpretation(false);
+      setPromptPosition('');
       setIsShareModalOpen(true);
     }
   };
@@ -87,13 +123,34 @@ function ReadingInteractionBar({ reading, user, isOwner }) {
       return;
     }
     setShareError('');
+
+
     const baseTags = Array.isArray(reading.tags) ? reading.tags : [];
     const nextTags = publishInRitual
       ? Array.from(new Set([...baseTags, ...ritualTags]))
       : baseTags;
 
+    const updates = {
+      is_public: true,
+      shared_title: shareTitleInput.trim(),
+      tags: nextTags,
+    };
+
+    if (requestInterpretation) {
+      const selectedPosition = promptPosition || 'geral';
+      const existingInterpretationData = reading.interpretation_data || {};
+      updates.interpretation_data = {
+        ...existingInterpretationData,
+        community_prompt: {
+          position: selectedPosition,
+          question: `Interprete a posição ${selectedPosition}.`,
+        },
+        pinned_comment_id: existingInterpretationData?.pinned_comment_id || null,
+      };
+    }
+
     updateReadingMutation.mutate({
-      updates: { is_public: true, shared_title: shareTitleInput.trim(), tags: nextTags }
+      updates
     });
   };
 
@@ -179,6 +236,36 @@ function ReadingInteractionBar({ reading, user, isOwner }) {
             />
             Publicar no Ritual da Semana (adiciona tags automáticas).
           </label>
+
+          <label className={modalStyles.checkboxRow}>
+            <input
+              type="checkbox"
+              checked={requestInterpretation}
+              onChange={(e) => setRequestInterpretation(e.target.checked)}
+              disabled={updateReadingMutation.isPending}
+            />
+            Pedir interpretação da posição.
+          </label>
+
+          {requestInterpretation && (
+            <div className={styles.promptFields}>
+              <label className={styles.fieldLabel}>
+                Posição (opcional)
+                <select
+                  value={promptPosition}
+                  onChange={(e) => setPromptPosition(e.target.value)}
+                  disabled={updateReadingMutation.isPending}
+                  className={styles.promptSelect}
+                >
+                  <option value="">Sem posição específica</option>
+                  {positionOptions.map((option) => (
+                    <option key={option} value={option}>{option}</option>
+                  ))}
+                </select>
+              </label>
+            </div>
+          )}
+
           <div className={modalStyles.modalActions}>
             <button
               type="button"
