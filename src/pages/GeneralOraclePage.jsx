@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import GeneralReadingView from '../components/oracle/GeneralReadingView';
 import { useUnifiedReading } from '../features/unified/useUnifiedReading';
@@ -17,6 +17,7 @@ export default function GeneralOraclePage() {
   const { id } = useParams();
   const navigate = useNavigate();
   const [generatedReading, setGeneratedReading] = useState(null);
+  const [uiError, setUiError] = useState('');
 
   const {
     requirements,
@@ -29,28 +30,29 @@ export default function GeneralOraclePage() {
     isLoadingUnifiedReading,
   } = useUnifiedReading({ readingId: id, listParams: { limit: 10 } });
 
+  const getUiErrorMessage = useCallback((err) => (
+    err?.message
+    || err?.error?.message
+    || 'Não foi possível gerar a Leitura Geral agora. Tente novamente.'
+  ), []);
+
+  const loadCentralReading = useCallback(async () => {
+    setUiError('');
+
+    try {
+      const response = await generateCentralReading({});
+      setGeneratedReading(response || null);
+    } catch (err) {
+      setGeneratedReading(null);
+      setUiError(getUiErrorMessage(err));
+      console.error('Erro ao gerar Leitura Geral:', err);
+    }
+  }, [generateCentralReading, getUiErrorMessage]);
+
   useEffect(() => {
-    let mounted = true;
-
-    if (id) return undefined;
-
-    const loadCentralReading = async () => {
-      try {
-        const response = await generateCentralReading({});
-        if (!mounted) return;
-        setGeneratedReading(response || null);
-      } catch {
-        if (!mounted) return;
-        setGeneratedReading(null);
-      }
-    };
-
+    if (id) return;
     loadCentralReading();
-
-    return () => {
-      mounted = false;
-    };
-  }, [id, generateCentralReading]);
+  }, [id, loadCentralReading]);
 
   const latestReadings = useMemo(() => {
     if (Array.isArray(unifiedReadings)) return unifiedReadings;
@@ -126,7 +128,16 @@ export default function GeneralOraclePage() {
       <section className={styles.card}>
         <h2>Resultado da semana</h2>
         {(isGeneratingCentralReading || isLoadingUnifiedReading) && <p>Canalizando interpretação...</p>}
-        {!isGeneratingCentralReading && !isLoadingUnifiedReading && !finalReading && canGenerate && (
+        {!isGeneratingCentralReading && uiError && canGenerate && (
+          <div className={styles.errorCard} role="alert">
+            <h3>Falha ao gerar leitura</h3>
+            <p>{uiError}</p>
+            <button type="button" onClick={loadCentralReading} className={styles.retryButton}>
+              Tentar novamente
+            </button>
+          </div>
+        )}
+        {!isGeneratingCentralReading && !isLoadingUnifiedReading && !finalReading && !uiError && canGenerate && (
           <p>Não foi possível obter a leitura desta semana agora.</p>
         )}
         {finalReading && <GeneralReadingView finalReading={finalReading} />}
