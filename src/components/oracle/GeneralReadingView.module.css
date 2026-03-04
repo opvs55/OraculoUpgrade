@@ -1,0 +1,126 @@
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.section {
+  background: rgba(20, 20, 32, 0.72);
+  border: 1px solid rgba(225, 179, 130, 0.3);
+  border-radius: 12px;
+  padding: 1rem;
+}
+
+.section h3 {
+  margin: 0 0 0.65rem;
+  color: #e1b382;
+}
+
+.appear {
+  opacity: 0;
+  transform: translateY(8px);
+  animation: appear 420ms ease forwards;
+  animation-delay: var(--d, 0ms);
+}
+
+@keyframes appear {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.headerBlock h2 {
+  margin: 0;
+  font-family: 'Cinzel', serif;
+  color: #f7e7c5;
+}
+
+.headerBlock blockquote {
+  margin: 0.85rem 0 0;
+  border-left: 3px solid rgba(225, 179, 130, 0.7);
+  padding-left: 0.8rem;
+  color: #f1ddba;
+  font-style: italic;
+}
+
+.signalsGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.75rem;
+}
+
+.signalCard {
+  border: 1px solid rgba(225, 179, 130, 0.22);
+  border-radius: 10px;
+  padding: 0.75rem;
+  background: rgba(15, 12, 22, 0.6);
+}
+
+.signalCard h4 {
+  margin: 0 0 0.4rem;
+  color: #e6be8a;
+}
+
+.signalCard p,
+.section p {
+  margin: 0.5rem 0;
+  line-height: 1.55;
+}
+
+.doubleColumn {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.8rem;
+}
+
+.listBlock h4 {
+  margin: 0 0 0.4rem;
+}
+
+.listBlock ul {
+  margin: 0;
+  padding-left: 1rem;
+}
+
+.listBlock li {
+  margin-bottom: 0.3rem;
+}
+
+.footerBlock {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.8rem;
+  flex-wrap: wrap;
+}
+
+.tags {
+  display: flex;
+  gap: 0.45rem;
+  flex-wrap: wrap;
+}
+
+.chip {
+  border: 1px solid #6f547d;
+  border-radius: 999px;
+  padding: 0.22rem 0.65rem;
+  font-size: 0.82rem;
+  color: #f0debf;
+}
+
+.energyBadge {
+  border: 1px solid rgba(225, 179, 130, 0.6);
+  background: rgba(225, 179, 130, 0.1);
+  color: #f7e7c5;
+  border-radius: 999px;
+  padding: 0.28rem 0.75rem;
+  font-weight: 600;
+}
+
+@media (max-width: 760px) {
+  .signalsGrid,
+  .doubleColumn {
+    grid-template-columns: 1fr;
+  }
+}

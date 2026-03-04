@@ -8,6 +8,32 @@
 .header h1 {
   font-family: 'Cinzel', serif;
   color: #e1b382;
+  margin-bottom: 0.35rem;
+}
+
+.statusRow {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  margin-top: 0.75rem;
+}
+
+.statusBadge,
+.cachedBadge {
+  border-radius: 999px;
+  padding: 0.24rem 0.72rem;
+  font-size: 0.82rem;
+  border: 1px solid rgba(225, 179, 130, 0.45);
+}
+
+.statusBadge {
+  background: rgba(18, 15, 26, 0.8);
+  color: #f1ddba;
+}
+
+.cachedBadge {
+  background: rgba(80, 56, 20, 0.4);
+  color: #f7e7c5;
 }
 
 .card {
@@ -26,58 +52,36 @@
 .checklist li {
   display: flex;
   justify-content: space-between;
+  align-items: center;
+  gap: 0.7rem;
   border-bottom: 1px solid #2f2542;
   padding: 0.6rem 0;
 }
 
-.requirementsWarning {
-  margin-top: 1rem;
-}
-
-.actionsLinks {
-  display: flex;
-  gap: 1rem;
-  flex-wrap: wrap;
-}
-
-.actionsLinks a {
+.checklist a {
   color: #e1b382;
-}
-
-.form {
-  display: flex;
-  flex-direction: column;
-  gap: 0.8rem;
-}
-
-.form select,
-.form textarea,
-.form button {
-  width: 100%;
-  background: #161222;
-  color: #fff;
-  border: 1px solid #4a3a65;
-  border-radius: 8px;
-  padding: 0.7rem;
-}
-
-.form button {
-  background: linear-gradient(90deg, #8f5f2f, #c58f4d);
-  color: #120f16;
-  font-weight: bold;
-}
-
-.sources {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-}
-
-.sources span {
-  border: 1px solid #6f547d;
+  border: 1px solid rgba(225, 179, 130, 0.4);
   border-radius: 999px;
   padding: 0.2rem 0.6rem;
-  font-size: 0.85rem;
+  text-decoration: none;
+}
+
+.devRaw {
+  margin-top: 0.9rem;
+  border-top: 1px dashed #4a3a65;
+  padding-top: 0.75rem;
+}
+
+.devRaw summary {
+  cursor: pointer;
+  color: #b99868;
+}
+
+.devRaw pre {
+  white-space: pre-wrap;
+  max-height: 260px;
+  overflow: auto;
+  color: #d7c8ae;
 }
 
 .historyList {
