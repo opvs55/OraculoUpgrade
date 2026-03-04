@@ -1,11 +1,11 @@
 // src/hooks/useReadingComments.js
 
-import { useInfiniteQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '../supabaseClient';
 
 const COMMENTS_PER_PAGE = 10; // Define quantos comentários carregar de cada vez
 
-export function useReadingComments(readingId, sortBy = { column: 'created_at', ascending: false }) {
+export function useReadingComments(readingId, sortBy = { column: 'created_at', ascending: false }, pinnedCommentId = null) {
   const queryClient = useQueryClient();
   const queryKey = ['readingComments', readingId, sortBy];
 
@@ -66,6 +66,35 @@ export function useReadingComments(readingId, sortBy = { column: 'created_at', a
   // Extrai o número total de comentários do primeiro carregamento
   const totalCommentsCount = data?.pages[0]?.count ?? 0;
 
+  const { data: pinnedComment, isLoading: isLoadingPinnedComment } = useQuery({
+    queryKey: ['readingPinnedComment', readingId, pinnedCommentId],
+    queryFn: async () => {
+      if (!pinnedCommentId || !readingId) return null;
+      const { data, error } = await supabase
+        .from('comments')
+        .select(`
+          id, created_at, comment_text, user_id, parent_comment_id,
+          profiles ( username, avatar_url ),
+          replies:comments (
+            id, created_at, comment_text, user_id,
+            profiles ( username, avatar_url )
+          )
+        `)
+        .eq('id', pinnedCommentId)
+        .eq('reading_id', readingId)
+        .single();
+
+      if (error) {
+        if (error.code === 'PGRST116') return null;
+        throw error;
+      }
+
+      data.replies?.sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
+      return data;
+    },
+    enabled: !!readingId && !!pinnedCommentId,
+  });
+
   // 2. MUTATION: Adicionar Comentário (agora invalida a query para recarregar)
   const addCommentMutation = useMutation({
     mutationFn: async ({ commentText, userId, parentCommentId = null }) => {
@@ -79,6 +108,7 @@ export function useReadingComments(readingId, sortBy = { column: 'created_at', a
     onSuccess: () => {
       // Invalida a query para forçar o recarregamento com o novo comentário
       queryClient.invalidateQueries({ queryKey: ['readingComments', readingId] });
+      queryClient.invalidateQueries({ queryKey: ['readingPinnedComment', readingId] });
     },
     onError: (error) => {
       console.error("Erro ao adicionar comentário:", error);
@@ -96,6 +126,7 @@ export function useReadingComments(readingId, sortBy = { column: 'created_at', a
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['readingComments', readingId] });
+      queryClient.invalidateQueries({ queryKey: ['readingPinnedComment', readingId] });
     },
     onError: (error) => {
       console.error("Erro ao apagar comentário:", error);
@@ -107,6 +138,8 @@ export function useReadingComments(readingId, sortBy = { column: 'created_at', a
     commentsPages: data?.pages || [],
     totalCommentsCount,
     isLoadingComments,
+    pinnedComment,
+    isLoadingPinnedComment,
     addComment: addCommentMutation.mutate,
     isAddingComment: addCommentMutation.isPending,
     deleteComment: deleteCommentMutation.mutate,

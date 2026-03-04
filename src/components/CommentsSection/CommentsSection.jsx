@@ -2,9 +2,12 @@
 
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useReadingComments } from '../../hooks/useReadingComments';
 import { useAuth } from '../../context/AuthContext';
+import { supabase } from '../../supabaseClient';
 import Loader from '../common/Loader/Loader';
+import Modal from '../common/Modal/Modal';
 import styles from './CommentsSection.module.css';
 
 // --- SUB-COMPONENTE: Formulário de Comentário Dinâmico ---
@@ -81,7 +84,18 @@ function CommentForm({ readingId, parentCommentId = null, onCommentPosted = () =
 
 
 // --- SUB-COMPONENTE: Item de Comentário --- (com pequenas alterações)
-function CommentItem({ comment, readingId, isReply = false, deleteComment, isDeletingComment, currentUserId }) {
+function CommentItem({
+  comment,
+  readingId,
+  isReply = false,
+  deleteComment,
+  isDeletingComment,
+  currentUserId,
+  canPin,
+  isPinned,
+  onTogglePin,
+  isTogglingPin
+}) {
   const [isReplying, setIsReplying] = useState(false);
   
   const profile = comment.profiles;
@@ -115,6 +129,11 @@ function CommentItem({ comment, readingId, isReply = false, deleteComment, isDel
               {isDeletingComment ? 'Apagando...' : 'Apagar'}
             </button>
           )}
+          {!isReply && canPin && (
+            <button onClick={() => onTogglePin(comment.id)} className={styles.pinButton} disabled={isTogglingPin}>
+              {isPinned ? 'Remover destaque' : 'Fixar como destaque'}
+            </button>
+          )}
         </div>
         {isReplying && (
           <CommentForm
@@ -138,14 +157,79 @@ function CommentItem({ comment, readingId, isReply = false, deleteComment, isDel
 
 
 // --- COMPONENTE PRINCIPAL --- (com a nova estrutura)
-function CommentsSection({ readingId }) {
+function CommentsSection({ readingId, isOwner = false, pinnedCommentId = null, reading }) {
   const { user } = useAuth();
+  const queryClient = useQueryClient();
   const [sortBy, setSortBy] = useState({ column: 'created_at', ascending: false }); // Padrão: Mais Recentes
+  const [isInterpretModalOpen, setIsInterpretModalOpen] = useState(false);
+  const [selectedPosition, setSelectedPosition] = useState('Conselho');
+  const [interpretationText, setInterpretationText] = useState('');
   
   const {
     commentsPages, totalCommentsCount, isLoadingComments, deleteComment, isDeletingComment,
+    pinnedComment, isLoadingPinnedComment,
+    addComment, isAddingComment,
     fetchNextPage, hasNextPage, isFetchingNextPage
-  } = useReadingComments(readingId, sortBy);
+  } = useReadingComments(readingId, sortBy, pinnedCommentId);
+
+  const positionOptions = Array.isArray(reading?.cards_data)
+    ? Array.from(new Set(reading.cards_data.map(card => card?.posicao).filter(Boolean)))
+    : [];
+  const fallbackOptions = ['Desafio', 'Conselho', 'Resultado'];
+  const finalPositionOptions = positionOptions.length > 0 ? positionOptions : fallbackOptions;
+
+  const handleOpenInterpretModal = () => {
+    setSelectedPosition(finalPositionOptions[0] || 'Conselho');
+    setInterpretationText('');
+    setIsInterpretModalOpen(true);
+  };
+
+  const handleSubmitPositionInterpretation = (e) => {
+    e.preventDefault();
+    if (!user || !interpretationText.trim()) return;
+    const prefixedText = `[Posição: ${selectedPosition}] ${interpretationText.trim()}`;
+    addComment(
+      { commentText: prefixedText, userId: user.id, parentCommentId: null },
+      {
+        onSuccess: () => {
+          setInterpretationText('');
+          setIsInterpretModalOpen(false);
+        }
+      }
+    );
+  };
+
+  const togglePinnedMutation = useMutation({
+    mutationFn: async (commentId) => {
+      if (!reading || !user || !isOwner) {
+        throw new Error('Sem permissão para fixar comentário.');
+      }
+
+      const currentInterpretationData = typeof reading.interpretation_data === 'object' && reading.interpretation_data !== null
+        ? reading.interpretation_data
+        : {};
+      const currentPinnedId = currentInterpretationData?.pinned_comment_id || null;
+      const nextPinnedId = currentPinnedId === commentId ? null : commentId;
+      const nextInterpretationData = {
+        ...currentInterpretationData,
+        pinned_comment_id: nextPinnedId,
+      };
+
+      const { error } = await supabase
+        .from('readings')
+        .update({ interpretation_data: nextInterpretationData })
+        .eq('id', readingId)
+        .eq('user_id', user.id);
+
+      if (error) throw error;
+      return nextInterpretationData;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['readings', 'detail', readingId] });
+    },
+  });
+
+  const pinnedCommentToRender = pinnedComment && pinnedComment.parent_comment_id ? null : pinnedComment;
 
   return (
     <div className={styles.commentsWrapper}>
@@ -165,17 +249,46 @@ function CommentsSection({ readingId }) {
       </div>
 
       <CommentForm readingId={readingId} />
+      {user && (
+        <button
+          type="button"
+          onClick={handleOpenInterpretModal}
+          className={styles.interpretPositionButton}
+        >
+          Interpretar uma posição
+        </button>
+      )}
 
       {isLoadingComments && <Loader customText="Carregando comentários..." />}
+      {isLoadingPinnedComment && <Loader customText="Buscando comentário em destaque..." />}
 
       {!isLoadingComments && totalCommentsCount === 0 && (
         <p className={styles.noComments}>Ainda não há comentários. Seja o primeiro a dizer algo!</p>
       )}
 
+      {pinnedCommentToRender && (
+        <div className={styles.pinnedCommentBlock}>
+          <p className={styles.pinnedLabel}>✨ Comentário Destaque</p>
+          <CommentItem
+            comment={pinnedCommentToRender}
+            readingId={readingId}
+            deleteComment={deleteComment}
+            isDeletingComment={isDeletingComment}
+            currentUserId={user?.id}
+            canPin={isOwner}
+            isPinned={true}
+            onTogglePin={togglePinnedMutation.mutate}
+            isTogglingPin={togglePinnedMutation.isPending}
+          />
+        </div>
+      )}
+
       <div className={styles.commentsList}>
         {commentsPages.map((page, i) => (
           <React.Fragment key={i}>
-            {page.data.map(comment => (
+            {page.data
+              .filter(comment => comment.id !== pinnedCommentToRender?.id)
+              .map(comment => (
               <CommentItem 
                 key={comment.id} 
                 comment={comment} 
@@ -183,6 +296,10 @@ function CommentsSection({ readingId }) {
                 deleteComment={deleteComment}
                 isDeletingComment={isDeletingComment}
                 currentUserId={user?.id}
+                canPin={isOwner}
+                isPinned={comment.id === pinnedCommentToRender?.id}
+                onTogglePin={togglePinnedMutation.mutate}
+                isTogglingPin={togglePinnedMutation.isPending}
               />
             ))}
           </React.Fragment>
@@ -200,6 +317,52 @@ function CommentsSection({ readingId }) {
           </button>
         </div>
       )}
+
+      <Modal
+        isOpen={isInterpretModalOpen}
+        onClose={() => !isAddingComment && setIsInterpretModalOpen(false)}
+        title="Interpretar uma posição"
+      >
+        <form onSubmit={handleSubmitPositionInterpretation} className={styles.interpretForm}>
+          <label className={styles.interpretLabel}>
+            Posição
+            <select
+              value={selectedPosition}
+              onChange={(e) => setSelectedPosition(e.target.value)}
+              className={styles.positionSelect}
+              disabled={isAddingComment}
+            >
+              {finalPositionOptions.map((position) => (
+                <option key={position} value={position}>{position}</option>
+              ))}
+            </select>
+          </label>
+
+          <label className={styles.interpretLabel}>
+            Sua leitura
+            <textarea
+              value={interpretationText}
+              onChange={(e) => setInterpretationText(e.target.value)}
+              placeholder="Compartilhe sua interpretação dessa posição com a comunidade..."
+              rows={4}
+              required
+              disabled={isAddingComment}
+              className={styles.interpretTextarea}
+            />
+          </label>
+
+          <p className={styles.interpretHint}>Seu comentário será publicado como: [Posição: {selectedPosition}] ...</p>
+
+          <div className={styles.interpretActions}>
+            <button type="button" onClick={() => setIsInterpretModalOpen(false)} className={styles.cancelButton} disabled={isAddingComment}>
+              Cancelar
+            </button>
+            <button type="submit" className={styles.submitButton} disabled={isAddingComment || !interpretationText.trim()}>
+              {isAddingComment ? 'Publicando...' : 'Publicar interpretação'}
+            </button>
+          </div>
+        </form>
+      </Modal>
     </div>
   );
 }

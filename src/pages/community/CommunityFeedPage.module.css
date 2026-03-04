@@ -23,6 +23,42 @@
   margin-bottom: 2rem;
 }
 
+.ritualCard {
+  text-align: left;
+  background: linear-gradient(140deg, rgba(85, 63, 141, 0.18), rgba(39, 57, 97, 0.24));
+  border: 1px solid var(--color-border-subtle);
+  border-radius: 16px;
+  padding: 1rem 1.25rem;
+  margin-bottom: 1.75rem;
+}
+
+.ritualEyebrow {
+  margin: 0 0 0.4rem;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--color-text-secondary);
+}
+
+.ritualTitle {
+  margin: 0;
+  font-family: 'Cinzel', serif;
+  color: var(--color-text-primary);
+  font-size: 1.25rem;
+}
+
+.ritualText {
+  margin: 0.5rem 0 0.85rem;
+  color: var(--color-text-secondary);
+  line-height: 1.5;
+}
+
+.ritualTagHint {
+  margin: 0;
+  color: var(--color-text-secondary);
+  font-size: 0.9rem;
+}
+
 .controls {
   display: flex;
   justify-content: center;

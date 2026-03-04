@@ -90,6 +90,18 @@
 }
 .modalBody textarea:focus { outline: none; border-color: #c7a37e; }
 
+.checkboxRow {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  color: #d7d7e2;
+  font-size: 0.95rem;
+}
+
+.checkboxRow input {
+  accent-color: #c7a37e;
+}
+
 .modalActions {
   display: flex;
   justify-content: flex-end;

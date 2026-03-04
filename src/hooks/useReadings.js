@@ -8,8 +8,11 @@ import { getInterpretation } from '../services/aiService';
 const READINGS_PER_PAGE = 12;
 
 // --- FUNÇÃO PARA O FEED DA COMUNIDADE (COM A CORREÇÃO) ---
-export function usePublicReadings(sortBy = { column: 'created_at', ascending: false }) {
-  const queryKey = ['publicReadings', sortBy];
+export function usePublicReadings({
+  sortBy = { column: 'created_at', ascending: false },
+  ritualTags = []
+} = {}) {
+  const queryKey = ['publicReadings', sortBy, ritualTags];
 
   const {
     data,
@@ -29,7 +32,7 @@ export function usePublicReadings(sortBy = { column: 'created_at', ascending: fa
       let query = supabase
         .from('readings')
         .select(`
-          id, created_at, shared_title, question, spread_type, cards_data,
+          id, created_at, shared_title, question, spread_type, cards_data, tags, interpretation_data,
           profiles ( username, avatar_url ),
           stars ( count ),
           comments ( count )
