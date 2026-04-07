@@ -127,7 +127,7 @@ export default function CommunityLeaderboardPage() {
         </select>
 
         <Link to="/comunidade" className={styles.backLink}>
-          Voltar ao Feed
+          Voltar ao Hub
         </Link>
       </section>
 

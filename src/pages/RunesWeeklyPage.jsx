@@ -18,6 +18,22 @@ const toList = (value) => {
   return [];
 };
 
+const pickText = (payload, keys) => {
+  for (const key of keys) {
+    const value = payload?.[key];
+    if (typeof value === 'string' && value.trim()) return value.trim();
+  }
+  return '';
+};
+
+const pickList = (payload, keys) => {
+  for (const key of keys) {
+    const value = toList(payload?.[key]);
+    if (value.length > 0) return value;
+  }
+  return [];
+};
+
 const normalizeWeeklyData = (payload) => {
   const root = payload ?? {};
   const source = root?.data?.data ?? root?.data ?? root;
@@ -62,6 +78,22 @@ export default function RunesWeeklyPage() {
   const themes = toList(outputPayload?.themes);
   const recommendedActions = toList(outputPayload?.recommended_actions);
   const disclaimer = outputPayload?.disclaimer;
+  const opportunities = pickList(outputPayload, ['opportunities', 'openings', 'favorable_movements']);
+  const cautionPoints = pickList(outputPayload, ['cautions', 'warnings', 'attention_points']);
+  const reflectionQuestions = pickList(outputPayload, ['journal_prompts', 'reflection_questions']);
+  const runes = Array.isArray(outputPayload?.runes) ? outputPayload.runes : [];
+  const energeticSignature = pickText(outputPayload, ['energetic_signature', 'energetic_flow', 'energy_signature']);
+  const suggestedRitual = pickText(outputPayload, ['weekly_ritual', 'ritual', 'focus_ritual']);
+  const runeDeepDive = runes
+    .map((rune, index) => ({
+      key: rune?.key || rune?.name || `runa-${index}`,
+      position: rune?.position || ['Passado', 'Presente', 'Futuro'][index],
+      name: rune?.name || rune?.key || 'Runa',
+      meaning: rune?.meaning || rune?.message || rune?.insight || '',
+      advice: rune?.advice || rune?.guidance || '',
+      shadow: rune?.shadow || rune?.challenge || '',
+    }))
+    .filter((item) => item.meaning || item.advice || item.shadow);
 
   const handleGenerate = (forceRegenerate = false) => {
     generateMutation.mutate({
@@ -109,6 +141,50 @@ export default function RunesWeeklyPage() {
 
                   <RunesCast runes={outputPayload?.runes || []} />
 
+                  {runeDeepDive.length > 0 && (
+                    <div className={styles.sectionBlock}>
+                      <h3>Leitura por posição</h3>
+                      <div className={styles.deepDiveGrid}>
+                        {runeDeepDive.map((item) => (
+                          <article key={`${item.key}-${item.position}`} className={styles.deepDiveCard}>
+                            <p className={styles.deepDiveTitle}>{item.position} • {item.name}</p>
+                            {item.meaning && <p><strong>Leitura:</strong> {item.meaning}</p>}
+                            {item.advice && <p><strong>Conselho:</strong> {item.advice}</p>}
+                            {item.shadow && <p><strong>Atenção:</strong> {item.shadow}</p>}
+                          </article>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {(opportunities.length > 0 || cautionPoints.length > 0) && (
+                    <div className={styles.sectionBlock}>
+                      <h3>Radar da semana</h3>
+                      <div className={styles.radarGrid}>
+                        {opportunities.length > 0 && (
+                          <div className={styles.radarCard}>
+                            <h4>Oportunidades</h4>
+                            <ul>
+                              {opportunities.map((item) => (
+                                <li key={`op-${item}`}>{item}</li>
+                              ))}
+                            </ul>
+                          </div>
+                        )}
+                        {cautionPoints.length > 0 && (
+                          <div className={styles.radarCard}>
+                            <h4>Pontos de atenção</h4>
+                            <ul>
+                              {cautionPoints.map((item) => (
+                                <li key={`ca-${item}`}>{item}</li>
+                              ))}
+                            </ul>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  )}
+
                   {themes.length > 0 && (
                     <div className={styles.sectionBlock}>
                       <h3>Temas</h3>
@@ -128,6 +204,28 @@ export default function RunesWeeklyPage() {
                           <li key={item}>{item}</li>
                         ))}
                       </ul>
+                    </div>
+                  )}
+
+                  {(energeticSignature || suggestedRitual || reflectionQuestions.length > 0) && (
+                    <div className={styles.sectionBlock}>
+                      <h3>Camada avançada</h3>
+                      {energeticSignature && (
+                        <p><strong>Assinatura energética:</strong> {energeticSignature}</p>
+                      )}
+                      {suggestedRitual && (
+                        <p><strong>Ritual sugerido:</strong> {suggestedRitual}</p>
+                      )}
+                      {reflectionQuestions.length > 0 && (
+                        <>
+                          <h4 className={styles.nestedTitle}>Perguntas de reflexão</h4>
+                          <ul>
+                            {reflectionQuestions.map((question) => (
+                              <li key={`rq-${question}`}>{question}</li>
+                            ))}
+                          </ul>
+                        </>
+                      )}
                     </div>
                   )}
 

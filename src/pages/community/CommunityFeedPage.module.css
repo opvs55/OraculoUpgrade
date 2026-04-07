@@ -7,7 +7,32 @@
 .header {
   text-align: center;
   margin: 2rem auto 4rem auto;
-  max-width: 700px;
+  max-width: 1080px;
+}
+
+.communityNav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 0.75rem;
+  justify-content: center;
+}
+
+.communityNav a {
+  text-decoration: none;
+  border-radius: 999px;
+  border: 1px solid rgba(225, 179, 130, 0.28);
+  color: rgba(244, 239, 230, 0.84);
+  padding: 0.3rem 0.7rem;
+  font-size: 0.82rem;
+  background: rgba(13, 12, 29, 0.5);
+}
+
+.communityNav .activeNav {
+  color: #0f0f18;
+  background: #e1b382;
+  border-color: #e1b382;
+  font-weight: 700;
 }
 
 .title {

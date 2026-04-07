@@ -118,6 +118,14 @@ function CommunityFeedPage() {
   return (
     <div className={`content_wrapper ${styles.pageWrapper}`}>
       <header className={styles.header}>
+        <nav className={styles.communityNav}>
+          <Link to="/comunidade">Hub</Link>
+          <Link to="/comunidade/feed" className={styles.activeNav}>Feed</Link>
+          <Link to="/comunidade/forum">Fórum</Link>
+          <Link to="/comunidade/debates">Debates</Link>
+          <Link to="/comunidade/aprendizado">Aprendizado</Link>
+          <Link to="/comunidade/leaderboard">Leaderboard</Link>
+        </nav>
         <h1 className={styles.title}>Leituras da Comunidade</h1>
         <p className={styles.subtitle}>Explore as jornadas e insights compartilhados por outros consulentes.</p>
 

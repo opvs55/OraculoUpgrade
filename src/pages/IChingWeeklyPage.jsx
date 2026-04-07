@@ -18,6 +18,22 @@ const toList = (value) => {
   return [];
 };
 
+const pickText = (payload, keys) => {
+  for (const key of keys) {
+    const value = payload?.[key];
+    if (typeof value === 'string' && value.trim()) return value.trim();
+  }
+  return '';
+};
+
+const pickList = (payload, keys) => {
+  for (const key of keys) {
+    const value = toList(payload?.[key]);
+    if (value.length > 0) return value;
+  }
+  return [];
+};
+
 const normalizeWeeklyData = (payload) => {
   const root = payload ?? {};
   const source = root?.data?.data ?? root?.data ?? root;
@@ -64,6 +80,14 @@ export default function IChingWeeklyPage() {
   const disclaimer = outputPayload?.disclaimer;
   const hexagramLines = Array.isArray(outputPayload?.lines) ? outputPayload.lines : [];
   const hasHexagramLines = hexagramLines.length === 6;
+  const mutatingLines = pickList(outputPayload, ['mutating_lines', 'changing_lines']);
+  const strategicMoves = pickList(outputPayload, ['strategic_moves', 'strategic_actions', 'advanced_guidance']);
+  const cautionPoints = pickList(outputPayload, ['cautions', 'warnings', 'attention_points']);
+  const reflectionQuestions = pickList(outputPayload, ['reflection_questions', 'journal_prompts']);
+  const hexagramName = pickText(outputPayload, ['hexagram_name', 'hexagram_title', 'title']);
+  const upperTrigram = pickText(outputPayload, ['upper_trigram', 'trigram_upper']);
+  const lowerTrigram = pickText(outputPayload, ['lower_trigram', 'trigram_lower']);
+  const movingInterpretation = pickText(outputPayload, ['moving_lines_interpretation', 'movement_reading']);
 
   const handleGenerate = (forceRegenerate = false) => {
     generateMutation.mutate({
@@ -115,6 +139,73 @@ export default function IChingWeeklyPage() {
                     <p className={styles.soonNote}>Hexagrama visual disponível em breve.</p>
                   )}
 
+                  {(hexagramName || upperTrigram || lowerTrigram || movingInterpretation) && (
+                    <div className={styles.sectionBlock}>
+                      <h3>Estrutura do hexagrama</h3>
+                      <div className={styles.structureGrid}>
+                        {hexagramName && (
+                          <article className={styles.structureCard}>
+                            <h4>Hexagrama</h4>
+                            <p>{hexagramName}</p>
+                          </article>
+                        )}
+                        {upperTrigram && (
+                          <article className={styles.structureCard}>
+                            <h4>Trigrama superior</h4>
+                            <p>{upperTrigram}</p>
+                          </article>
+                        )}
+                        {lowerTrigram && (
+                          <article className={styles.structureCard}>
+                            <h4>Trigrama inferior</h4>
+                            <p>{lowerTrigram}</p>
+                          </article>
+                        )}
+                      </div>
+                      {movingInterpretation && (
+                        <p><strong>Movimento das linhas:</strong> {movingInterpretation}</p>
+                      )}
+                    </div>
+                  )}
+
+                  {(strategicMoves.length > 0 || cautionPoints.length > 0 || mutatingLines.length > 0) && (
+                    <div className={styles.sectionBlock}>
+                      <h3>Camada estratégica</h3>
+                      <div className={styles.strategyGrid}>
+                        {strategicMoves.length > 0 && (
+                          <div className={styles.strategyCard}>
+                            <h4>Movimentos recomendados</h4>
+                            <ul>
+                              {strategicMoves.map((item) => (
+                                <li key={`sm-${item}`}>{item}</li>
+                              ))}
+                            </ul>
+                          </div>
+                        )}
+                        {cautionPoints.length > 0 && (
+                          <div className={styles.strategyCard}>
+                            <h4>Pontos de atenção</h4>
+                            <ul>
+                              {cautionPoints.map((item) => (
+                                <li key={`cp-${item}`}>{item}</li>
+                              ))}
+                            </ul>
+                          </div>
+                        )}
+                      </div>
+                      {mutatingLines.length > 0 && (
+                        <>
+                          <h4 className={styles.nestedTitle}>Linhas mutantes</h4>
+                          <ul>
+                            {mutatingLines.map((item) => (
+                              <li key={`ml-${item}`}>{item}</li>
+                            ))}
+                          </ul>
+                        </>
+                      )}
+                    </div>
+                  )}
+
                   {themes.length > 0 && (
                     <div className={styles.sectionBlock}>
                       <h3>Temas</h3>
@@ -132,6 +223,17 @@ export default function IChingWeeklyPage() {
                       <ul>
                         {recommendedActions.map((item) => (
                           <li key={item}>{item}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+
+                  {reflectionQuestions.length > 0 && (
+                    <div className={styles.sectionBlock}>
+                      <h3>Perguntas de reflexão</h3>
+                      <ul>
+                        {reflectionQuestions.map((question) => (
+                          <li key={`rq-${question}`}>{question}</li>
                         ))}
                       </ul>
                     </div>
