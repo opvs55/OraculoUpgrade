@@ -194,7 +194,6 @@ export function useCommunityLeaderboardReadings({ period = 'weekly', weekRef = n
   });
 }
 
-
 // --- SUAS FUNÇÕES EXISTENTES (INTACTAS) ---
 
 export function useReadingsHistory(userId) {
