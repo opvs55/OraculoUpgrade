@@ -1,6 +1,17 @@
 import React from 'react';
 import styles from './GeneralReadingView.module.css';
 
+const toArray = (value) => {
+  if (Array.isArray(value)) return value.filter(Boolean);
+  if (typeof value === 'string' && value.trim()) {
+    return value
+      .split(/\n|•|;/)
+      .map((item) => item.trim())
+      .filter(Boolean);
+  }
+  return [];
+};
+
 function Section({ title, delay = '0ms', children, className = '' }) {
   if (!children) return null;
   return (
@@ -29,8 +40,22 @@ export default function GeneralReadingView({ finalReading }) {
   if (!finalReading) return null;
 
   const signals = finalReading?.signals || {};
-  const synthesis = finalReading?.synthesis || {};
-  const practicalGuidance = finalReading?.practical_guidance || {};
+  const synthesisRaw = finalReading?.synthesis || {};
+  const practicalRaw = finalReading?.practical_guidance || {};
+
+  const synthesis = {
+    convergences: toArray(synthesisRaw?.convergences),
+    tensions: toArray(synthesisRaw?.tensions),
+    theme_of_week: synthesisRaw?.theme_of_week || synthesisRaw?.theme || '',
+    hidden_lesson: synthesisRaw?.hidden_lesson || synthesisRaw?.lesson || '',
+  };
+
+  const practicalGuidance = {
+    do: toArray(practicalRaw?.do),
+    avoid: toArray(practicalRaw?.avoid),
+    ritual: practicalRaw?.ritual || practicalRaw?.practice || '',
+    reflection_question: practicalRaw?.reflection_question || practicalRaw?.question || '',
+  };
 
   const signalCards = [
     { key: 'tarot', title: 'Tarot', value: signals?.tarot },
@@ -76,6 +101,11 @@ export default function GeneralReadingView({ finalReading }) {
           <ListBlock title="Convergências" items={synthesis?.convergences} />
           <ListBlock title="Tensões" items={synthesis?.tensions} />
         </div>
+        {!synthesis?.convergences?.length && !synthesis?.tensions?.length && (
+          <p className={styles.fallbackText}>
+            Síntese em processamento. Use os sinais da semana para orientar suas escolhas com calma e consistência.
+          </p>
+        )}
         {synthesis?.theme_of_week && <p><strong>Tema da semana:</strong> {synthesis.theme_of_week}</p>}
         {synthesis?.hidden_lesson && <p><strong>Lição oculta:</strong> {synthesis.hidden_lesson}</p>}
       </Section>
@@ -85,6 +115,11 @@ export default function GeneralReadingView({ finalReading }) {
           <ListBlock title="Faça" items={practicalGuidance?.do} />
           <ListBlock title="Evite" items={practicalGuidance?.avoid} />
         </div>
+        {!practicalGuidance?.do?.length && !practicalGuidance?.avoid?.length && (
+          <p className={styles.fallbackText}>
+            Guia prático em construção. Foque em ações pequenas, revisão diária e uma decisão consciente por vez.
+          </p>
+        )}
         {practicalGuidance?.ritual && <p><strong>Ritual:</strong> {practicalGuidance.ritual}</p>}
         {practicalGuidance?.reflection_question && (
           <p><strong>Pergunta de reflexão:</strong> {practicalGuidance.reflection_question}</p>

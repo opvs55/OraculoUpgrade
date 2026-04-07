@@ -87,6 +87,12 @@
   margin-bottom: 0.3rem;
 }
 
+.fallbackText {
+  margin: 0.6rem 0 0;
+  color: rgba(247, 231, 197, 0.86);
+  font-style: italic;
+}
+
 .footerBlock {
   display: flex;
   justify-content: space-between;
