@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import GeneralReadingView from '../components/oracle/GeneralReadingView';
@@ -15,6 +15,7 @@ const requirementMeta = {
 };
 
 const fallbackActionOrder = ['/tarot', '/numerologia', '/runas', '/iching'];
+const LOCAL_STORAGE_KEY_PREFIX = 'general-oracle-weekly';
 
 const toList = (value) => {
   if (Array.isArray(value)) return value.filter(Boolean);
@@ -43,6 +44,15 @@ const getWeekRefFromDate = (dateInput) => {
   const yearStart = new Date(Date.UTC(utcDate.getUTCFullYear(), 0, 1));
   const weekNo = Math.ceil((((utcDate - yearStart) / 86400000) + 1) / 7);
   return `${utcDate.getUTCFullYear()}-W${String(weekNo).padStart(2, '0')}`;
+};
+
+const safeParseJson = (value) => {
+  if (!value) return null;
+  try {
+    return JSON.parse(value);
+  } catch {
+    return null;
+  }
 };
 
 const buildFallbackGeneralReading = ({ tarotCard, runesOutput, ichingOutput, numerologyOutput }) => {
@@ -112,6 +122,8 @@ export default function GeneralOraclePage() {
   const [generatedReading, setGeneratedReading] = useState(null);
   const [fallbackReading, setFallbackReading] = useState(null);
   const [uiError, setUiError] = useState('');
+  const currentWeekRef = getWeekRefFromDate(new Date());
+  const storageKey = `${LOCAL_STORAGE_KEY_PREFIX}:${user?.id || 'guest'}:${currentWeekRef}`;
 
   const {
     requirements,
@@ -217,19 +229,49 @@ export default function GeneralOraclePage() {
     return normalizeUnifiedReadingsList(unifiedReadings);
   }, [unifiedReadings]);
 
+  const currentWeekReadingFromList = useMemo(() => (
+    latestReadings.find((reading) => {
+      const readingWeekRef = reading?.week_ref || reading?.weekRef;
+      return readingWeekRef === currentWeekRef;
+    }) || null
+  ), [latestReadings, currentWeekRef]);
+
+  const persistedWeeklyReading = useMemo(() => {
+    if (!user?.id || id) return null;
+    const saved = safeParseJson(window.localStorage.getItem(storageKey));
+    if (!saved) return null;
+    const savedWeekRef = saved?.week_ref || saved?.weekRef;
+    const savedFinal = saved?.final_reading || saved?.finalReading;
+    if (savedWeekRef !== currentWeekRef || !savedFinal) return null;
+    return saved;
+  }, [user?.id, id, storageKey, currentWeekRef]);
+
   const detailReading = id ? unwrapApiPayload(unifiedReading) : null;
-  const currentWeeklyReading = detailReading || generatedReading || fallbackReading || latestReadings?.[0] || null;
+  const currentWeeklyReading = detailReading
+    || generatedReading
+    || fallbackReading
+    || currentWeekReadingFromList
+    || persistedWeeklyReading
+    || latestReadings?.[0]
+    || null;
   const currentReading = currentWeeklyReading;
   const finalReading = currentReading?.final_reading || currentReading?.finalReading || null;
 
   const weekRef = currentReading?.week_ref || currentReading?.weekRef;
   const cached = currentReading?.cached === true;
   const aiFailed = currentReading?.ai_failed === true;
+  const hasCurrentWeekReading = !id && weekRef === currentWeekRef && !!finalReading;
 
-  const canGenerate = currentReading?.can_generate ?? requirements?.can_generate_general_reading ?? true;
+  const canGenerateByServer = currentReading?.can_generate ?? requirements?.can_generate_general_reading ?? true;
+  const canGenerate = canGenerateByServer && !hasCurrentWeekReading;
+
+  useEffect(() => {
+    if (id || !user?.id || !hasCurrentWeekReading) return;
+    window.localStorage.setItem(storageKey, JSON.stringify(currentReading));
+  }, [id, user?.id, hasCurrentWeekReading, storageKey, currentReading]);
 
   const missingChecklist = useMemo(() => {
-    if (!canGenerate) {
+    if (!canGenerateByServer) {
       const missingByFlags = Object.entries(requirementMeta)
         .filter(([key]) => requirements?.[key] === false)
         .map(([key, meta]) => ({ key, ...meta }));
@@ -257,7 +299,7 @@ export default function GeneralOraclePage() {
     }
 
     return [];
-  }, [canGenerate, requirements, currentReading]);
+  }, [canGenerateByServer, requirements, currentReading]);
 
   return (
     <div className={`content_wrapper ${styles.page}`}>
@@ -267,10 +309,11 @@ export default function GeneralOraclePage() {
         <div className={styles.statusRow}>
           <span className={styles.statusBadge}>Semanal • {weekRef || '—'}</span>
           {cached && <span className={styles.cachedBadge}>Já gerado nesta semana</span>}
+          {hasCurrentWeekReading && <span className={styles.cachedBadge}>Disponível novamente na próxima semana</span>}
         </div>
       </header>
 
-      {!canGenerate && !isLoadingRequirements && (
+      {!canGenerateByServer && !isLoadingRequirements && (
         <section className={styles.card}>
           <h2>Requisitos pendentes</h2>
           <p>Conclua os oráculos semanais para liberar a leitura geral premium.</p>
