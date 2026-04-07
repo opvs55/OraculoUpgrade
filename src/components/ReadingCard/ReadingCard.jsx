@@ -33,8 +33,8 @@ function formatSpreadType(spreadType) {
 
 function ReadingCard({ reading }) {
   const highlightCard = getHighlightCard(reading.cards_data);
-  const starCount = reading.stars?.[0]?.count ?? 0;
-  const commentCount = reading.comments?.[0]?.count ?? 0;
+  const starCount = reading.stars?.[0]?.count ?? reading.star_count ?? 0;
+  const commentCount = reading.comments?.[0]?.count ?? reading.comment_count ?? 0;
   const pinnedCommentId = reading?.interpretation_data?.pinned_comment_id || null;
   const hasPrompt = Boolean(reading?.interpretation_data?.community_prompt?.question);
   const { ritualTag } = getCurrentRitualTags();
@@ -89,11 +89,11 @@ function ReadingCard({ reading }) {
         <div className={styles.content}>
            <div className={styles.authorInfo}>
             <img 
-              src={reading.profiles?.avatar_url || 'https://i.imgur.com/6VBx3io.png'} 
-              alt={reading.profiles?.username} 
+              src={reading.profiles?.avatar_url || reading.avatar_url || 'https://i.imgur.com/6VBx3io.png'} 
+              alt={reading.profiles?.username || reading.username} 
               className={styles.authorAvatar} 
             />
-            <span>@{reading.profiles?.username || 'Anônimo'}</span>
+            <span>@{reading.profiles?.username || reading.username || 'Anônimo'}</span>
           </div>
           <div className={styles.pillRow}>
             {isRitual && <span className={styles.pill}>Ritual</span>}

@@ -1,7 +1,11 @@
 import React, { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import Masonry from 'react-masonry-css';
-import { usePublicReadings } from '../../hooks/useReadings';
+import {
+  useCommunityTrendingTopics,
+  useCommunityWeeklyAggregates,
+  usePublicReadings,
+} from '../../hooks/useReadings';
 import ReadingCard from '../../components/ReadingCard/ReadingCard';
 import Loader from '../../components/common/Loader/Loader';
 import { getQuestionText } from '../../utils/getQuestionText';
@@ -17,13 +21,24 @@ const spreadOptions = [
   { value: 'pathChoice', label: 'Escolha de Caminho' },
 ];
 
+const objectiveOptions = [
+  { value: '', label: 'Todos os objetivos' },
+  { value: 'amor', label: 'Amor' },
+  { value: 'carreira', label: 'Carreira' },
+  { value: 'espiritualidade', label: 'Espiritualidade' },
+  { value: 'dinheiro', label: 'Dinheiro' },
+  { value: 'saude', label: 'Saúde' },
+  { value: 'geral', label: 'Geral' },
+];
+
 function CommunityFeedPage() {
-  const [sortBy, setSortBy] = useState({ column: 'created_at', ascending: false });
+  const [sortMode, setSortMode] = useState('recent');
   const [feedMode, setFeedMode] = useState('ritual');
   const [searchTerm, setSearchTerm] = useState('');
   const [spreadType, setSpreadType] = useState('');
+  const [objective, setObjective] = useState('');
   const [onlyWithPrompt, setOnlyWithPrompt] = useState(false);
-  const { weekRef, ritualTag, tags: ritualTags } = getCurrentRitualTags();
+  const { weekRef, ritualTag } = getCurrentRitualTags();
   const { integratedTag } = getCurrentIntegratedTags();
 
   const {
@@ -34,24 +49,26 @@ function CommunityFeedPage() {
     fetchNextPage,
     hasNextPage,
     isFetchingNextPage
-  } = usePublicReadings({ sortBy, ritualTags });
+  } = usePublicReadings({
+    sort: sortMode,
+    weekRef,
+    objective,
+    spreadType,
+    onlyWithPrompt,
+    feedMode,
+  });
+
+  const { data: weeklyAggregates } = useCommunityWeeklyAggregates(weekRef);
+  const { data: trendingTopics = [] } = useCommunityTrendingTopics(weekRef);
 
   const allReadings = pages.flatMap((page) => page.data);
 
-  const feedStats = useMemo(() => {
-    const ritualCount = allReadings.filter((reading) => Array.isArray(reading.tags) && reading.tags.includes(ritualTag)).length;
-    const integratedCount = allReadings.filter((reading) =>
-      Array.isArray(reading.tags) && (reading.tags.includes('integrada') || reading.tags.includes(integratedTag))
-    ).length;
-    const promptCount = allReadings.filter((reading) => Boolean(reading?.interpretation_data?.community_prompt?.question)).length;
-
-    return {
-      total: allReadings.length,
-      ritualCount,
-      integratedCount,
-      promptCount,
-    };
-  }, [allReadings, integratedTag, ritualTag]);
+  const feedStats = useMemo(() => ({
+    total: Number(weeklyAggregates?.total || allReadings.length || 0),
+    ritualCount: Number(weeklyAggregates?.total_ritual || 0),
+    integratedCount: Number(weeklyAggregates?.total_integrated || 0),
+    promptCount: Number(weeklyAggregates?.total_prompt_open || 0),
+  }), [allReadings.length, weeklyAggregates]);
 
   const readings = useMemo(() => {
     const normalizedSearch = searchTerm.trim().toLowerCase();
@@ -71,7 +88,7 @@ function CommunityFeedPage() {
       const searchable = [
         reading.shared_title || '',
         getQuestionText(reading.question, reading.spread_type) || '',
-        reading.profiles?.username || '',
+        reading.profiles?.username || reading.username || '',
       ]
         .join(' ')
         .toLowerCase();
@@ -85,7 +102,7 @@ function CommunityFeedPage() {
       if (aIsRitual === bIsRitual) return 0;
       return aIsRitual ? -1 : 1;
     });
-  }, [allReadings, feedMode, integratedTag, onlyWithPrompt, ritualTag, searchTerm, spreadType]);
+  }, [allReadings, feedMode, integratedTag, onlyWithPrompt, ritualTag, searchTerm]);
 
   const breakpointColumnsObj = {
     default: 4,
@@ -162,16 +179,22 @@ function CommunityFeedPage() {
         <div className={styles.controls}>
           <span>Ordenar por:</span>
           <button
-            onClick={() => setSortBy({ column: 'created_at', ascending: false })}
-            className={sortBy.column === 'created_at' ? styles.active : ''}
+            onClick={() => setSortMode('recent')}
+            className={sortMode === 'recent' ? styles.active : ''}
           >
             Mais Recentes
           </button>
           <button
-            onClick={() => setSortBy({ column: 'stars', ascending: false })}
-            className={sortBy.column === 'stars' ? styles.active : ''}
+            onClick={() => setSortMode('popular')}
+            className={sortMode === 'popular' ? styles.active : ''}
           >
             Mais Populares
+          </button>
+          <button
+            onClick={() => setSortMode('hot')}
+            className={sortMode === 'hot' ? styles.active : ''}
+          >
+            Em Alta
           </button>
         </div>
         <div className={styles.discoveryControls}>
@@ -193,6 +216,17 @@ function CommunityFeedPage() {
               </option>
             ))}
           </select>
+          <select
+            value={objective}
+            onChange={(event) => setObjective(event.target.value)}
+            className={styles.spreadSelect}
+          >
+            {objectiveOptions.map((option) => (
+              <option key={option.value || 'all-objectives'} value={option.value}>
+                {option.label}
+              </option>
+            ))}
+          </select>
           <label className={styles.promptFilter}>
             <input
               type="checkbox"
@@ -202,6 +236,29 @@ function CommunityFeedPage() {
             Apenas pedidos de interpretação
           </label>
         </div>
+        {trendingTopics.length > 0 && (
+          <div className={styles.trendingWrap}>
+            <span className={styles.trendingLabel}>Assuntos quentes:</span>
+            <div className={styles.trendingList}>
+              {trendingTopics.slice(0, 6).map((topic) => (
+                <button
+                  key={`${topic.topic_type}-${topic.topic}`}
+                  type="button"
+                  className={styles.trendingChip}
+                  onClick={() => {
+                    if (topic.topic_type === 'objective') {
+                      setObjective(topic.topic);
+                      return;
+                    }
+                    setSearchTerm(topic.topic);
+                  }}
+                >
+                  {topic.topic_type === 'objective' ? `#${topic.topic}` : topic.topic}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
       </header>
 
       {isLoading && <Loader customText="Buscando no Oráculo Coletivo..." />}
