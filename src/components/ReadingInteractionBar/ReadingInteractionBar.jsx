@@ -1,11 +1,16 @@
 // src/components/ReadingInteractionBar/ReadingInteraction-Bar.jsx
 
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { useQueryClient, useMutation } from '@tanstack/react-query';
 import { useReadingStars } from '../../hooks/useReadingStars';
 import { supabase } from '../../supabaseClient';
 import Modal from '../common/Modal/Modal';
-import { getCurrentRitualTags } from '../../utils/communityRitual';
+import {
+  getCurrentIntegratedTags,
+  getCurrentRitualTags,
+  mergeCommunityTags,
+} from '../../utils/communityRitual';
 
 import modalStyles from '../common/Modal/Modal.module.css';
 import styles from './ReadingInteractionBar.module.css';
@@ -46,10 +51,12 @@ function ReadingInteractionBar({ reading, user, isOwner }) {
   const [isShareModalOpen, setIsShareModalOpen] = useState(false);
   const [shareTitleInput, setShareTitleInput] = useState(reading.shared_title || '');
   const [publishInRitual, setPublishInRitual] = useState(false);
+  const [publishAsIntegrated, setPublishAsIntegrated] = useState(false);
   const [requestInterpretation, setRequestInterpretation] = useState(false);
   const [promptPosition, setPromptPosition] = useState('');
   const [shareError, setShareError] = useState('');
   const { tags: ritualTags } = getCurrentRitualTags();
+  const { tags: integratedTags } = getCurrentIntegratedTags();
   const positionOptions = getPositionOptions(reading.spread_type, reading.cards_data);
 
   const {
@@ -88,6 +95,7 @@ function ReadingInteractionBar({ reading, user, isOwner }) {
       setIsShareModalOpen(false);
       setShareTitleInput(variables.updates.shared_title || '');
       setPublishInRitual(false);
+      setPublishAsIntegrated(false);
       setRequestInterpretation(false);
       setPromptPosition('');
     },
@@ -110,6 +118,7 @@ function ReadingInteractionBar({ reading, user, isOwner }) {
       setShareTitleInput(reading.shared_title || '');
       setShareError('');
       setPublishInRitual(false);
+      setPublishAsIntegrated(false);
       setRequestInterpretation(false);
       setPromptPosition('');
       setIsShareModalOpen(true);
@@ -126,9 +135,11 @@ function ReadingInteractionBar({ reading, user, isOwner }) {
 
 
     const baseTags = Array.isArray(reading.tags) ? reading.tags : [];
-    const nextTags = publishInRitual
-      ? Array.from(new Set([...baseTags, ...ritualTags]))
-      : baseTags;
+    const nextTags = mergeCommunityTags(
+      baseTags,
+      publishInRitual ? ritualTags : [],
+      publishAsIntegrated ? integratedTags : [],
+    );
 
     const updates = {
       is_public: true,
@@ -195,6 +206,9 @@ function ReadingInteractionBar({ reading, user, isOwner }) {
               <span className={styles.shareStatus}>
                 {reading.is_public ? 'Pública 🌍' : 'Privada 🔒'}
               </span>
+              {Array.isArray(reading.tags) && reading.tags.includes('integrada') && (
+                <span className={styles.integratedStatus}>Leitura integrada</span>
+              )}
               <button
                 onClick={handleTogglePublic}
                 className={styles.shareButton}
@@ -236,6 +250,26 @@ function ReadingInteractionBar({ reading, user, isOwner }) {
             />
             Publicar no Ritual da Semana (adiciona tags automáticas).
           </label>
+
+          <label className={modalStyles.checkboxRow}>
+            <input
+              type="checkbox"
+              checked={publishAsIntegrated}
+              onChange={(e) => setPublishAsIntegrated(e.target.checked)}
+              disabled={updateReadingMutation.isPending}
+            />
+            Marcar como Leitura Integrada da Semana.
+          </label>
+
+          {publishAsIntegrated && (
+            <p className={styles.integratedHint}>
+              Dica: combine os 4 oráculos para uma leitura mais profunda em{' '}
+              <Link to="/oraculo/geral" className={styles.inlineLink}>
+                Leitura Geral
+              </Link>
+              .
+            </p>
+          )}
 
           <label className={modalStyles.checkboxRow}>
             <input

@@ -101,6 +101,37 @@
   min-height: 50px;
 }
 
+.pillRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  margin: -0.15rem 0 0.55rem;
+}
+
+.pill {
+  border-radius: 999px;
+  border: 1px solid rgba(225, 179, 130, 0.3);
+  color: #e1b382;
+  background: rgba(225, 179, 130, 0.1);
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  padding: 0.2rem 0.55rem;
+}
+
+.integratedPill {
+  color: #69dfac;
+  border-color: rgba(105, 223, 172, 0.35);
+  background: rgba(105, 223, 172, 0.1);
+}
+
+.promptPill {
+  color: #92b6ff;
+  border-color: rgba(146, 182, 255, 0.35);
+  background: rgba(146, 182, 255, 0.1);
+}
+
 .pinnedPreview {
   margin: -0.2rem 0 0.9rem;
   padding: 0.55rem 0.65rem;

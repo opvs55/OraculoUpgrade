@@ -16,3 +16,25 @@ export function getCurrentRitualTags() {
     tags: [ritualTag],
   };
 }
+
+export function getCurrentIntegratedTags() {
+  const weekRef = getWeekRefFromDate();
+  const integratedTag = `integrada:${weekRef}`;
+  return {
+    weekRef,
+    integratedTag,
+    tags: ['integrada', integratedTag],
+  };
+}
+
+export function mergeCommunityTags(...tagGroups) {
+  return Array.from(
+    new Set(
+      tagGroups
+        .flat()
+        .filter((tag) => typeof tag === 'string')
+        .map((tag) => tag.trim().toLowerCase())
+        .filter(Boolean),
+    ),
+  );
+}

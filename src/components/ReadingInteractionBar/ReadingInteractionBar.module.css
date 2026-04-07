@@ -41,6 +41,16 @@
   border: 1px solid var(--color-border-subtle);
 }
 
+.integratedStatus {
+  font-size: 0.78rem;
+  font-weight: 700;
+  border-radius: 12px;
+  padding: 0.3rem 0.55rem;
+  border: 1px solid rgba(108, 227, 173, 0.45);
+  color: #6ce3ad;
+  background: rgba(108, 227, 173, 0.1);
+}
+
 .sharedTitleDisplay {
   font-size: 0.9rem;
   font-style: italic;
@@ -129,4 +139,16 @@
 .promptSelect:focus {
   outline: none;
   border-color: #c7a37e;
+}
+
+.integratedHint {
+  margin: 0.2rem 0 0.4rem;
+  color: #c9c9d7;
+  font-size: 0.86rem;
+  line-height: 1.45;
+}
+
+.inlineLink {
+  color: var(--color-primary-main);
+  font-weight: 600;
 }
