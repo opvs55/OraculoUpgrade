@@ -30,6 +30,7 @@ const renderFormattedText = (text) => {
 
 // --- Componente de Resultados ---
 function NumerologyResults({ resultData, onReset, isResetting, errorResetting }) {
+  const lifePathNumber = resultData?.life_path_number ?? '—';
 
   // --- 3. LÓGICA DE PARSING (Arquétipo Secreto) ---
   // Esta é a chave: lida com JSON novo e texto antigo
@@ -165,6 +166,13 @@ function NumerologyResults({ resultData, onReset, isResetting, errorResetting })
   return (
     <div className={styles.resultsContainer}>
       <div className={styles.resultContent}>
+        <section className={styles.lifePathHero}>
+          <p>Número de Caminho de Vida</p>
+          <div className={styles.lifePathOrb} aria-label={`Número ${lifePathNumber}`}>
+            {lifePathNumber}
+          </div>
+        </section>
+
         {/* Exibe apenas o card principal de arquétipo */}
         {renderArchetypeCard()}
 

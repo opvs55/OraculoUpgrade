@@ -142,6 +142,73 @@
   z-index: 2;
 }
 
+.lifePathHero {
+  display: grid;
+  justify-items: center;
+  margin: 0 auto 1.4rem;
+}
+
+.lifePathHero p {
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-size: 0.72rem;
+  color: rgba(225, 179, 130, 0.86);
+}
+
+.lifePathOrb {
+  position: relative;
+  width: 132px;
+  height: 132px;
+  margin-top: 0.55rem;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-size: 3.1rem;
+  font-weight: 700;
+  color: #fff4e3;
+  border: 1px solid rgba(225, 179, 130, 0.45);
+  background:
+    radial-gradient(circle at 30% 25%, rgba(255, 225, 184, 0.33), rgba(225, 179, 130, 0.1) 40%, rgba(38, 22, 52, 0.96) 73%),
+    rgba(13, 12, 29, 0.8);
+  box-shadow:
+    0 0 0 6px rgba(225, 179, 130, 0.08),
+    0 12px 28px rgba(0, 0, 0, 0.45),
+    0 0 30px rgba(225, 179, 130, 0.2);
+  animation: lifePathFloat 5.8s ease-in-out infinite;
+}
+
+.lifePathOrb::after {
+  content: '';
+  position: absolute;
+  inset: -6px;
+  border-radius: 50%;
+  border: 1px solid rgba(225, 179, 130, 0.2);
+  animation: lifePathPulse 4.8s ease-in-out infinite;
+}
+
+@keyframes lifePathFloat {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-6px);
+  }
+}
+
+@keyframes lifePathPulse {
+  0%,
+  100% {
+    opacity: 0.4;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.9;
+    transform: scale(1.05);
+  }
+}
+
 .resultTitle {
   color: #E1B382;
   text-align: center;
@@ -435,6 +502,11 @@
   .cardSubSection h4 { font-size: 1rem; }
   .meaningText p { font-size: 1rem; } /* Mantém tamanho bom para leitura */
   .resultActions { padding-top: 1.5rem; }
+  .lifePathOrb {
+    width: 108px;
+    height: 108px;
+    font-size: 2.45rem;
+  }
 
   /* Faz a grelha do arquétipo voltar a ser 1 coluna */
   .archetypeGridContainer {
@@ -457,6 +529,11 @@
     .mainTitle { font-size: 2rem; }
     .subtitle { font-size: 1rem; }
     .lifePathNumberDisplay { font-size: 6rem; top: -1rem; left: -0.5rem; }
+    .lifePathOrb {
+      width: 96px;
+      height: 96px;
+      font-size: 2.1rem;
+    }
     .resultCard { padding: 1rem; }
     .cardTitle { font-size: 1.3rem; }
     .resultActions { flex-direction: column; align-items: center; } /* Botões um abaixo do outro */
