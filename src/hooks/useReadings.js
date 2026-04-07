@@ -162,6 +162,37 @@ export function useCommunityProfileReputation(profileId) {
   });
 }
 
+export function useCommunityLeaderboardAuthors({ period = 'weekly', weekRef = null, objective = '', limit = 20 } = {}) {
+  return useQuery({
+    queryKey: ['community', 'leaderboard', 'authors', { period, weekRef, objective, limit }],
+    queryFn: async () => {
+      const { data, error } = await supabase.rpc('community_leaderboard_authors', {
+        p_period: period,
+        p_week_ref: period === 'weekly' ? (weekRef || null) : null,
+        p_objective: objective || null,
+        p_limit: limit,
+      });
+      if (error) throw error;
+      return Array.isArray(data) ? data : [];
+    },
+  });
+}
+
+export function useCommunityLeaderboardReadings({ period = 'weekly', weekRef = null, objective = '', limit = 20 } = {}) {
+  return useQuery({
+    queryKey: ['community', 'leaderboard', 'readings', { period, weekRef, objective, limit }],
+    queryFn: async () => {
+      const { data, error } = await supabase.rpc('community_leaderboard_readings', {
+        p_period: period,
+        p_week_ref: period === 'weekly' ? (weekRef || null) : null,
+        p_objective: objective || null,
+        p_limit: limit,
+      });
+      if (error) throw error;
+      return Array.isArray(data) ? data : [];
+    },
+  });
+}
 
 // --- SUAS FUNÇÕES EXISTENTES (INTACTAS) ---
 

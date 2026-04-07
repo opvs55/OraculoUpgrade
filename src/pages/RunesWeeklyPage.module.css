@@ -99,6 +99,12 @@
   font-size: 1rem;
 }
 
+.nestedTitle {
+  margin: 0.4rem 0 0.2rem;
+  color: rgba(244, 239, 230, 0.88);
+  font-size: 0.92rem;
+}
+
 .sectionBlock p,
 .sectionBlock li {
   margin: 0;
@@ -111,6 +117,59 @@
   padding-left: 20px;
   display: grid;
   gap: 8px;
+}
+
+.deepDiveGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.deepDiveCard {
+  border: 1px solid rgba(225, 179, 130, 0.22);
+  border-radius: 10px;
+  background: rgba(16, 13, 26, 0.7);
+  padding: 10px;
+  display: grid;
+  gap: 6px;
+}
+
+.deepDiveCard p {
+  margin: 0;
+}
+
+.deepDiveTitle {
+  color: #f0ce9f !important;
+  font-weight: 700;
+  font-size: 0.84rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.radarGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.radarCard {
+  border: 1px solid rgba(225, 179, 130, 0.2);
+  border-radius: 10px;
+  background: rgba(16, 13, 26, 0.65);
+  padding: 10px;
+}
+
+.radarCard h4 {
+  margin: 0 0 0.5rem;
+  color: #f0ce9f;
+  font-size: 0.9rem;
+}
+
+.radarCard ul {
+  margin: 0;
+  padding-left: 18px;
+  display: grid;
+  gap: 6px;
 }
 
 .chipsRow {
@@ -165,4 +224,14 @@
 .inlineError {
   margin-top: 12px;
   color: #ffb4b4;
+}
+
+@media (max-width: 900px) {
+  .deepDiveGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .radarGrid {
+    grid-template-columns: 1fr;
+  }
 }

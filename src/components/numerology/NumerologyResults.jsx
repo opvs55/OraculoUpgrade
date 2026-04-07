@@ -31,24 +31,6 @@ const renderFormattedText = (text) => {
 // --- Componente de Resultados ---
 function NumerologyResults({ resultData, onReset, isResetting, errorResetting }) {
 
-  // --- 1. Lógica de Parsing (Caminho de Vida) ---
-  const lifePathParts = {
-    essence: resultData?.life_path_meaning?.split('* **')[0]?.trim() || '',
-    light: resultData?.life_path_meaning?.match(/\* \*\*Luz:\*\*(.*?)(?=\* \*\*|$)/s)?.[1]?.trim() || '',
-    shadow: resultData?.life_path_meaning?.match(/\* \*\*Sombra:\*\*(.*?)(?=\* \*\*|$)/s)?.[1]?.trim() || '',
-    mission: resultData?.life_path_meaning?.match(/\* \*\*Missão:\*\*(.*?)(?=\* \*\*|$)/s)?.[1]?.trim() || ''
-  };
-  // Limpeza extra (como no teu original)
-  if (lifePathParts.light.startsWith('Luz:**')) lifePathParts.light = lifePathParts.light.substring(6).trim();
-  if (lifePathParts.shadow.startsWith('Sombra:**')) lifePathParts.shadow = lifePathParts.shadow.substring(9).trim();
-  if (lifePathParts.mission.startsWith('Missão:**')) lifePathParts.mission = lifePathParts.mission.substring(9).trim();
-
-  // --- 2. Lógica de Parsing (Data) ---
-  const dateStr = resultData?.input_birth_date;
-  const dateObj = dateStr ? new Date(dateStr + 'T00:00:00') : null;
-  const isValidDate = dateObj instanceof Date && !isNaN(dateObj.getTime());
-  const formattedDate = isValidDate ? dateObj.toLocaleString('pt-BR') : 'Data Inválida';
-
   // --- 3. LÓGICA DE PARSING (Arquétipo Secreto) ---
   // Esta é a chave: lida com JSON novo e texto antigo
   let archetypeData = null;
@@ -93,7 +75,16 @@ function NumerologyResults({ resultData, onReset, isResetting, errorResetting })
       );
     }
 
-    if (!archetypeData) return null;
+    if (!archetypeData) {
+      return (
+        <div className={`${styles.resultCard} ${styles.secretMeaningCard}`}>
+          <h3 className={styles.cardTitle}>Arquétipo indisponível</h3>
+          <p className={styles.warningMessage}>
+            Ainda não foi possível montar o seu card de arquétipo. Tente recalcular em instantes.
+          </p>
+        </div>
+      );
+    }
 
     // Se é texto antigo, usa o estilo antigo
     if (!archetypeData.numerology_details) {
@@ -173,28 +164,8 @@ function NumerologyResults({ resultData, onReset, isResetting, errorResetting })
   // --- Renderização Principal dos Resultados ---
   return (
     <div className={styles.resultsContainer}>
-      <div className={styles.lifePathNumberDisplay}>
-        {resultData?.life_path_number ?? '?'}
-      </div>
       <div className={styles.resultContent}>
-        <p className={styles.resultDate}>Data Analisada: {formattedDate}</p>
-        {resultData?.warning && <p className={styles.warningMessage}>{resultData.warning}</p>}
-
-        {/* Card: Caminho de Vida (sempre primeiro) */}
-        <div className={`${styles.resultCard} ${styles.lifePathCard}`}>
-          <h3 className={styles.cardTitle}>
-            Caminho de Vida: {resultData?.life_path_number ?? 'N/A'}
-          </h3>
-          <div className={styles.cardSubSection}>
-            <h4>Essência da Jornada:</h4>
-            {renderFormattedText(lifePathParts.essence)}
-          </div>
-          {lifePathParts.light && (<div className={styles.cardSubSection}> <h4 className={styles.lightTitle}>Luz:</h4> {renderFormattedText(lifePathParts.light)} </div>)}
-          {lifePathParts.shadow && (<div className={styles.cardSubSection}> <h4 className={styles.shadowTitle}>Sombra:</h4> {renderFormattedText(lifePathParts.shadow)} </div>)}
-          {lifePathParts.mission && (<div className={styles.cardSubSection}> <h4 className={styles.missionTitle}>Missão:</h4> {renderFormattedText(lifePathParts.mission)} </div>)}
-        </div>
-
-        {/* Card: Significado Secreto (Agora com Grelha) */}
+        {/* Exibe apenas o card principal de arquétipo */}
         {renderArchetypeCard()}
 
       </div> {/* Fim .resultContent */}
