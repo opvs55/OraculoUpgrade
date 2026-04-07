@@ -150,6 +150,29 @@ function usePublicNumerology(userId) {
   });
 }
 
+function useCommunityProfileReputation(profileId) {
+  return useQuery({
+    queryKey: ['communityProfileReputation', profileId],
+    queryFn: async () => {
+      if (!profileId) return null;
+      const { data, error } = await supabase.rpc('community_profile_reputation', {
+        p_profile_id: profileId,
+      });
+      if (error) throw error;
+      return Array.isArray(data) ? data[0] || null : null;
+    },
+    enabled: !!profileId,
+    staleTime: 1000 * 60 * 10,
+  });
+}
+
+const badgeLevelStyles = {
+  bronze: 'bronze',
+  silver: 'silver',
+  gold: 'gold',
+  platinum: 'platinum',
+};
+
 
 // --- 3. COMPONENTE PRINCIPAL ---
 
@@ -167,6 +190,7 @@ function ProfilePage() {
   // Busca os dados extras (só rodam se 'profileId' existir)
   const { data: readingCount, isLoading: isLoadingCount } = usePublicReadingCount(profileId);
   const { data: numerology, isLoading: isLoadingNumerology } = usePublicNumerology(profileId);
+  const { data: reputation, isLoading: isLoadingReputation } = useCommunityProfileReputation(profileId);
 
   // Função "Voltar"
   const handleBackClick = () => {
@@ -241,7 +265,7 @@ function ProfilePage() {
    */
   const renderContent = () => {
     // Combina todos os loaders. Graças ao aquecimento da cache, isto será rápido.
-    if (isLoadingProfile || isLoadingCount || isLoadingNumerology) {
+    if (isLoadingProfile || isLoadingCount || isLoadingNumerology || isLoadingReputation) {
       return <Loader customText={`Carregando perfil de @${username}...`} />;
     }
 
@@ -258,6 +282,7 @@ function ProfilePage() {
       // Prepara os dados de numerologia (pode ser null)
       const lifePathParts = parseLifePathMeaning(numerology?.life_path_meaning);
       const archetypeData = parseArchetype(numerology?.birthday_secret_meaning);
+      const badges = Array.isArray(reputation?.badges) ? reputation.badges : [];
 
       return (
         <div className={styles.profileLayoutGrid}>
@@ -289,6 +314,20 @@ function ProfilePage() {
               <div className={styles.statItem}>
                 <span className={styles.statValue}>{profile.birthday_number || '-'}</span>
                 <span className={styles.statLabel}>Dia Nascimento</span>
+              </div>
+            </div>
+            <div className={styles.statsCard}>
+              <div className={styles.statItem}>
+                <span className={styles.statValue}>{reputation?.received_stars ?? 0}</span>
+                <span className={styles.statLabel}>Estrelas</span>
+              </div>
+              <div className={styles.statItem}>
+                <span className={styles.statValue}>{reputation?.received_comments ?? 0}</span>
+                <span className={styles.statLabel}>Comentários</span>
+              </div>
+              <div className={styles.statItem}>
+                <span className={styles.statValue}>{reputation?.helpful_replies ?? 0}</span>
+                <span className={styles.statLabel}>Respostas Úteis</span>
               </div>
             </div>
             {/* --- FIM DO CARTÃO --- */}
@@ -326,6 +365,43 @@ function ProfilePage() {
                 // Mensagem se o user não tiver calculado OU se deu erro na IA
                  profileId && !isLoadingNumerology && <section className={styles.profileSection}><p className={styles.noDataMessage}>Arquétipo do aniversário não disponível.</p></section>
             )}
+
+            <section className={styles.profileSection}>
+              <h2>Reputação Social</h2>
+              <div className={styles.reputationStats}>
+                <div>
+                  <strong>{reputation?.public_readings ?? 0}</strong>
+                  <span>Leituras públicas</span>
+                </div>
+                <div>
+                  <strong>{reputation?.ritual_posts ?? 0}</strong>
+                  <span>Posts no ritual</span>
+                </div>
+                <div>
+                  <strong>{reputation?.integrated_posts ?? 0}</strong>
+                  <span>Integradas</span>
+                </div>
+                <div>
+                  <strong>{reputation?.prompts_opened ?? 0}</strong>
+                  <span>Pedidos abertos</span>
+                </div>
+              </div>
+              {badges.length > 0 ? (
+                <div className={styles.badgesGrid}>
+                  {badges.map((badge) => (
+                    <article
+                      key={badge.id}
+                      className={`${styles.badgeCard} ${styles[badgeLevelStyles[badge.level] || 'bronze']}`}
+                    >
+                      <h3>{badge.label}</h3>
+                      <p>{badge.description}</p>
+                    </article>
+                  ))}
+                </div>
+              ) : (
+                <p className={styles.noDataMessage}>Este perfil ainda não desbloqueou badges sociais.</p>
+              )}
+            </section>
 
 
             {/* --- Cartões Originais --- */}

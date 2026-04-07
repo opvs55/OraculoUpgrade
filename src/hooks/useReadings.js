@@ -119,6 +119,49 @@ export function useCommunityTrendingTopics(weekRef) {
   });
 }
 
+export function useCommunityTopReadings(weekRef, limit = 5) {
+  return useQuery({
+    queryKey: ['community', 'top-readings', weekRef, limit],
+    queryFn: async () => {
+      const { data, error } = await supabase.rpc('community_top_readings', {
+        p_week_ref: weekRef || null,
+        p_limit: limit,
+      });
+      if (error) throw error;
+      return Array.isArray(data) ? data : [];
+    },
+  });
+}
+
+export function useCommunityTopAuthors(weekRef, limit = 5) {
+  return useQuery({
+    queryKey: ['community', 'top-authors', weekRef, limit],
+    queryFn: async () => {
+      const { data, error } = await supabase.rpc('community_top_authors', {
+        p_week_ref: weekRef || null,
+        p_limit: limit,
+      });
+      if (error) throw error;
+      return Array.isArray(data) ? data : [];
+    },
+  });
+}
+
+export function useCommunityProfileReputation(profileId) {
+  return useQuery({
+    queryKey: ['community', 'profile-reputation', profileId],
+    queryFn: async () => {
+      if (!profileId) return null;
+      const { data, error } = await supabase.rpc('community_profile_reputation', {
+        p_profile_id: profileId,
+      });
+      if (error) throw error;
+      return Array.isArray(data) ? data[0] || null : null;
+    },
+    enabled: !!profileId,
+  });
+}
+
 
 // --- SUAS FUNÇÕES EXISTENTES (INTACTAS) ---
 

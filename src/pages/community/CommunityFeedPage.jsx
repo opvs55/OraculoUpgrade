@@ -2,6 +2,8 @@ import React, { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import Masonry from 'react-masonry-css';
 import {
+  useCommunityTopAuthors,
+  useCommunityTopReadings,
   useCommunityTrendingTopics,
   useCommunityWeeklyAggregates,
   usePublicReadings,
@@ -32,7 +34,7 @@ const objectiveOptions = [
 ];
 
 function CommunityFeedPage() {
-  const [sortMode, setSortMode] = useState('recent');
+  const [sortMode, setSortMode] = useState('hot');
   const [feedMode, setFeedMode] = useState('ritual');
   const [searchTerm, setSearchTerm] = useState('');
   const [spreadType, setSpreadType] = useState('');
@@ -60,6 +62,8 @@ function CommunityFeedPage() {
 
   const { data: weeklyAggregates } = useCommunityWeeklyAggregates(weekRef);
   const { data: trendingTopics = [] } = useCommunityTrendingTopics(weekRef);
+  const { data: topReadings = [] } = useCommunityTopReadings(weekRef, 5);
+  const { data: topAuthors = [] } = useCommunityTopAuthors(weekRef, 5);
 
   const allReadings = pages.flatMap((page) => page.data);
 
@@ -177,24 +181,23 @@ function CommunityFeedPage() {
         </section>
 
         <div className={styles.controls}>
-          <span>Ordenar por:</span>
           <button
-            onClick={() => setSortMode('recent')}
-            className={sortMode === 'recent' ? styles.active : ''}
+            onClick={() => setSortMode('hot')}
+            className={sortMode === 'hot' ? styles.active : ''}
           >
-            Mais Recentes
+            Quente
           </button>
           <button
             onClick={() => setSortMode('popular')}
             className={sortMode === 'popular' ? styles.active : ''}
           >
-            Mais Populares
+            Popular
           </button>
           <button
-            onClick={() => setSortMode('hot')}
-            className={sortMode === 'hot' ? styles.active : ''}
+            onClick={() => setSortMode('recent')}
+            className={sortMode === 'recent' ? styles.active : ''}
           >
-            Em Alta
+            Recente
           </button>
         </div>
         <div className={styles.discoveryControls}>
@@ -236,6 +239,56 @@ function CommunityFeedPage() {
             Apenas pedidos de interpretação
           </label>
         </div>
+        <section className={styles.topWeekSection}>
+          <article className={styles.topWeekCard}>
+            <h3 className={styles.topWeekTitle}>Top Leituras da Semana</h3>
+            {topReadings.length === 0 && (
+              <p className={styles.topWeekEmpty}>Ainda não há leituras ranqueadas nesta semana.</p>
+            )}
+            <ol className={styles.topWeekList}>
+              {topReadings.map((reading, index) => (
+                <li key={reading.reading_id} className={styles.topWeekItem}>
+                  <span className={styles.rank}>#{index + 1}</span>
+                  <div className={styles.itemContent}>
+                    <Link to={`/leitura/${reading.reading_id}`} className={styles.itemTitle}>
+                      {reading.shared_title || getQuestionText(reading.question, reading.spread_type)}
+                    </Link>
+                    <p className={styles.itemMeta}>
+                      por @{reading.username || 'anonimo'} · ⭐ {reading.star_count || 0} · 💬 {reading.comment_count || 0}
+                    </p>
+                  </div>
+                </li>
+              ))}
+            </ol>
+          </article>
+
+          <article className={styles.topWeekCard}>
+            <h3 className={styles.topWeekTitle}>Top Oráculos da Semana</h3>
+            {topAuthors.length === 0 && (
+              <p className={styles.topWeekEmpty}>Ainda não há autores ranqueados nesta semana.</p>
+            )}
+            <ol className={styles.topWeekList}>
+              {topAuthors.map((author, index) => (
+                <li key={author.profile_id || `${author.username}-${index}`} className={styles.topWeekItem}>
+                  <span className={styles.rank}>#{index + 1}</span>
+                  <div className={styles.itemContent}>
+                    {author.username ? (
+                      <Link to={`/perfil/${author.username}`} className={styles.itemTitle}>
+                        @{author.username}
+                      </Link>
+                    ) : (
+                      <span className={styles.itemTitle}>Autor sem @username</span>
+                    )}
+                    <p className={styles.itemMeta}>
+                      Leituras: {author.public_readings || 0} · ⭐ {author.received_stars || 0} · Score {author.author_score || 0}
+                    </p>
+                  </div>
+                </li>
+              ))}
+            </ol>
+          </article>
+        </section>
+
         {trendingTopics.length > 0 && (
           <div className={styles.trendingWrap}>
             <span className={styles.trendingLabel}>Assuntos quentes:</span>
