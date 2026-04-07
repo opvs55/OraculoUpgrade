@@ -4,6 +4,8 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '../../supabaseClient';
+import { getQuestionText } from '../../utils/getQuestionText';
+import { getCurrentIntegratedTags, getCurrentRitualTags } from '../../utils/communityRitual';
 import styles from './ReadingCard.module.css';
 
 // Função auxiliar para encontrar a carta de maior destaque
@@ -31,9 +33,16 @@ function formatSpreadType(spreadType) {
 
 function ReadingCard({ reading }) {
   const highlightCard = getHighlightCard(reading.cards_data);
-  const starCount = reading.stars?.[0]?.count ?? 0;
-  const commentCount = reading.comments?.[0]?.count ?? 0;
+  const starCount = reading.stars?.[0]?.count ?? reading.star_count ?? 0;
+  const commentCount = reading.comments?.[0]?.count ?? reading.comment_count ?? 0;
   const pinnedCommentId = reading?.interpretation_data?.pinned_comment_id || null;
+  const hasPrompt = Boolean(reading?.interpretation_data?.community_prompt?.question);
+  const { ritualTag } = getCurrentRitualTags();
+  const { integratedTag } = getCurrentIntegratedTags();
+  const tagList = Array.isArray(reading.tags) ? reading.tags : [];
+  const isRitual = tagList.includes(ritualTag);
+  const isIntegrated = tagList.includes('integrada') || tagList.includes(integratedTag);
+  const displayTitle = reading.shared_title || getQuestionText(reading.question, reading.spread_type);
 
   const { data: pinnedCommentPreview } = useQuery({
     queryKey: ['readingPinnedPreview', reading.id, pinnedCommentId],
@@ -80,13 +89,18 @@ function ReadingCard({ reading }) {
         <div className={styles.content}>
            <div className={styles.authorInfo}>
             <img 
-              src={reading.profiles?.avatar_url || 'https://i.imgur.com/6VBx3io.png'} 
-              alt={reading.profiles?.username} 
+              src={reading.profiles?.avatar_url || reading.avatar_url || 'https://i.imgur.com/6VBx3io.png'} 
+              alt={reading.profiles?.username || reading.username} 
               className={styles.authorAvatar} 
             />
-            <span>@{reading.profiles?.username || 'Anônimo'}</span>
+            <span>@{reading.profiles?.username || reading.username || 'Anônimo'}</span>
           </div>
-          <h3 className={styles.title}>{reading.shared_title}</h3>
+          <div className={styles.pillRow}>
+            {isRitual && <span className={styles.pill}>Ritual</span>}
+            {isIntegrated && <span className={`${styles.pill} ${styles.integratedPill}`}>Integrada</span>}
+            {hasPrompt && <span className={`${styles.pill} ${styles.promptPill}`}>Pedido aberto</span>}
+          </div>
+          <h3 className={styles.title}>{displayTitle}</h3>
           {pinnedCommentPreview?.comment_text && (
             <p className={styles.pinnedPreview}>
               ✨ Destaque: {pinnedCommentPreview.comment_text}

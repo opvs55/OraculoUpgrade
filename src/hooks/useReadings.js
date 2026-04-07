@@ -7,12 +7,27 @@ import { getInterpretation } from '../services/aiService';
 
 const READINGS_PER_PAGE = 12;
 
-// --- FUNÇÃO PARA O FEED DA COMUNIDADE (COM A CORREÇÃO) ---
+const normalizeCommunityReading = (row) => ({
+  ...row,
+  profiles: {
+    username: row.username || null,
+    avatar_url: row.avatar_url || null,
+  },
+  stars: [{ count: Number(row.star_count || 0) }],
+  comments: [{ count: Number(row.comment_count || 0) }],
+});
+
+// --- FEED DA COMUNIDADE (RPC NO SUPABASE) ---
 export function usePublicReadings({
-  sortBy = { column: 'created_at', ascending: false },
-  ritualTags = []
+  sort = 'recent',
+  weekRef = null,
+  objective = '',
+  spreadType = '',
+  onlyWithPrompt = false,
+  feedMode = 'general',
 } = {}) {
-  const queryKey = ['publicReadings', sortBy, ritualTags];
+  const effectiveWeekRef = feedMode === 'general' ? null : weekRef;
+  const queryKey = ['publicReadings', { sort, effectiveWeekRef, objective, spreadType, onlyWithPrompt, feedMode }];
 
   const {
     data,
@@ -25,42 +40,39 @@ export function usePublicReadings({
   } = useInfiniteQuery({
     queryKey,
     queryFn: async ({ pageParam = 0 }) => {
-      const from = pageParam * READINGS_PER_PAGE;
-      const to = from + READINGS_PER_PAGE - 1;
-
-      // Inicia a construção da query
-      let query = supabase
-        .from('readings')
-        .select(`
-          id, created_at, shared_title, question, spread_type, cards_data, tags, interpretation_data,
-          profiles ( username, avatar_url ),
-          stars ( count ),
-          comments ( count )
-        `, { count: 'exact' })
-        .eq('is_public', true);
-
-      // --- AQUI ESTÁ A LÓGICA DA CORREÇÃO ---
-      // Se for para ordenar por 'populares' (estrelas)...
-      if (sortBy.column === 'stars') {
-        // ...usamos a sintaxe especial para tabelas estrangeiras
-        query = query.order('count', { foreignTable: 'stars', ascending: false });
-      } else {
-        // ...senão, usamos a ordenação padrão (por data de criação)
-        query = query.order('created_at', { ascending: false });
-      }
-      // --- FIM DA CORREÇÃO ---
-
-      // Aplica a paginação no final
-      query = query.range(from, to);
-
-      const { data, error, count } = await query;
-
+      const { data: rpcData, error } = await supabase.rpc('community_feed', {
+        p_week_ref: effectiveWeekRef,
+        p_objective: objective || null,
+        p_spread_type: spreadType || null,
+        p_only_with_prompt: Boolean(onlyWithPrompt),
+        p_sort: sort,
+        p_page: pageParam,
+        p_page_size: READINGS_PER_PAGE,
+      });
       if (error) throw error;
-      return { data: data || [], count };
+
+      const rows = Array.isArray(rpcData) ? rpcData.map(normalizeCommunityReading) : [];
+      const filteredRows = rows.filter((reading) => {
+        const tags = Array.isArray(reading.tags) ? reading.tags : [];
+        if (feedMode === 'ritual' && effectiveWeekRef) return tags.includes(`ritual:${effectiveWeekRef}`);
+        if (feedMode === 'integrated' && effectiveWeekRef) {
+          return tags.includes('integrada') || tags.includes(`integrada:${effectiveWeekRef}`);
+        }
+        return true;
+      });
+
+      return {
+        data: filteredRows,
+        rawLength: rows.length,
+        totalCount: rows[0]?.total_count ?? 0,
+      };
     },
     getNextPageParam: (lastPage, allPages) => {
-      const loadedCount = allPages.flatMap(p => p.data).length;
-      if (lastPage.count && loadedCount < lastPage.count) {
+      const loadedRaw = allPages.reduce((sum, page) => sum + (page.rawLength || 0), 0);
+      if (lastPage.totalCount && loadedRaw < lastPage.totalCount) {
+        return allPages.length;
+      }
+      if (!lastPage.totalCount && lastPage.rawLength === READINGS_PER_PAGE) {
         return allPages.length;
       }
       return undefined;
@@ -77,6 +89,77 @@ export function usePublicReadings({
     hasNextPage,
     isFetchingNextPage,
   };
+}
+
+export function useCommunityWeeklyAggregates(weekRef) {
+  return useQuery({
+    queryKey: ['community', 'weekly-aggregates', weekRef],
+    queryFn: async () => {
+      const { data, error } = await supabase.rpc('community_weekly_aggregates', {
+        p_week_ref: weekRef || null,
+        p_objectives_limit: 5,
+      });
+      if (error) throw error;
+      return Array.isArray(data) ? data[0] || null : null;
+    },
+  });
+}
+
+export function useCommunityTrendingTopics(weekRef) {
+  return useQuery({
+    queryKey: ['community', 'trending-topics', weekRef],
+    queryFn: async () => {
+      const { data, error } = await supabase.rpc('community_trending_topics', {
+        p_week_ref: weekRef || null,
+        p_limit: 8,
+      });
+      if (error) throw error;
+      return Array.isArray(data) ? data : [];
+    },
+  });
+}
+
+export function useCommunityTopReadings(weekRef, limit = 5) {
+  return useQuery({
+    queryKey: ['community', 'top-readings', weekRef, limit],
+    queryFn: async () => {
+      const { data, error } = await supabase.rpc('community_top_readings', {
+        p_week_ref: weekRef || null,
+        p_limit: limit,
+      });
+      if (error) throw error;
+      return Array.isArray(data) ? data : [];
+    },
+  });
+}
+
+export function useCommunityTopAuthors(weekRef, limit = 5) {
+  return useQuery({
+    queryKey: ['community', 'top-authors', weekRef, limit],
+    queryFn: async () => {
+      const { data, error } = await supabase.rpc('community_top_authors', {
+        p_week_ref: weekRef || null,
+        p_limit: limit,
+      });
+      if (error) throw error;
+      return Array.isArray(data) ? data : [];
+    },
+  });
+}
+
+export function useCommunityProfileReputation(profileId) {
+  return useQuery({
+    queryKey: ['community', 'profile-reputation', profileId],
+    queryFn: async () => {
+      if (!profileId) return null;
+      const { data, error } = await supabase.rpc('community_profile_reputation', {
+        p_profile_id: profileId,
+      });
+      if (error) throw error;
+      return Array.isArray(data) ? data[0] || null : null;
+    },
+    enabled: !!profileId,
+  });
 }
 
 

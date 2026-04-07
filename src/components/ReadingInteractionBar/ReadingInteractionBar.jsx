@@ -1,14 +1,28 @@
 // src/components/ReadingInteractionBar/ReadingInteraction-Bar.jsx
 
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { useQueryClient, useMutation } from '@tanstack/react-query';
 import { useReadingStars } from '../../hooks/useReadingStars';
 import { supabase } from '../../supabaseClient';
 import Modal from '../common/Modal/Modal';
-import { getCurrentRitualTags } from '../../utils/communityRitual';
+import {
+  getCurrentIntegratedTags,
+  getCurrentRitualTags,
+  mergeCommunityTags,
+} from '../../utils/communityRitual';
 
 import modalStyles from '../common/Modal/Modal.module.css';
 import styles from './ReadingInteractionBar.module.css';
+
+const objectiveOptions = [
+  { value: 'geral', label: 'Geral' },
+  { value: 'amor', label: 'Amor' },
+  { value: 'carreira', label: 'Carreira' },
+  { value: 'espiritualidade', label: 'Espiritualidade' },
+  { value: 'dinheiro', label: 'Dinheiro' },
+  { value: 'saude', label: 'Saúde' },
+];
 
 const getPositionOptions = (spreadType, cardsData = []) => {
   const optionsBySpread = {
@@ -46,10 +60,13 @@ function ReadingInteractionBar({ reading, user, isOwner }) {
   const [isShareModalOpen, setIsShareModalOpen] = useState(false);
   const [shareTitleInput, setShareTitleInput] = useState(reading.shared_title || '');
   const [publishInRitual, setPublishInRitual] = useState(false);
+  const [publishAsIntegrated, setPublishAsIntegrated] = useState(false);
   const [requestInterpretation, setRequestInterpretation] = useState(false);
   const [promptPosition, setPromptPosition] = useState('');
+  const [objective, setObjective] = useState(reading.objective || 'geral');
   const [shareError, setShareError] = useState('');
   const { tags: ritualTags } = getCurrentRitualTags();
+  const { tags: integratedTags } = getCurrentIntegratedTags();
   const positionOptions = getPositionOptions(reading.spread_type, reading.cards_data);
 
   const {
@@ -65,31 +82,37 @@ function ReadingInteractionBar({ reading, user, isOwner }) {
   const isStarLoading = isAddingStar || isRemovingStar;
 
   const updateReadingMutation = useMutation({
-    mutationFn: async ({ updates }) => {
+    mutationFn: async ({ isPublic, sharedTitle, tags, objectiveValue, communityPrompt }) => {
       if (!user) throw new Error("Usuário não autenticado.");
-      
+
       const { data, error } = await supabase
-        .from('readings')
-        .update(updates)
-        .eq('id', readingId)
-        .eq('user_id', user.id)
-        .select('is_public, shared_title, tags, interpretation_data')
-        .single();
+        .rpc('publish_reading', {
+          p_reading_id: readingId,
+          p_is_public: isPublic,
+          p_shared_title: sharedTitle,
+          p_tags: tags,
+          p_objective: objectiveValue,
+          p_community_prompt: communityPrompt,
+        });
 
       if (error) throw error;
-      return data;
+      return Array.isArray(data) ? data[0] : data;
     },
-    onSuccess: (data, variables) => {
+    onSuccess: (updatedReading) => {
       queryClient.setQueryData(['readings', 'detail', readingId], (oldData) =>
-        oldData ? { ...oldData, ...variables.updates } : oldData
+        oldData ? { ...oldData, ...updatedReading } : oldData
       );
       queryClient.invalidateQueries({ queryKey: ['publicReadings'] });
-      
+      queryClient.invalidateQueries({ queryKey: ['community', 'weekly-aggregates'] });
+      queryClient.invalidateQueries({ queryKey: ['community', 'trending-topics'] });
+
       setIsShareModalOpen(false);
-      setShareTitleInput(variables.updates.shared_title || '');
+      setShareTitleInput(updatedReading?.shared_title || '');
       setPublishInRitual(false);
+      setPublishAsIntegrated(false);
       setRequestInterpretation(false);
       setPromptPosition('');
+      setObjective(updatedReading?.objective || 'geral');
     },
     onError: (error) => {
       console.error("Erro ao atualizar leitura:", error);
@@ -103,15 +126,21 @@ function ReadingInteractionBar({ reading, user, isOwner }) {
     if (currentlyPublic) {
       if (window.confirm('Tem certeza que deseja tornar esta leitura privada? Ela não será mais visível na comunidade e o título compartilhado será removido.')) {
         updateReadingMutation.mutate({
-          updates: { is_public: false, shared_title: null }
+          isPublic: false,
+          sharedTitle: null,
+          tags: null,
+          objectiveValue: null,
+          communityPrompt: null,
         });
       }
     } else {
       setShareTitleInput(reading.shared_title || '');
       setShareError('');
       setPublishInRitual(false);
+      setPublishAsIntegrated(false);
       setRequestInterpretation(false);
       setPromptPosition('');
+      setObjective(reading.objective || 'geral');
       setIsShareModalOpen(true);
     }
   };
@@ -126,31 +155,27 @@ function ReadingInteractionBar({ reading, user, isOwner }) {
 
 
     const baseTags = Array.isArray(reading.tags) ? reading.tags : [];
-    const nextTags = publishInRitual
-      ? Array.from(new Set([...baseTags, ...ritualTags]))
-      : baseTags;
+    const nextTags = mergeCommunityTags(
+      baseTags,
+      publishInRitual ? ritualTags : [],
+      publishAsIntegrated ? integratedTags : [],
+    );
 
-    const updates = {
-      is_public: true,
-      shared_title: shareTitleInput.trim(),
-      tags: nextTags,
-    };
-
+    let communityPrompt = null;
     if (requestInterpretation) {
       const selectedPosition = promptPosition || 'geral';
-      const existingInterpretationData = reading.interpretation_data || {};
-      updates.interpretation_data = {
-        ...existingInterpretationData,
-        community_prompt: {
-          position: selectedPosition,
-          question: `Interprete a posição ${selectedPosition}.`,
-        },
-        pinned_comment_id: existingInterpretationData?.pinned_comment_id || null,
+      communityPrompt = {
+        position: selectedPosition,
+        question: `Interprete a posição ${selectedPosition}.`,
       };
     }
 
     updateReadingMutation.mutate({
-      updates
+      isPublic: true,
+      sharedTitle: shareTitleInput.trim(),
+      tags: nextTags,
+      objectiveValue: objective || null,
+      communityPrompt,
     });
   };
 
@@ -195,6 +220,9 @@ function ReadingInteractionBar({ reading, user, isOwner }) {
               <span className={styles.shareStatus}>
                 {reading.is_public ? 'Pública 🌍' : 'Privada 🔒'}
               </span>
+              {Array.isArray(reading.tags) && reading.tags.includes('integrada') && (
+                <span className={styles.integratedStatus}>Leitura integrada</span>
+              )}
               <button
                 onClick={handleTogglePublic}
                 className={styles.shareButton}
@@ -236,6 +264,42 @@ function ReadingInteractionBar({ reading, user, isOwner }) {
             />
             Publicar no Ritual da Semana (adiciona tags automáticas).
           </label>
+
+          <div className={styles.promptFields}>
+            <label className={styles.fieldLabel}>
+              Objetivo da leitura
+              <select
+                value={objective}
+                onChange={(e) => setObjective(e.target.value)}
+                disabled={updateReadingMutation.isPending}
+                className={styles.promptSelect}
+              >
+                {objectiveOptions.map((option) => (
+                  <option key={option.value} value={option.value}>{option.label}</option>
+                ))}
+              </select>
+            </label>
+          </div>
+
+          <label className={modalStyles.checkboxRow}>
+            <input
+              type="checkbox"
+              checked={publishAsIntegrated}
+              onChange={(e) => setPublishAsIntegrated(e.target.checked)}
+              disabled={updateReadingMutation.isPending}
+            />
+            Marcar como Leitura Integrada da Semana.
+          </label>
+
+          {publishAsIntegrated && (
+            <p className={styles.integratedHint}>
+              Dica: combine os 4 oráculos para uma leitura mais profunda em{' '}
+              <Link to="/oraculo/geral" className={styles.inlineLink}>
+                Leitura Geral
+              </Link>
+              .
+            </p>
+          )}
 
           <label className={modalStyles.checkboxRow}>
             <input
