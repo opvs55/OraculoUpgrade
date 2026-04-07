@@ -43,6 +43,7 @@ const LearningCardDetailPage = lazy(() => import('../pages/learning/LearningCard
 const MeuGrimorioPage = lazy(() => import('../pages/dashboard/MeuGrimorioPage'));
 const EditarPerfilPage = lazy(() => import('../pages/dashboard/EditarPerfilPage'));
 const CommunityFeedPage = lazy(() => import('../pages/community/CommunityFeedPage'));
+const CommunityLeaderboardPage = lazy(() => import('../pages/community/CommunityLeaderboardPage'));
 
 function AppRoutes() {
   return (
@@ -74,6 +75,7 @@ function AppRoutes() {
           <Route path="/biblioteca" element={<CardLibraryPage />} />
           <Route path="/biblioteca/:cardSlug" element={<LearningCardDetailPage />} />
           <Route path="/comunidade" element={<CommunityFeedPage />} />
+          <Route path="/comunidade/leaderboard" element={<CommunityLeaderboardPage />} />
           <Route path="/oraculo/geral" element={<GeneralOraclePage />} />
           <Route path="/oraculo/geral/:id" element={<GeneralOraclePage />} />
           <Route path="/runas" element={<RunesWeeklyPage />} />
