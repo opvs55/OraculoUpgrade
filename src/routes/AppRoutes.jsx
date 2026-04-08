@@ -42,12 +42,7 @@ const CardLibraryPage = lazy(() => import('../pages/learning/CardLibraryPage'));
 const LearningCardDetailPage = lazy(() => import('../pages/learning/LearningCardDetailPage'));
 const MeuGrimorioPage = lazy(() => import('../pages/dashboard/MeuGrimorioPage'));
 const EditarPerfilPage = lazy(() => import('../pages/dashboard/EditarPerfilPage'));
-const CommunityFeedPage = lazy(() => import('../pages/community/CommunityFeedPage'));
-const CommunityHubPage = lazy(() => import('../pages/community/CommunityHubPage'));
 const CommunityForumPage = lazy(() => import('../pages/community/CommunityForumPage'));
-const CommunityDebatesPage = lazy(() => import('../pages/community/CommunityDebatesPage'));
-const CommunityLearningPage = lazy(() => import('../pages/community/CommunityLearningPage'));
-const CommunityLeaderboardPage = lazy(() => import('../pages/community/CommunityLeaderboardPage'));
 
 function AppRoutes() {
   return (
@@ -78,12 +73,7 @@ function AppRoutes() {
           <Route path="/perfil/editar" element={<EditarPerfilPage />} />
           <Route path="/biblioteca" element={<CardLibraryPage />} />
           <Route path="/biblioteca/:cardSlug" element={<LearningCardDetailPage />} />
-          <Route path="/comunidade" element={<CommunityHubPage />} />
-          <Route path="/comunidade/feed" element={<CommunityFeedPage />} />
-          <Route path="/comunidade/forum" element={<CommunityForumPage />} />
-          <Route path="/comunidade/debates" element={<CommunityDebatesPage />} />
-          <Route path="/comunidade/aprendizado" element={<CommunityLearningPage />} />
-          <Route path="/comunidade/leaderboard" element={<CommunityLeaderboardPage />} />
+          <Route path="/forum" element={<CommunityForumPage />} />
           <Route path="/oraculo/geral" element={<GeneralOraclePage />} />
           <Route path="/oraculo/geral/:id" element={<GeneralOraclePage />} />
           <Route path="/runas" element={<RunesWeeklyPage />} />

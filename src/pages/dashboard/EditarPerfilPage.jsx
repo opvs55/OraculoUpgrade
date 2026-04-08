@@ -7,7 +7,7 @@ import styles from './EditarPerfilPage.module.css';
 import { baralho } from '../../tarotDeck';
 import Loader from '../../components/common/Loader/Loader';
 import ChangePasswordForm from '../../pages/auth/ChangePasswordForm/ChangePasswordForm';
-import { getMissingProfileFields, isProfileComplete } from '../../utils/profileCompletion';
+import { getMissingProfileFields } from '../../utils/profileCompletion';
 
 function EditarPerfilPage() {
   const { user, signOut } = useAuth();
@@ -56,19 +56,36 @@ function EditarPerfilPage() {
     avatar_url: avatarUrl,
   }), [username, fullName, bio, minhaHistoria, entidadeCultuada, avatarUrl]);
 
+  const profileChecklist = useMemo(() => ([
+    { key: 'username', label: 'Nome de usuário', filled: !!username.trim(), required: true },
+    { key: 'full_name', label: 'Nome completo', filled: !!fullName.trim(), required: true },
+    { key: 'avatar_url', label: 'Carta de perfil', filled: !!avatarUrl, required: true },
+    { key: 'bio', label: 'Bio', filled: !!bio.trim(), required: false },
+    { key: 'minha_historia', label: 'Minha história', filled: !!minhaHistoria.trim(), required: false },
+    { key: 'entidade_cultuada', label: 'Entidades / arquétipos', filled: !!entidadeCultuada.trim(), required: false },
+  ]), [username, fullName, avatarUrl, bio, minhaHistoria, entidadeCultuada]);
+
+  const completionPercent = useMemo(() => {
+    const total = profileChecklist.length;
+    const filled = profileChecklist.filter((item) => item.filled).length;
+    return Math.round((filled / total) * 100);
+  }, [profileChecklist]);
+
   const missingFields = useMemo(() => {
     const labels = {
       username: 'Nome de usuário',
       full_name: 'Nome completo',
-      bio: 'Bio',
-      minha_historia: 'Minha história',
-      entidade_cultuada: 'Entidade(s) que cultuo/admiro',
       avatar_url: 'Arcano de perfil',
     };
-    return getMissingProfileFields(formProfile, labels);
-  }, [formProfile]);
+    const requiredProfile = {
+      username,
+      full_name: fullName,
+      avatar_url: avatarUrl,
+    };
+    return getMissingProfileFields(requiredProfile, labels);
+  }, [username, fullName, avatarUrl]);
 
-  const isFirstLogin = !isProfileComplete(profile);
+  const isFirstLogin = !(profile?.username && profile?.full_name && profile?.avatar_url);
   const isMessageError = message
     ? message.toLowerCase().startsWith('erro') || message.startsWith('Preencha') || message.startsWith('Exclusão')
     : false;
@@ -155,15 +172,35 @@ function EditarPerfilPage() {
           <section className={styles.welcomeCard}>
             <h2>Bem-vindo(a) ao seu primeiro acesso!</h2>
             <p>
-              Este é o seu espaço sagrado para registrar leituras, acompanhar sua evolução e compartilhar
-              aprendizados com a comunidade. Para liberar todas as experiências, precisamos que você complete
-              o perfil agora. <strong>Todos os campos são obrigatórios.</strong>
+              Este é o seu espaço para organizar sua identidade no oráculo e manter seu grimório com sua
+              assinatura. Para continuar, preencha o básico do perfil.
             </p>
             <p className={styles.welcomeHint}>
               Assim que salvar, você será redirecionado para o seu grimório e poderá iniciar suas leituras.
             </p>
           </section>
         )}
+
+        <section className={styles.progressCard}>
+          <div className={styles.progressHeader}>
+            <h2>Completude do perfil</h2>
+            <strong>{completionPercent}%</strong>
+          </div>
+          <div className={styles.progressTrack}>
+            <span className={styles.progressFill} style={{ width: `${completionPercent}%` }} />
+          </div>
+          <ul className={styles.progressList}>
+            {profileChecklist.map((item) => (
+              <li key={item.key} className={item.filled ? styles.filledItem : ''}>
+                <span>{item.filled ? '✓' : '○'}</span>
+                <p>
+                  {item.label}
+                  {item.required ? ' (obrigatório)' : ' (opcional)'}
+                </p>
+              </li>
+            ))}
+          </ul>
+        </section>
 
         <div className={styles.editPageLayout}>
           {/* Coluna da Esquerda: Avatar */}
@@ -175,7 +212,7 @@ function EditarPerfilPage() {
                 alt="Avatar atual" 
                 className={styles.avatarPreview} 
               />
-              <p className={styles.avatarHint}>Escolha uma carta que represente sua energia para a comunidade.</p>
+              <p className={styles.avatarHint}>Escolha uma carta para representar sua assinatura no grimório.</p>
               <button 
                 type="button" 
                 onClick={() => setShowModal(true)} 
@@ -192,8 +229,8 @@ function EditarPerfilPage() {
             {/* Formulário de Perfil */}
             <form onSubmit={handleUpdateProfile} className={styles.profileForm}>
               <div className={styles.formHeader}>
-                <h2>Informações obrigatórias</h2>
-                <p>Preencha todos os campos para liberar o acesso completo à plataforma.</p>
+                <h2>Dados do perfil</h2>
+                <p>Nome de usuário, nome completo e carta de perfil são obrigatórios.</p>
               </div>
               <div className={styles.formGroup}>
                 <label htmlFor="email">Email</label>
@@ -209,7 +246,7 @@ function EditarPerfilPage() {
               </div>
               <div className={styles.formGroup}>
                 <label htmlFor="bio">Bio</label>
-                <textarea id="bio" value={bio} onChange={(e) => setBio(e.target.value)} placeholder="Uma frase que te define..." required />
+                <textarea id="bio" value={bio} onChange={(e) => setBio(e.target.value)} placeholder="Uma frase curta que te define..." />
               </div>
               <div className={styles.formGroup}>
                 <label htmlFor="minhaHistoria">Minha História</label>
@@ -217,9 +254,8 @@ function EditarPerfilPage() {
                   id="minhaHistoria" 
                   value={minhaHistoria} 
                   onChange={(e) => setMinhaHistoria(e.target.value)} 
-                  placeholder="Conte um pouco sobre sua jornada espiritual ou quem você é..."
+                  placeholder="Conte um pouco da sua jornada (opcional)."
                   rows="5" 
-                  required
                 />
               </div>
               <div className={styles.formGroup}>
@@ -230,7 +266,6 @@ function EditarPerfilPage() {
                   value={entidadeCultuada} 
                   onChange={(e) => setEntidadeCultuada(e.target.value)} 
                   placeholder="Ex: Hécate, Odin, Orixás, Arquétipos..."
-                  required
                 />
               </div>
               <div className={styles.formActions}>
