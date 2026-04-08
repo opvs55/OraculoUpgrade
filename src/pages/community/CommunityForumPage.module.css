@@ -31,9 +31,9 @@
 .controls {
   max-width: 1080px;
   margin: 0 auto 1rem;
-  border: 1px solid rgba(225, 179, 130, 0.22);
-  border-radius: 12px;
-  background: rgba(13, 12, 29, 0.6);
+  border: 1px solid rgba(174, 190, 215, 0.2);
+  border-radius: 10px;
+  background: rgba(17, 28, 47, 0.7);
   padding: 0.85rem;
   display: grid;
   gap: 0.7rem;
@@ -48,9 +48,9 @@
 .trackRow button,
 .sortRow button {
   border-radius: 999px;
-  border: 1px solid rgba(225, 179, 130, 0.3);
-  background: rgba(13, 12, 29, 0.5);
-  color: rgba(244, 239, 230, 0.8);
+  border: 1px solid rgba(138, 168, 209, 0.35);
+  background: rgba(12, 24, 42, 0.65);
+  color: rgba(230, 238, 252, 0.84);
   padding: 0.3rem 0.65rem;
   font-size: 0.82rem;
   cursor: pointer;
@@ -68,81 +68,171 @@
 }
 
 button.active {
-  background: #e1b382;
-  color: #0f0f18;
-  border-color: #e1b382;
+  background: #cfe2ff;
+  color: #0c1b33;
+  border-color: #cfe2ff;
   font-weight: 700;
 }
 
-.threadGrid {
+.boardLayout {
   max-width: 1080px;
   margin: 0 auto;
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: minmax(0, 2.2fr) minmax(280px, 1fr);
+  gap: 14px;
+}
+
+.forumPanel {
+  border: 1px solid rgba(174, 190, 215, 0.25);
+  border-radius: 10px;
+  overflow: hidden;
+  background: rgba(13, 22, 39, 0.78);
+}
+
+.tableHeader {
+  display: grid;
+  grid-template-columns: 2fr 0.7fr 0.8fr 1.4fr;
   gap: 12px;
+  background: rgba(206, 224, 248, 0.12);
+  border-bottom: 1px solid rgba(174, 190, 215, 0.2);
+  padding: 0.7rem 0.8rem;
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: rgba(223, 232, 248, 0.72);
 }
 
-.threadCard {
-  border: 1px solid rgba(225, 179, 130, 0.24);
-  border-radius: 14px;
-  background: linear-gradient(145deg, rgba(29, 20, 44, 0.72), rgba(16, 12, 30, 0.82));
-  padding: 0.95rem;
-}
-
-.threadHeader {
-  display: flex;
-  justify-content: space-between;
+.tableRow {
+  display: grid;
+  grid-template-columns: 2fr 0.7fr 0.8fr 1.4fr;
+  gap: 12px;
+  border-bottom: 1px solid rgba(174, 190, 215, 0.16);
+  padding: 0.85rem 0.8rem;
   align-items: center;
-  gap: 8px;
+}
+
+.tableRow:last-child {
+  border-bottom: none;
+}
+
+.forumCell h2 {
+  margin: 0.35rem 0 0;
+  color: #eff5ff;
+  font-size: 1rem;
+}
+
+.forumCell p {
+  margin: 0.35rem 0 0;
+  color: rgba(214, 225, 244, 0.72);
+  font-size: 0.86rem;
+  line-height: 1.45;
 }
 
 .objectiveBadge {
+  width: fit-content;
   border-radius: 999px;
-  border: 1px solid rgba(105, 223, 172, 0.35);
-  background: rgba(105, 223, 172, 0.1);
-  color: #69dfac;
-  padding: 0.18rem 0.6rem;
+  border: 1px solid rgba(163, 194, 234, 0.36);
+  background: rgba(163, 194, 234, 0.14);
+  color: #cfe2ff;
+  padding: 0.15rem 0.55rem;
   text-transform: uppercase;
-  font-size: 0.72rem;
+  font-size: 0.68rem;
   font-weight: 700;
 }
 
-.meta {
-  color: rgba(244, 239, 230, 0.75);
-  font-size: 0.82rem;
+.statCell {
+  text-align: center;
 }
 
-.threadCard h2 {
-  margin: 0.5rem 0 0;
-  color: #f3d2a4;
-  font-size: 1.02rem;
-  line-height: 1.4;
+.statCell strong {
+  display: block;
+  color: #f6fbff;
+  font-size: 1.15rem;
 }
 
-.author {
-  margin: 0.35rem 0 0;
-  color: rgba(244, 239, 230, 0.75);
-  font-size: 0.85rem;
+.statCell span {
+  color: rgba(214, 225, 244, 0.68);
+  font-size: 0.74rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
 }
 
-.prompt {
-  margin: 0.55rem 0 0;
-  color: rgba(244, 239, 230, 0.86);
-  font-style: italic;
-  font-size: 0.88rem;
-}
-
-.actions {
-  margin-top: 0.8rem;
-}
-
-.actions a {
+.latestCell a {
   text-decoration: none;
-  color: #0f0f18;
-  background: #e1b382;
-  border-radius: 999px;
-  padding: 0.32rem 0.72rem;
+  color: #f7d49d;
+  font-weight: 700;
+  line-height: 1.35;
+}
+
+.latestCell p {
+  margin: 0.25rem 0 0;
+  color: rgba(214, 225, 244, 0.72);
+  font-size: 0.8rem;
+}
+
+.noPost {
+  margin: 0;
+  color: rgba(214, 225, 244, 0.58);
   font-size: 0.84rem;
+}
+
+.sidebar {
+  display: grid;
+  gap: 12px;
+}
+
+.sidePanel {
+  border: 1px solid rgba(174, 190, 215, 0.24);
+  border-radius: 10px;
+  background: rgba(13, 22, 39, 0.78);
+  padding: 0.9rem;
+}
+
+.sidePanel h3 {
+  margin: 0 0 0.7rem;
+  color: #e9f2ff;
+  font-size: 1rem;
+}
+
+.recentList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 0.75rem;
+}
+
+.recentList li a {
+  text-decoration: none;
+  color: #f7d49d;
+  font-weight: 700;
+  line-height: 1.35;
+  font-size: 0.9rem;
+}
+
+.recentList li p {
+  margin: 0.2rem 0 0;
+  color: rgba(214, 225, 244, 0.72);
+  font-size: 0.76rem;
+}
+
+.recentList li p span {
+  text-transform: uppercase;
+}
+
+.sideActions {
+  display: grid;
+  gap: 8px;
+}
+
+.sideActions a {
+  text-decoration: none;
+  border-radius: 8px;
+  border: 1px solid rgba(163, 194, 234, 0.32);
+  color: #d8e7ff;
+  background: rgba(163, 194, 234, 0.12);
+  padding: 0.45rem 0.65rem;
+  font-size: 0.85rem;
   font-weight: 700;
 }
 
@@ -168,7 +258,31 @@ button.active {
 }
 
 @media (max-width: 900px) {
-  .threadGrid {
+  .boardLayout {
     grid-template-columns: 1fr;
+  }
+
+  .tableHeader {
+    display: none;
+  }
+
+  .tableRow {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+
+  .statCell {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 8px;
+    text-align: left;
+  }
+
+  .statCell strong {
+    display: inline;
+  }
+
+  .statCell span {
+    font-size: 0.76rem;
   }
 }
