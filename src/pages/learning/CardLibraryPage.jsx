@@ -64,7 +64,8 @@ function CardLibraryPage() {
     const shareText = [
       `Estou estudando a carta "${card.nome}" no Grimório da Bruxa.`,
       `Estudo completo: ${shareUrl}`,
-      'Referência para estudo pessoal semanal',
+      `Fórum image-board: ${baseUrl}/forum`,
+      `Menção rápida no tópico: @${card.nome.toLowerCase()}`,
     ].join('\n');
 
     try {
@@ -126,12 +127,12 @@ function CardLibraryPage() {
           <p className={styles.selectedTag}>Carta selecionada para estudo</p>
           <h2>{selectedCard.nome}</h2>
           <p>
-            Use esta carta como tema da semana para aprofundar seus estudos e relacionar com
-            Tarot, Runas, Numerologia e I Ching.
+            Use esta carta como tema da semana para aprofundar estudos e abrir discussão direta
+            no novo fórum image-board.
           </p>
           <div className={styles.selectedActions}>
             <Link to={`/biblioteca/${selectedCard.slug}`}>Estudo completo da carta</Link>
-            <Link to="/tarot">Aplicar na leitura de Tarot</Link>
+            <Link to="/forum">Abrir tópico no fórum</Link>
             <Link to="/oraculo/geral">Relacionar na Leitura Geral</Link>
           </div>
         </section>

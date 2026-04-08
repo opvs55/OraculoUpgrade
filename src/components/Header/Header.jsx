@@ -116,6 +116,9 @@ function Header() {
                   <NavLink to="/biblioteca" className={styles.accountMenuLink}>
                     Biblioteca
                   </NavLink>
+                  <NavLink to="/forum" className={styles.accountMenuLink}>
+                    Fórum
+                  </NavLink>
                 </div>
               )}
             </div>
@@ -243,6 +246,9 @@ function Header() {
             </NavLink>
             <NavLink to="/biblioteca" className={styles.mobileLink} onClick={handleCloseMenu}>
               Biblioteca
+            </NavLink>
+            <NavLink to="/forum" className={styles.mobileLink} onClick={handleCloseMenu}>
+              Fórum
             </NavLink>
             <NavLink to="/perfil/editar" className={styles.mobileLink} onClick={handleCloseMenu}>
               Perfil
