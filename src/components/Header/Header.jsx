@@ -116,24 +116,6 @@ function Header() {
                   <NavLink to="/biblioteca" className={styles.accountMenuLink}>
                     Biblioteca
                   </NavLink>
-                  <NavLink to="/comunidade" className={styles.accountMenuLink}>
-                    Hub Comunidade
-                  </NavLink>
-                  <NavLink to="/comunidade/feed" className={styles.accountMenuLink}>
-                    Feed
-                  </NavLink>
-                  <NavLink to="/comunidade/forum" className={styles.accountMenuLink}>
-                    Fórum
-                  </NavLink>
-                  <NavLink to="/comunidade/debates" className={styles.accountMenuLink}>
-                    Debates
-                  </NavLink>
-                  <NavLink to="/comunidade/aprendizado" className={styles.accountMenuLink}>
-                    Aprendizado
-                  </NavLink>
-                  <NavLink to="/comunidade/leaderboard" className={styles.accountMenuLink}>
-                    Leaderboard
-                  </NavLink>
                 </div>
               )}
             </div>
@@ -261,24 +243,6 @@ function Header() {
             </NavLink>
             <NavLink to="/biblioteca" className={styles.mobileLink} onClick={handleCloseMenu}>
               Biblioteca
-            </NavLink>
-            <NavLink to="/comunidade" className={styles.mobileLink} onClick={handleCloseMenu}>
-              Hub Comunidade
-            </NavLink>
-            <NavLink to="/comunidade/feed" className={styles.mobileLink} onClick={handleCloseMenu}>
-              Feed
-            </NavLink>
-            <NavLink to="/comunidade/forum" className={styles.mobileLink} onClick={handleCloseMenu}>
-              Fórum
-            </NavLink>
-            <NavLink to="/comunidade/debates" className={styles.mobileLink} onClick={handleCloseMenu}>
-              Debates
-            </NavLink>
-            <NavLink to="/comunidade/aprendizado" className={styles.mobileLink} onClick={handleCloseMenu}>
-              Aprendizado
-            </NavLink>
-            <NavLink to="/comunidade/leaderboard" className={styles.mobileLink} onClick={handleCloseMenu}>
-              Leaderboard
             </NavLink>
             <NavLink to="/perfil/editar" className={styles.mobileLink} onClick={handleCloseMenu}>
               Perfil

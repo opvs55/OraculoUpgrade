@@ -67,6 +67,86 @@
   font-weight: bold;
 }
 
+.progressCard {
+  width: 100%;
+  margin-top: 1.5rem;
+  border-radius: 14px;
+  border: 1px solid #2c2c54;
+  background: rgba(17, 17, 34, 0.82);
+  padding: 1rem 1.2rem;
+}
+
+.progressHeader {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.8rem;
+  margin-bottom: 0.7rem;
+}
+
+.progressHeader h2 {
+  margin: 0;
+  font-size: 1rem;
+  color: #d8d8ee;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.progressHeader strong {
+  color: #e1b382;
+  font-size: 1.05rem;
+}
+
+.progressTrack {
+  width: 100%;
+  height: 8px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.1);
+  overflow: hidden;
+  margin-bottom: 0.8rem;
+}
+
+.progressFill {
+  display: block;
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #e1b382, #c36e97);
+  transition: width 0.35s ease;
+}
+
+.progressList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 0.4rem;
+}
+
+.progressList li {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  color: #c7c7d9;
+  font-size: 0.9rem;
+}
+
+.progressList li span {
+  color: #8f92aa;
+  font-weight: 700;
+}
+
+.progressList li p {
+  margin: 0;
+}
+
+.progressList li.filledItem span {
+  color: #79d89d;
+}
+
+.progressList li.filledItem p {
+  color: #e4e4ef;
+}
+
 .editPageLayout {
   display: grid;
   grid-template-columns: 1fr; /* Começa com coluna única */
