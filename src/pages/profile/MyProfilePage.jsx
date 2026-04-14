@@ -144,6 +144,50 @@ export default function MyProfilePage() {
     errorMessage,
   } = useWeeklyCard(user?.id);
 
+  const latestSynthesis = hubData?.latestSynthesis;
+  const readings = hubData?.recentReadings || [];
+  const reelOfDay = reelsLab.reelOfDay || null;
+  const runesPayload = hubData?.latestRunes?.output_payload;
+  const ichingPayload = hubData?.latestIChing?.output_payload;
+  const weeklyNumerologyPayload = hubData?.latestNumerologyWeekly?.result_payload;
+  const numerologyPersonal = hubData?.latestNumerology;
+  const cardImageUrl = getCardImageUrl(cardDetails?.img);
+
+  const runeSymbols = useMemo(
+    () => (Array.isArray(runesPayload?.runes) ? runesPayload.runes : [])
+      .slice(0, 3)
+      .map((rune) => resolveRune(rune?.key || rune?.name || rune?.symbol || rune).symbol),
+    [runesPayload],
+  );
+
+  const weeklySummary = useMemo(() => {
+    const tarotReady = Boolean(cardDetails || hubData?.latestWeeklyCard || latestSynthesis);
+    const runesReady = Boolean(hubData?.latestRunes);
+    const ichingReady = Boolean(hubData?.latestIChing);
+    const numerologyReady = Boolean(numerologyPersonal && hubData?.latestNumerologyWeekly);
+
+    const checklist = [
+      { id: 'tarot', label: 'Tarot', ready: tarotReady, cta: '/tarot' },
+      { id: 'runes', label: 'Runas', ready: runesReady, cta: '/runas' },
+      { id: 'iching', label: 'I Ching', ready: ichingReady, cta: '/iching' },
+      { id: 'numerology', label: 'Numerologia', ready: numerologyReady, cta: '/numerologia' },
+    ];
+
+    const completed = checklist.filter((item) => item.ready).length;
+    const total = checklist.length;
+    const percent = Math.round((completed / total) * 100);
+
+    return { checklist, completed, total, percent };
+  }, [
+    cardDetails,
+    hubData?.latestWeeklyCard,
+    latestSynthesis,
+    hubData?.latestRunes,
+    hubData?.latestIChing,
+    numerologyPersonal,
+    hubData?.latestNumerologyWeekly,
+  ]);
+
   const handleBack = () => {
     if (location.key !== 'default') {
       navigate(-1);
@@ -161,21 +205,6 @@ export default function MyProfilePage() {
   }
 
   const avatarUrl = profile?.avatar_url || 'https://i.imgur.com/6VBx3io.png';
-  const latestSynthesis = hubData?.latestSynthesis;
-  const readings = hubData?.recentReadings || [];
-  const reelOfDay = reelsLab.reelOfDay || null;
-  const runesPayload = hubData?.latestRunes?.output_payload;
-  const ichingPayload = hubData?.latestIChing?.output_payload;
-  const weeklyNumerologyPayload = hubData?.latestNumerologyWeekly?.result_payload;
-  const numerologyPersonal = hubData?.latestNumerology;
-  const cardImageUrl = getCardImageUrl(cardDetails?.img);
-
-  const runeSymbols = useMemo(
-    () => (Array.isArray(runesPayload?.runes) ? runesPayload.runes : [])
-      .slice(0, 3)
-      .map((rune) => resolveRune(rune?.key || rune?.name || rune?.symbol || rune).symbol),
-    [runesPayload],
-  );
 
   const weeklySummary = useMemo(() => {
     const tarotReady = Boolean(cardDetails || hubData?.latestWeeklyCard || latestSynthesis);
