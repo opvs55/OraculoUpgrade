@@ -80,18 +80,18 @@ function Header() {
 
   const resolveFallbackRoute = (pathname) => {
     if (pathname.startsWith('/perfil/editar')) return '/perfil';
-    if (pathname.startsWith('/perfil')) return '/meu-grimorio';
+    if (pathname.startsWith('/perfil')) return '/tarot';
     if (pathname.startsWith('/reels')) return '/perfil';
-    if (pathname.startsWith('/oraculo/geral')) return '/meu-grimorio';
-    if (pathname.startsWith('/runas')) return '/meu-grimorio';
-    if (pathname.startsWith('/iching')) return '/meu-grimorio';
-    if (pathname.startsWith('/numerologia')) return '/meu-grimorio';
-    if (pathname.startsWith('/biblioteca')) return '/meu-grimorio';
-    if (pathname.startsWith('/tarot')) return '/meu-grimorio';
-    return '/meu-grimorio';
+    if (pathname.startsWith('/oraculo/geral')) return '/perfil';
+    if (pathname.startsWith('/runas')) return '/perfil';
+    if (pathname.startsWith('/iching')) return '/perfil';
+    if (pathname.startsWith('/numerologia')) return '/perfil';
+    if (pathname.startsWith('/biblioteca')) return '/perfil';
+    if (pathname.startsWith('/tarot')) return '/perfil';
+    return '/perfil';
   };
 
-  const canShowQuickBack = isInternal && location.pathname !== '/meu-grimorio';
+  const canShowQuickBack = isInternal && !['/perfil', '/meu-grimorio'].includes(location.pathname);
   const handleQuickBack = () => {
     if (location.key !== 'default') {
       navigate(-1);
@@ -145,11 +145,8 @@ function Header() {
               </button>
               {isLeftDropdownOpen && (
                 <div className={styles.leftDropdownMenu}>
-                  <NavLink to="/meu-grimorio" className={styles.accountMenuLink}>
-                    Grimório
-                  </NavLink>
                   <NavLink to="/perfil" className={styles.accountMenuLink}>
-                    Meu Perfil
+                    Meu Espaço
                   </NavLink>
                   <NavLink to="/reels" className={styles.accountMenuLink}>
                     Reels
@@ -292,11 +289,8 @@ function Header() {
             <NavLink to="/oraculo/geral" className={styles.mobileLink} onClick={handleCloseMenu}>
               Síntese Semanal
             </NavLink>
-            <NavLink to="/meu-grimorio" className={styles.mobileLink} onClick={handleCloseMenu}>
-              Grimório
-            </NavLink>
             <NavLink to="/perfil" className={styles.mobileLink} onClick={handleCloseMenu}>
-              Meu Perfil
+              Meu Espaço
             </NavLink>
             <NavLink to="/reels" className={styles.mobileLink} onClick={handleCloseMenu}>
               Reels

@@ -111,7 +111,7 @@ function EditarPerfilPage() {
     updateProfile(updates, {
       onSuccess: () => {
         setMessage('Perfil atualizado com sucesso! Boas-vindas e boas leituras. Redirecionando...');
-        setTimeout(() => navigate('/meu-grimorio'), 2000); 
+        setTimeout(() => navigate('/perfil'), 2000); 
       },
       onError: (error) => {
         console.error("Erro ao atualizar perfil:", error);
@@ -269,7 +269,7 @@ function EditarPerfilPage() {
                 />
               </div>
               <div className={styles.formActions}>
-                <Link to="/meu-grimorio" className={styles.cancelButton}>Cancelar</Link> 
+                <Link to="/perfil" className={styles.cancelButton}>Cancelar</Link> 
                 <button type="submit" className={styles.saveButton} disabled={isUpdating || isDeleting}>
                   {isUpdating ? 'Salvando...' : 'Salvar Alterações'}
                 </button>

@@ -43,7 +43,6 @@ const CardDetailPage = lazy(() => import('../pages/reading/CardDetailPage/CardDe
 // Páginas Protegidas (Dashboard, Aprendizagem, Comunidade)
 const CardLibraryPage = lazy(() => import('../pages/learning/CardLibraryPage'));
 const LearningCardDetailPage = lazy(() => import('../pages/learning/LearningCardDetailPage'));
-const MeuGrimorioPage = lazy(() => import('../pages/dashboard/MeuGrimorioPage'));
 const EditarPerfilPage = lazy(() => import('../pages/dashboard/EditarPerfilPage'));
 
 function AppRoutes() {
@@ -71,7 +70,7 @@ function AppRoutes() {
 
         {/* --- Rotas Protegidas (Agrupadas) --- */}
         <Route element={<ProtectedRoute />}>
-          <Route path="/meu-grimorio" element={<MeuGrimorioPage />} />
+          <Route path="/meu-grimorio" element={<MyProfilePage />} />
           <Route path="/perfil" element={<MyProfilePage />} />
           <Route path="/perfil/editar" element={<EditarPerfilPage />} />
           <Route path="/reels" element={<ReelsLabPage />} />

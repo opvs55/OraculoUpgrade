@@ -22,7 +22,7 @@ function LoginPage() {
   const { user, loading: authLoading } = useAuth();
 
   useEffect(() => {
-    if (user) navigate('/meu-grimorio');
+    if (user) navigate('/perfil');
   }, [user, navigate]);
 
   const resolveEmailFromIdentifier = async (value) => {
@@ -63,7 +63,7 @@ function LoginPage() {
         throw signInError;
       }
 
-      navigate('/meu-grimorio');
+      navigate('/perfil');
     } catch (err) {
       setError(translateSupabaseError(err));
       console.error('Erro no login:', err);
@@ -80,7 +80,7 @@ function LoginPage() {
       const { error: oauthError } = await supabase.auth.signInWithOAuth({
         provider,
         options: {
-          redirectTo: `${window.location.origin}/meu-grimorio`,
+          redirectTo: `${window.location.origin}/perfil`,
         },
       });
 

@@ -1,12 +1,22 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { useAuth } from '../../context/AuthContext';
 import { useUserProfile } from '../../hooks/useUserProfile';
+import { useWeeklyCard } from '../../hooks/useWeeklyCard';
+import { resolveRune } from '../../constants/runes';
 import { supabase } from '../../supabaseClient';
 import Loader from '../../components/common/Loader/Loader';
 import { useReelsLab } from '../../features/reels/useReelsLab';
 import styles from './MyProfilePage.module.css';
+
+const spreadTypeLabels = {
+  oneCard: 'Tarot (1 carta)',
+  threeCards: 'Tarot (3 cartas)',
+  celticCross: 'Tarot (Cruz Celta)',
+  templeOfAphrodite: 'Tarot (Templo de Afrodite)',
+  pathChoice: 'Tarot (Escolha de Caminho)',
+};
 
 const formatDate = (value) => {
   if (!value) return 'Sem data';
@@ -19,30 +29,36 @@ const formatDate = (value) => {
   }).format(parsed);
 };
 
-function useMyProfileOverview(userId) {
+const getCardImageUrl = (image) =>
+  image ? `${import.meta.env.BASE_URL}${image.startsWith('/') ? image.slice(1) : image}` : null;
+
+const getOracleHeadline = (payload) =>
+  payload?.headline || payload?.summary || payload?.one_liner || payload?.weekly_focus || 'Leitura disponível.';
+
+function useUnifiedOracleHub(userId) {
   return useQuery({
-    queryKey: ['myProfileOverview', userId],
+    queryKey: ['unifiedOracleHub', userId],
     enabled: !!userId,
     queryFn: async () => {
       if (!userId) return null;
 
-      const safeQuery = async (query) => {
+      const safeQuery = async (query, fallback = []) => {
         const { data, error } = await query;
         if (error) {
-          console.warn('Falha em consulta do perfil privado:', error.message);
-          return [];
+          console.warn('Falha ao buscar bloco do painel unificado:', error.message);
+          return fallback;
         }
-        return data || [];
+        return data ?? fallback;
       };
 
-      const [recentReadings, weeklyCardRows, unifiedRows, reelOfDayRow] = await Promise.all([
+      const [readings, weeklyCardRows, unifiedRows, runesRows, ichingRows, numerologyRows, numerologyWeeklyRows] = await Promise.all([
         safeQuery(
           supabase
             .from('readings')
             .select('id, created_at, spread_type')
             .eq('user_id', userId)
             .order('created_at', { ascending: false })
-            .limit(5),
+            .limit(6),
         ),
         safeQuery(
           supabase
@@ -62,19 +78,50 @@ function useMyProfileOverview(userId) {
         ),
         safeQuery(
           supabase
-            .from('reels')
-            .select('id, title, hook, cta_path, source_type, updated_at')
+            .from('oracle_weekly_modules')
+            .select('id, output_payload, week_start, updated_at')
             .eq('user_id', userId)
+            .eq('oracle_type', 'runes_weekly')
+            .eq('status', 'ok')
             .order('updated_at', { ascending: false })
+            .limit(1),
+        ),
+        safeQuery(
+          supabase
+            .from('oracle_weekly_modules')
+            .select('id, output_payload, week_start, updated_at')
+            .eq('user_id', userId)
+            .eq('oracle_type', 'iching_weekly')
+            .eq('status', 'ok')
+            .order('updated_at', { ascending: false })
+            .limit(1),
+        ),
+        safeQuery(
+          supabase
+            .from('numerology_readings')
+            .select('id, life_path_number, birthday_number, input_birth_date, created_at')
+            .eq('user_id', userId)
+            .order('created_at', { ascending: false })
+            .limit(1),
+        ),
+        safeQuery(
+          supabase
+            .from('numerology_weekly_readings')
+            .select('id, week_start, week_ref, result_payload, created_at')
+            .eq('user_id', userId)
+            .order('week_start', { ascending: false })
             .limit(1),
         ),
       ]);
 
       return {
-        recentReadings,
+        recentReadings: readings,
         latestWeeklyCard: weeklyCardRows[0] || null,
-        latestUnifiedReading: unifiedRows[0] || null,
-        reelOfDay: reelOfDayRow[0] || null,
+        latestSynthesis: unifiedRows[0] || null,
+        latestRunes: runesRows[0] || null,
+        latestIChing: ichingRows[0] || null,
+        latestNumerology: numerologyRows[0] || null,
+        latestNumerologyWeekly: numerologyWeeklyRows[0] || null,
       };
     },
   });
@@ -85,30 +132,49 @@ export default function MyProfilePage() {
   const location = useLocation();
   const { user } = useAuth();
   const { profile, isLoading: isProfileLoading } = useUserProfile(user?.id);
-  const { data: overview, isLoading: isOverviewLoading } = useMyProfileOverview(user?.id);
+  const { data: hubData, isLoading: isHubLoading } = useUnifiedOracleHub(user?.id);
   const reelsLab = useReelsLab(user?.id);
+  const {
+    cardDetails,
+    revealAllowed,
+    revealCard,
+    isRevealing,
+    isSessionLoading,
+    errorMessage,
+  } = useWeeklyCard(user?.id);
 
   const handleBack = () => {
     if (location.key !== 'default') {
       navigate(-1);
       return;
     }
-    navigate('/meu-grimorio');
+    navigate('/tarot');
   };
 
-  if (isProfileLoading || isOverviewLoading) {
+  if (isProfileLoading || isHubLoading) {
     return (
       <div className={`content_wrapper ${styles.page}`}>
-        <Loader customText="Montando seu perfil..." />
+        <Loader customText="Montando seu painel oracular..." />
       </div>
     );
   }
 
-  const latestCard = overview?.latestWeeklyCard;
-  const latestSynthesis = overview?.latestUnifiedReading;
-  const readings = overview?.recentReadings || [];
-  const reelOfDay = overview?.reelOfDay || reelsLab.reels[0] || null;
   const avatarUrl = profile?.avatar_url || 'https://i.imgur.com/6VBx3io.png';
+  const latestSynthesis = hubData?.latestSynthesis;
+  const readings = hubData?.recentReadings || [];
+  const reelOfDay = reelsLab.reelOfDay || null;
+  const runesPayload = hubData?.latestRunes?.output_payload;
+  const ichingPayload = hubData?.latestIChing?.output_payload;
+  const weeklyNumerologyPayload = hubData?.latestNumerologyWeekly?.result_payload;
+  const numerologyPersonal = hubData?.latestNumerology;
+  const cardImageUrl = getCardImageUrl(cardDetails?.img);
+
+  const runeSymbols = useMemo(
+    () => (Array.isArray(runesPayload?.runes) ? runesPayload.runes : [])
+      .slice(0, 3)
+      .map((rune) => resolveRune(rune?.key || rune?.name || rune?.symbol || rune).symbol),
+    [runesPayload],
+  );
 
   return (
     <div className={`content_wrapper ${styles.page}`}>
@@ -118,7 +184,7 @@ export default function MyProfilePage() {
             ← Voltar
           </button>
           <div className={styles.topActions}>
-            <Link to="/meu-grimorio" className={styles.secondaryButton}>Grimório</Link>
+            <Link to="/perfil/editar" className={styles.secondaryButton}>Editar perfil</Link>
             <Link to="/reels" className={styles.secondaryButton}>Reels</Link>
           </div>
         </header>
@@ -126,84 +192,172 @@ export default function MyProfilePage() {
         <section className={styles.hero}>
           <img src={avatarUrl} alt={`Avatar de ${profile?.username || 'usuário'}`} className={styles.avatar} />
           <div className={styles.heroContent}>
-            <p className={styles.eyebrow}>Meu Perfil</p>
-            <h1>{profile?.full_name || profile?.username || 'Seu espaço oracular'}</h1>
+            <p className={styles.eyebrow}>Seu Espaço Oracular</p>
+            <h1>{profile?.full_name || profile?.username || 'Painel pessoal'}</h1>
             <p className={styles.username}>@{profile?.username || 'usuario'}</p>
             {profile?.bio && <p className={styles.bio}>{profile.bio}</p>}
+            <div className={styles.heroMeta}>
+              <span>{readings.length} leituras recentes</span>
+              <span>Caminho de Vida: {numerologyPersonal?.life_path_number || profile?.life_path_number || '-'}</span>
+              <span>Nascimento: {numerologyPersonal?.birthday_number || profile?.birthday_number || '-'}</span>
+            </div>
             <div className={styles.heroActions}>
-              <Link to="/perfil/editar" className={styles.secondaryButton}>Editar dados</Link>
-              {profile?.username && (
-                <Link to={`/perfil/${profile.username}`} className={styles.primaryButton}>
-                  Ver perfil público
-                </Link>
-              )}
+              <Link to="/tarot" className={styles.primaryButton}>Fazer leitura</Link>
+              <Link to="/biblioteca" className={styles.secondaryButton}>Biblioteca Tarot</Link>
+              <Link to="/biblioteca/oraculos" className={styles.secondaryButton}>Biblioteca Oráculos</Link>
+              {profile?.username && <Link to={`/perfil/${profile.username}`} className={styles.secondaryButton}>Perfil público</Link>}
             </div>
           </div>
         </section>
 
-        <section className={styles.reelOfDay}>
-          <div className={styles.reelOfDayHeader}>
-            <p>Reel do dia</p>
-            <Link to="/reels">Ver todos</Link>
-          </div>
-          {reelOfDay ? (
-            <div className={styles.reelOfDayCard}>
-              <strong>{reelOfDay.title}</strong>
-              <p>{reelOfDay.hook || 'Resumo rápido dos sinais do seu momento atual.'}</p>
-              <div className={styles.reelOfDayMeta}>
-                <span>{reelOfDay.source_type || reelOfDay.kind || 'oráculo'}</span>
-                <Link to={reelOfDay.cta_path || reelOfDay.ctaTo || '/reels'}>Abrir</Link>
+        {reelOfDay && (
+          <section className={styles.reelSpotlight}>
+            <div>
+              <p className={styles.reelEyebrow}>Reel do dia</p>
+              <h2>{reelOfDay.title}</h2>
+              <p>{reelOfDay.hook || 'Resumo rápido dos sinais mais vivos do seu momento.'}</p>
+            </div>
+            <Link to={reelOfDay.ctaTo || '/reels'} className={styles.inlineLink}>Abrir reel</Link>
+          </section>
+        )}
+
+        <section className={styles.experienceGrid}>
+          <article className={styles.tarotZone}>
+            <header className={styles.zoneHeader}>
+              <p className={styles.zoneEyebrow}>Pilar 01</p>
+              <h2>Tarot</h2>
+              <p>Seu núcleo de leitura: carta da semana, histórico recente e síntese integrada.</p>
+            </header>
+
+            <div className={styles.tarotHeroCard}>
+              <div className={styles.tarotCardVisual}>
+                {cardDetails ? (
+                  cardImageUrl ? <img src={cardImageUrl} alt={cardDetails.nome} /> : <div className={styles.tarotCardPlaceholder} />
+                ) : (
+                  <div className={styles.tarotCardBack}>✶</div>
+                )}
+              </div>
+              <div className={styles.tarotHeroContent}>
+                <h3>{cardDetails?.nome || hubData?.latestWeeklyCard?.card_name || 'Carta da semana ainda não revelada'}</h3>
+                <p>
+                  {cardDetails?.significados?.direito
+                    ? cardDetails.significados.direito.split('. ')[0]
+                    : 'Revele sua carta semanal para abrir o foco principal do seu ciclo.'}
+                </p>
+                {!cardDetails && (
+                  <button
+                    type="button"
+                    className={styles.revealButton}
+                    onClick={() => revealCard()}
+                    disabled={!revealAllowed || isRevealing || isSessionLoading}
+                  >
+                    {isSessionLoading ? 'Carregando sessão...' : isRevealing ? 'Revelando...' : 'Revelar carta da semana'}
+                  </button>
+                )}
+                {errorMessage && <p className={styles.errorText}>{errorMessage}</p>}
+                <div className={styles.tarotLinks}>
+                  <Link to="/tarot">Abrir Tarot</Link>
+                  <Link to="/oraculo/geral">Síntese semanal</Link>
+                  <Link to="/biblioteca">Entender cartas</Link>
+                </div>
               </div>
             </div>
-          ) : (
-            <p className={styles.empty}>Gere seus primeiros oráculos para desbloquear o reel do dia.</p>
-          )}
-        </section>
 
-        <section className={styles.grid}>
-          <article className={styles.card}>
-            <h2>Momento atual</h2>
-            {latestCard ? (
-              <p>
-                Carta da semana: <strong>{latestCard.card_name || 'registrada'}</strong> ({formatDate(latestCard.week_start || latestCard.created_at)}).
-              </p>
-            ) : (
-              <p>Você ainda não revelou sua carta da semana.</p>
-            )}
-            {latestSynthesis ? (
-              <p>
-                Síntese: <strong>{latestSynthesis.final_reading?.title || 'Síntese Semanal'}</strong>.
-              </p>
-            ) : (
-              <p>Síntese Semanal ainda não gerada nesta conta.</p>
-            )}
-            <Link to="/oraculo/geral" className={styles.inlineLink}>Abrir Síntese Semanal</Link>
+            <div className={styles.timelineCard}>
+              <div className={styles.sectionTitleRow}>
+                <h3>Timeline Tarot</h3>
+                <span>{readings.length} registros</span>
+              </div>
+              {readings.length > 0 ? (
+                <ul className={styles.timelineList}>
+                  {readings.map((reading) => (
+                    <li key={reading.id}>
+                      <strong>{spreadTypeLabels[reading.spread_type] || 'Leitura de Tarot'}</strong>
+                      <span>{formatDate(reading.created_at)}</span>
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <p className={styles.emptyState}>Suas próximas leituras de Tarot aparecerão aqui.</p>
+              )}
+            </div>
           </article>
 
-          <article className={styles.card}>
-            <h2>Linha do tempo curta</h2>
-            {readings.length > 0 ? (
-              <ul className={styles.timelineList}>
-                {readings.map((reading) => (
-                  <li key={reading.id}>
-                    <span>{formatDate(reading.created_at)}</span>
-                    <p>{reading.spread_type || 'Leitura de Tarot'}</p>
-                  </li>
-                ))}
-              </ul>
-            ) : (
-              <p>Suas leituras aparecerão aqui conforme o uso.</p>
-            )}
-            <Link to="/meu-grimorio" className={styles.inlineLink}>Ver histórico completo</Link>
-          </article>
+          <article className={styles.oraclesZone}>
+            <header className={styles.zoneHeader}>
+              <p className={styles.zoneEyebrow}>Pilar 02</p>
+              <h2>Outros Oráculos</h2>
+              <p>Runas, I Ching, Numerologia e Síntese em visão de controle para decisões rápidas.</p>
+            </header>
 
-          <article className={styles.card}>
-            <h2>Laboratório de Reels</h2>
-            <p>
-              Transforme sinais da semana em vídeos curtos (MVP pessoal). Esta etapa prepara o formato
-              de reels sem depender de comunidade.
-            </p>
-            <Link to="/reels" className={styles.primaryButton}>Abrir laboratório</Link>
+            <div className={styles.oracleCardsGrid}>
+              <article className={styles.oracleCard}>
+                <h3>Runas</h3>
+                {hubData?.latestRunes ? (
+                  <>
+                    <div className={styles.runeStrip}>
+                      {runeSymbols.map((symbol, index) => (
+                        <span key={`${symbol}-${index}`}>{symbol}</span>
+                      ))}
+                    </div>
+                    <p>{getOracleHeadline(runesPayload)}</p>
+                    <small>{formatDate(hubData.latestRunes.updated_at || hubData.latestRunes.week_start)}</small>
+                  </>
+                ) : (
+                  <p className={styles.emptyState}>Sem módulo semanal de runas ainda.</p>
+                )}
+                <Link to="/runas">Abrir Runas</Link>
+              </article>
+
+              <article className={styles.oracleCard}>
+                <h3>I Ching</h3>
+                {hubData?.latestIChing ? (
+                  <>
+                    <p>{getOracleHeadline(ichingPayload)}</p>
+                    <small>{formatDate(hubData.latestIChing.updated_at || hubData.latestIChing.week_start)}</small>
+                  </>
+                ) : (
+                  <p className={styles.emptyState}>Sem módulo semanal de I Ching ainda.</p>
+                )}
+                <Link to="/iching">Abrir I Ching</Link>
+              </article>
+
+              <article className={styles.oracleCard}>
+                <h3>Numerologia pessoal</h3>
+                <p>
+                  Caminho de Vida <strong>{numerologyPersonal?.life_path_number || profile?.life_path_number || '-'}</strong> ·
+                  Nascimento <strong> {numerologyPersonal?.birthday_number || profile?.birthday_number || '-'}</strong>
+                </p>
+                <small>{numerologyPersonal?.input_birth_date ? `Base: ${formatDate(numerologyPersonal.input_birth_date)}` : 'Base pessoal pendente.'}</small>
+                <Link to="/numerologia">Abrir Numerologia</Link>
+              </article>
+
+              <article className={styles.oracleCard}>
+                <h3>Numerologia semanal</h3>
+                {hubData?.latestNumerologyWeekly ? (
+                  <>
+                    <p>{getOracleHeadline(weeklyNumerologyPayload)}</p>
+                    <small>{formatDate(hubData.latestNumerologyWeekly.week_start || hubData.latestNumerologyWeekly.created_at)}</small>
+                  </>
+                ) : (
+                  <p className={styles.emptyState}>Gere sua numerologia semanal para ativar este bloco.</p>
+                )}
+                <Link to="/numerologia">Gerar semanal</Link>
+              </article>
+
+              <article className={styles.oracleCard}>
+                <h3>Síntese Semanal</h3>
+                {latestSynthesis ? (
+                  <>
+                    <p>{latestSynthesis.final_reading?.one_liner || latestSynthesis.final_reading?.title || 'Síntese disponível.'}</p>
+                    <small>{latestSynthesis.week_ref || formatDate(latestSynthesis.created_at)}</small>
+                  </>
+                ) : (
+                  <p className={styles.emptyState}>Sua síntese integrada ainda não foi gerada.</p>
+                )}
+                <Link to="/oraculo/geral">Abrir Síntese</Link>
+              </article>
+            </div>
           </article>
         </section>
       </div>

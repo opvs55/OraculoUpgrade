@@ -184,7 +184,7 @@ export default function ReelsLabPage() {
               <h2>Navegação rápida</h2>
               <ul>
                 <li><Link to="/perfil">Meu Perfil</Link></li>
-                <li><Link to="/meu-grimorio">Grimório</Link></li>
+                <li><Link to="/perfil">Painel Oracular</Link></li>
                 <li><Link to="/oraculo/geral">Síntese Semanal</Link></li>
               </ul>
             </section>
