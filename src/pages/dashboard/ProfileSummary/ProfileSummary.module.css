@@ -105,6 +105,10 @@
   text-align: center;
 }
 
+.profileActions > * {
+  flex: 1 1 150px;
+}
+
 .editButton {
   background-color: #E1B382;
   color: #0D0C1D;

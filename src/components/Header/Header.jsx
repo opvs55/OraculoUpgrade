@@ -113,6 +113,12 @@ function Header() {
                   <NavLink to="/meu-grimorio" className={styles.accountMenuLink}>
                     Grimório
                   </NavLink>
+                  <NavLink to="/perfil" className={styles.accountMenuLink}>
+                    Meu Perfil
+                  </NavLink>
+                  <NavLink to="/reels" className={styles.accountMenuLink}>
+                    Reels
+                  </NavLink>
                   <NavLink to="/biblioteca" className={styles.accountMenuLink}>
                     Biblioteca
                   </NavLink>
@@ -194,8 +200,11 @@ function Header() {
                 </button>
                 {isAccountOpen && (
                   <div className={styles.accountMenu} role="menu">
+                    <Link to="/perfil" role="menuitem" className={styles.accountMenuLink}>
+                      Meu Perfil
+                    </Link>
                     <Link to="/perfil/editar" role="menuitem" className={styles.accountMenuLink}>
-                      Perfil
+                      Configurações
                     </Link>
                     <button type="button" role="menuitem" onClick={signOut}>
                       Sair
@@ -241,11 +250,17 @@ function Header() {
             <NavLink to="/meu-grimorio" className={styles.mobileLink} onClick={handleCloseMenu}>
               Grimório
             </NavLink>
+            <NavLink to="/perfil" className={styles.mobileLink} onClick={handleCloseMenu}>
+              Meu Perfil
+            </NavLink>
+            <NavLink to="/reels" className={styles.mobileLink} onClick={handleCloseMenu}>
+              Reels
+            </NavLink>
             <NavLink to="/biblioteca" className={styles.mobileLink} onClick={handleCloseMenu}>
               Biblioteca
             </NavLink>
             <NavLink to="/perfil/editar" className={styles.mobileLink} onClick={handleCloseMenu}>
-              Perfil
+              Configurações
             </NavLink>
             <button type="button" className={styles.mobileGhostButton} onClick={signOut}>
               Sair
