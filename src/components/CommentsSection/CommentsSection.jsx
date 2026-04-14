@@ -343,7 +343,7 @@ function CommentsSection({ readingId, isOwner = false, pinnedCommentId = null, r
             <textarea
               value={interpretationText}
               onChange={(e) => setInterpretationText(e.target.value)}
-              placeholder="Compartilhe sua interpretação dessa posição com a comunidade..."
+              placeholder="Compartilhe sua interpretação dessa posição..."
               rows={4}
               required
               disabled={isAddingComment}

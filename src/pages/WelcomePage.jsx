@@ -7,7 +7,7 @@ const listaDeVideos = ['/assets/video_welcome2.mp4', '/assets/video_welcome2.mp4
 const mobileOracles = [
   { title: 'Tarot', description: 'Pergunta direta com leitura simbólica.', to: '/tarot' },
   { title: 'Numerologia', description: 'Descubra seu número de jornada.', to: '/numerologia' },
-  { title: 'Leitura Geral', description: 'Síntese central do seu Grimório.', to: '/oraculo/geral' },
+  { title: 'Síntese Semanal', description: 'Integração central do seu Grimório.', to: '/oraculo/geral' },
 ];
 
 function WelcomePage() {

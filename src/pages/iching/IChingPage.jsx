@@ -24,7 +24,7 @@ export default function IChingPage() {
     <div className={`content_wrapper ${styles.page}`}>
       <section className={styles.card}>
         <h1>I Ching Semanal</h1>
-        <p>Gere sua leitura semanal do I Ching para completar requisitos da Leitura Geral.</p>
+        <p>Gere sua leitura semanal do I Ching para completar requisitos da Síntese Integrada.</p>
         <button type="button" onClick={handleGenerate} disabled={isLoading}>
           {isLoading ? 'Gerando...' : 'Gerar I Ching da Semana'}
         </button>

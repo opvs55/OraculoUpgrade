@@ -100,7 +100,7 @@ export default function WeeklyCardRitual({
                   className={styles.ritualLinkButton}
                   onClick={onRelateRecent}
                 >
-                  Usar na Leitura Geral
+                  Usar na Síntese Semanal
                 </button>
               </div>
             </>

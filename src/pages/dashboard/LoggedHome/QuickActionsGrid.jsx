@@ -54,10 +54,10 @@ function QuickActionsGrid() {
         </article>
         <article className={styles.actionCard}>
           <div className={styles.actionIcon}>🧭</div>
-          <h3>Leitura Geral</h3>
+          <h3>Síntese Semanal</h3>
           <p>Gere uma síntese dos seus oráculos e veja direcionamentos práticos.</p>
           <Link to="/oraculo/geral" className={styles.actionButtonSecondary}>
-            Abrir leitura geral
+            Abrir síntese semanal
           </Link>
         </article>
       </div>
