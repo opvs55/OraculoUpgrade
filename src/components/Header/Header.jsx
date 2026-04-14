@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { NavLink, Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAutoHideHeader } from '../../hooks/useAutoHideHeader';
+import { goBackOrFallback, resolveFallbackRoute } from '../../utils/navigation';
 import styles from './Header.module.css';
 
 function Header() {
@@ -78,26 +79,13 @@ function Header() {
     }, 220);
   };
 
-  const resolveFallbackRoute = (pathname) => {
-    if (pathname.startsWith('/perfil/editar')) return '/perfil';
-    if (pathname.startsWith('/perfil')) return '/tarot';
-    if (pathname.startsWith('/reels')) return '/perfil';
-    if (pathname.startsWith('/oraculo/geral')) return '/perfil';
-    if (pathname.startsWith('/runas')) return '/perfil';
-    if (pathname.startsWith('/iching')) return '/perfil';
-    if (pathname.startsWith('/numerologia')) return '/perfil';
-    if (pathname.startsWith('/biblioteca')) return '/perfil';
-    if (pathname.startsWith('/tarot')) return '/perfil';
-    return '/perfil';
-  };
-
   const canShowQuickBack = isInternal && !['/perfil', '/meu-grimorio'].includes(location.pathname);
   const handleQuickBack = () => {
-    if (location.key !== 'default') {
-      navigate(-1);
-      return;
-    }
-    navigate(resolveFallbackRoute(location.pathname));
+    goBackOrFallback({
+      navigate,
+      location,
+      fallbackPath: resolveFallbackRoute(location.pathname),
+    });
   };
 
   return (

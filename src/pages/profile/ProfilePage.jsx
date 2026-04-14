@@ -3,6 +3,7 @@ import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '../../supabaseClient';
 import Loader from '../../components/common/Loader/Loader';
+import { goBackOrFallback } from '../../utils/navigation';
 import styles from './ProfilePage.module.css';
 
 const spreadTypeLabels = {
@@ -361,8 +362,11 @@ function ProfilePage() {
   const timeline = oracleData?.timeline || [];
 
   const handleBackClick = () => {
-    if (location.key !== 'default') navigate(-1);
-    else navigate('/');
+    goBackOrFallback({
+      navigate,
+      location,
+      fallbackPath: '/',
+    });
   };
 
   const renderArchetypeCard = (archetypeData) => {

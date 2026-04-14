@@ -2,6 +2,7 @@ import React, { useMemo } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { useReelsLab } from '../../features/reels/useReelsLab';
+import { goBackOrFallback } from '../../utils/navigation';
 import styles from './ReelsLabPage.module.css';
 
 const formatDate = (value) => {
@@ -37,8 +38,7 @@ export default function ReelsLabPage() {
   }, [reels, selectedType]);
 
   const handleBackClick = () => {
-    if (location.key !== 'default') navigate(-1);
-    else navigate('/perfil');
+    goBackOrFallback({ navigate, location, fallbackPath: '/perfil' });
   };
 
   return (
