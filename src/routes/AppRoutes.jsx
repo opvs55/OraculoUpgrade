@@ -25,6 +25,7 @@ const RunesWeeklyPage = lazy(() => import('../pages/RunesWeeklyPage'));
 const IChingWeeklyPage = lazy(() => import('../pages/IChingWeeklyPage'));
 const MyProfilePage = lazy(() => import('../pages/profile/MyProfilePage'));
 const ReelsLabPage = lazy(() => import('../pages/reels/ReelsLabPage'));
+const OracleLibraryPage = lazy(() => import('../pages/learning/OracleLibraryPage'));
 
 // Autenticação
 const CadastroPage = lazy(() => import('../pages/auth/CadastroPage'));
@@ -75,6 +76,7 @@ function AppRoutes() {
           <Route path="/perfil/editar" element={<EditarPerfilPage />} />
           <Route path="/reels" element={<ReelsLabPage />} />
           <Route path="/biblioteca" element={<CardLibraryPage />} />
+          <Route path="/biblioteca/oraculos" element={<OracleLibraryPage />} />
           <Route path="/biblioteca/:cardSlug" element={<LearningCardDetailPage />} />
           <Route path="/oraculo/geral" element={<GeneralOraclePage />} />
           <Route path="/oraculo/geral/:id" element={<GeneralOraclePage />} />
