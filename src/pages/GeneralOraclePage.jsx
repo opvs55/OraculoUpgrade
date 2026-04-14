@@ -85,7 +85,7 @@ const buildFallbackGeneralReading = ({ tarotCard, runesOutput, ichingOutput, num
     .join(' • ');
 
   return {
-    title: 'Leitura Geral Integrada (Modo Estável)',
+    title: 'Síntese Integrada (Modo Estável)',
     one_liner: oneLiner || 'Síntese unificada da semana com os módulos disponíveis.',
     overview: [
       'Construímos esta leitura com os módulos semanais disponíveis no seu grimório para manter continuidade mesmo quando a geração central está instável.',
@@ -184,7 +184,7 @@ export default function GeneralOraclePage() {
   const getUiErrorMessage = useCallback((err) => (
     err?.message
     || err?.error?.message
-    || 'Não foi possível gerar a Leitura Geral agora. Tente novamente.'
+    || 'Não foi possível gerar a Síntese Integrada agora. Tente novamente.'
   ), []);
 
   const buildAndSetFallback = useCallback(() => {
@@ -221,7 +221,7 @@ export default function GeneralOraclePage() {
       } else {
         setUiError('Serviço central indisponível. Exibindo leitura em modo estável com dados locais.');
       }
-      console.error('Erro ao gerar Leitura Geral:', err);
+      console.error('Erro ao gerar Síntese Integrada:', err);
     }
   }, [generateCentralReading, getUiErrorMessage, buildAndSetFallback]);
 
@@ -304,7 +304,7 @@ export default function GeneralOraclePage() {
   return (
     <div className={`content_wrapper ${styles.page}`}>
       <header className={styles.header}>
-        <h1>Leitura Geral Semanal</h1>
+        <h1>Síntese Integrada Semanal</h1>
         <p>Síntese central da semana com Tarot + Numerologia + Runas + I Ching.</p>
         <div className={styles.statusRow}>
           <span className={styles.statusBadge}>Semanal • {weekRef || '—'}</span>
@@ -316,7 +316,7 @@ export default function GeneralOraclePage() {
       {!canGenerateByServer && !isLoadingRequirements && (
         <section className={styles.card}>
           <h2>Requisitos pendentes</h2>
-          <p>Conclua os oráculos semanais para liberar a leitura geral premium.</p>
+          <p>Conclua os oráculos semanais para liberar a síntese integrada premium.</p>
           <ul className={styles.checklist}>
             {missingChecklist.map((item) => (
               <li key={`${item.label}-${item.action}`}>
@@ -333,7 +333,7 @@ export default function GeneralOraclePage() {
           <h2>Resultado da Semana</h2>
           {!id && canGenerate && (
             <button type="button" onClick={loadCentralReading} className={styles.retryButton}>
-              {isGeneratingCentralReading ? 'Canalizando...' : 'Gerar Leitura Geral'}
+              {isGeneratingCentralReading ? 'Canalizando...' : 'Gerar Síntese Integrada'}
             </button>
           )}
         </div>
@@ -351,7 +351,7 @@ export default function GeneralOraclePage() {
           <div className={styles.errorCard} role="status">
             <h3>Pronto para gerar sua síntese</h3>
             <p>
-              Gere sua Leitura Geral para combinar Tarot, Numerologia, Runas e I Ching em uma visão única da semana.
+              Gere sua Síntese Integrada para combinar Tarot, Numerologia, Runas e I Ching em uma visão única da semana.
             </p>
           </div>
         )}
@@ -369,9 +369,9 @@ export default function GeneralOraclePage() {
       </section>
 
       <section className={styles.card}>
-        <h2>Histórico recente</h2>
+        <h2>Histórico de sínteses</h2>
         {isLoadingUnifiedReadings && <p>Carregando histórico...</p>}
-        {!isLoadingUnifiedReadings && latestReadings.length === 0 && <p>Nenhuma leitura geral encontrada.</p>}
+        {!isLoadingUnifiedReadings && latestReadings.length === 0 && <p>Nenhuma síntese integrada encontrada.</p>}
         <ul className={styles.historyList}>
           {latestReadings.map((reading) => (
             <li key={reading.id}>

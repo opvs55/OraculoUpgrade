@@ -116,9 +116,6 @@ function Header() {
                   <NavLink to="/biblioteca" className={styles.accountMenuLink}>
                     Biblioteca
                   </NavLink>
-                  <NavLink to="/forum" className={styles.accountMenuLink}>
-                    Fórum
-                  </NavLink>
                 </div>
               )}
             </div>
@@ -150,7 +147,7 @@ function Header() {
               to="/oraculo/geral"
               className={({ isActive }) => (isActive ? `${styles.navLink} ${styles.activeLink}` : styles.navLink)}
             >
-              Leitura Geral
+              Síntese Semanal
             </NavLink>
           </>
         )}
@@ -239,16 +236,13 @@ function Header() {
               I Ching
             </NavLink>
             <NavLink to="/oraculo/geral" className={styles.mobileLink} onClick={handleCloseMenu}>
-              Leitura Geral
+              Síntese Semanal
             </NavLink>
             <NavLink to="/meu-grimorio" className={styles.mobileLink} onClick={handleCloseMenu}>
               Grimório
             </NavLink>
             <NavLink to="/biblioteca" className={styles.mobileLink} onClick={handleCloseMenu}>
               Biblioteca
-            </NavLink>
-            <NavLink to="/forum" className={styles.mobileLink} onClick={handleCloseMenu}>
-              Fórum
             </NavLink>
             <NavLink to="/perfil/editar" className={styles.mobileLink} onClick={handleCloseMenu}>
               Perfil

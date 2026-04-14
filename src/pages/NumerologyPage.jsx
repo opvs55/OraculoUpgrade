@@ -117,6 +117,13 @@ function NumerologyPage() {
   return (
     <div className={`content_wrapper ${styles.pageContainer}`}>
       <div className={styles.content}>
+        <header className={styles.headerIntro}>
+          <h1 className={styles.headerTitle}>Numerologia Pessoal</h1>
+          <p className={styles.headerSubtitle}>
+            Descubra seu caminho de vida e o arquétipo do seu nascimento com uma leitura clara,
+            elegante e prática para sua rotina.
+          </p>
+        </header>
         {renderContent()}
       </div>
     </div>

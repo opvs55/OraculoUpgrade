@@ -67,7 +67,7 @@ export default function GeneralReadingView({ finalReading }) {
   return (
     <div className={styles.wrapper}>
       <Section delay="40ms" className={styles.headerBlock}>
-        <h2>{finalReading?.title || 'Leitura Geral Semanal'}</h2>
+        <h2>{finalReading?.title || 'Síntese Integrada Semanal'}</h2>
         {finalReading?.one_liner && <blockquote>“{finalReading.one_liner}”</blockquote>}
       </Section>
 

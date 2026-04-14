@@ -124,7 +124,7 @@ function ReadingInteractionBar({ reading, user, isOwner }) {
     if (!isOwner) return;
     const currentlyPublic = reading.is_public;
     if (currentlyPublic) {
-      if (window.confirm('Tem certeza que deseja tornar esta leitura privada? Ela não será mais visível na comunidade e o título compartilhado será removido.')) {
+      if (window.confirm('Tem certeza que deseja tornar esta leitura privada? Ela não ficará mais visível na área pública e o título compartilhado será removido.')) {
         updateReadingMutation.mutate({
           isPublic: false,
           sharedTitle: null,
@@ -243,7 +243,7 @@ function ReadingInteractionBar({ reading, user, isOwner }) {
         title="Compartilhar Leitura"
       >
         <form onSubmit={handleConfirmShare}>
-          <p>Adicione um título ou breve descrição para compartilhar sua leitura com a comunidade:</p>
+          <p>Adicione um título ou breve descrição para compartilhar sua leitura na área pública:</p>
           <textarea
             value={shareTitleInput}
             onChange={(e) => setShareTitleInput(e.target.value)}
@@ -295,7 +295,7 @@ function ReadingInteractionBar({ reading, user, isOwner }) {
             <p className={styles.integratedHint}>
               Dica: combine os 4 oráculos para uma leitura mais profunda em{' '}
               <Link to="/oraculo/geral" className={styles.inlineLink}>
-                Leitura Geral
+                Síntese Semanal
               </Link>
               .
             </p>

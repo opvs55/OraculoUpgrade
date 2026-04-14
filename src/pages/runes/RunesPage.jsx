@@ -24,7 +24,7 @@ export default function RunesPage() {
     <div className={`content_wrapper ${styles.page}`}>
       <section className={styles.card}>
         <h1>Runas Semanais</h1>
-        <p>Gere sua leitura semanal de runas para liberar a Leitura Geral.</p>
+        <p>Gere sua leitura semanal de runas para liberar a Síntese Integrada.</p>
         <button type="button" onClick={handleGenerate} disabled={isLoading}>
           {isLoading ? 'Gerando...' : 'Gerar Runas da Semana'}
         </button>
