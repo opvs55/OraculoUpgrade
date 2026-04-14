@@ -182,6 +182,133 @@
   margin-bottom: 1rem;
 }
 
+/* --- 7A. Painel dinâmico dos oráculos --- */
+.oracleSection {
+  background: linear-gradient(145deg, rgba(20, 20, 44, 0.85), rgba(14, 13, 31, 0.88));
+}
+
+.oracleGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.oracleMiniCard {
+  border: 1px solid rgba(225, 179, 130, 0.15);
+  border-radius: 10px;
+  background: rgba(9, 9, 24, 0.72);
+  padding: 1rem;
+  min-height: 156px;
+  display: flex;
+  flex-direction: column;
+}
+
+.oracleMiniLabel {
+  margin: 0 0 0.6rem;
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #9fa8cc;
+}
+
+.oracleMiniCard h4 {
+  margin: 0;
+  font-size: 1.05rem;
+  color: #e7be92;
+}
+
+.oracleMiniCard p {
+  margin-top: 0.65rem;
+  margin-bottom: 0;
+  color: #d7d7e8;
+  line-height: 1.55;
+  font-size: 0.95rem;
+}
+
+.oracleMiniMeta {
+  margin-top: auto;
+  padding-top: 0.75rem;
+  display: flex;
+  justify-content: space-between;
+  gap: 0.7rem;
+  color: #9b9fbc;
+  font-size: 0.78rem;
+}
+
+/* --- 7B. Linha do tempo pessoal --- */
+.timelineSection {
+  border-color: rgba(171, 145, 255, 0.24);
+}
+
+.timelineHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.timelineHeader h2 {
+  margin: 0;
+  padding-bottom: 0;
+  border-bottom: none;
+}
+
+.timelineHeader span {
+  color: #d4bcff;
+  font-size: 0.85rem;
+}
+
+.timelineList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 1rem;
+}
+
+.timelineItem {
+  display: grid;
+  grid-template-columns: 14px 1fr;
+  gap: 0.85rem;
+  align-items: start;
+}
+
+.timelineDot {
+  width: 14px;
+  height: 14px;
+  border-radius: 999px;
+  margin-top: 0.35rem;
+  background: radial-gradient(circle at 30% 30%, #f5d2b0 0%, #ab91ff 95%);
+  box-shadow: 0 0 0 4px rgba(171, 145, 255, 0.12);
+}
+
+.timelineBody {
+  border: 1px solid rgba(171, 145, 255, 0.17);
+  border-radius: 10px;
+  background: rgba(12, 11, 28, 0.78);
+  padding: 0.85rem 0.95rem;
+}
+
+.timelineDate {
+  margin: 0 0 0.35rem;
+  color: #9fa2c2;
+  font-size: 0.8rem;
+}
+
+.timelineBody h4 {
+  margin: 0;
+  color: #e8d5ff;
+  font-size: 1rem;
+}
+
+.timelineBody p {
+  margin: 0.45rem 0 0;
+  color: #dddcee;
+  line-height: 1.55;
+  font-size: 0.95rem;
+}
+
 /* --- 7. NOVOS ESTILOS DE NUMEROLOGIA --- */
 
 /* Texto (Essência, Luz, etc) */
@@ -347,5 +474,20 @@
   .archetypeGridContainer {
     grid-template-columns: 1fr;
     gap: 2rem;
+  }
+
+  .oracleGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .timelineItem {
+    grid-template-columns: 10px 1fr;
+    gap: 0.7rem;
+  }
+
+  .timelineDot {
+    width: 10px;
+    height: 10px;
+    margin-top: 0.45rem;
   }
 }
