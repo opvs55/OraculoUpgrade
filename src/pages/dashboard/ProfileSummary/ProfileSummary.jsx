@@ -64,7 +64,8 @@ function ProfileSummary({ profile, readings, isLoading, lifePathNumber }) {
       <p className={styles.readingCount}>Leituras Feitas: {readingCount}</p>
       
       <div className={styles.profileActions}>
-        <Link to="/perfil/editar" className={styles.editButton}>Editar Perfil</Link> 
+        <Link to="/perfil" className={styles.editButton}>Meu Perfil</Link> 
+        <Link to="/perfil/editar" className={styles.viewProfileButton}>Configurações</Link>
         {profile?.username && ( 
           <Link 
             to={`/perfil/${profile.username}`} 

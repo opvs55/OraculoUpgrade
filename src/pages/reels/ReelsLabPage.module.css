@@ -1,0 +1,181 @@
+.page {
+  min-height: calc(100vh - 84px);
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+  color: #ececf5;
+}
+
+.header {
+  background: rgba(17, 17, 34, 0.88);
+  border: 1px solid #2f2f59;
+  border-radius: 14px;
+  padding: 1.1rem 1.3rem;
+}
+
+.header h1 {
+  margin: 0;
+  font-size: 1.55rem;
+  color: #f0c89b;
+}
+
+.header p {
+  margin: 0.45rem 0 0;
+  color: #b9bad3;
+}
+
+.layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 320px;
+  gap: 1rem;
+}
+
+.feed {
+  display: grid;
+  gap: 1rem;
+}
+
+.reelCard {
+  background: linear-gradient(160deg, rgba(13, 12, 29, 0.96), rgba(23, 22, 48, 0.95));
+  border: 1px solid rgba(171, 145, 255, 0.2);
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+.reelVideoShell {
+  position: relative;
+  background: radial-gradient(circle at 20% 20%, rgba(225, 179, 130, 0.35), rgba(16, 16, 32, 0.95));
+  min-height: 390px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 1rem;
+}
+
+.reelChip {
+  align-self: flex-start;
+  background: rgba(8, 8, 20, 0.75);
+  border: 1px solid rgba(225, 179, 130, 0.45);
+  color: #f0c89b;
+  padding: 0.28rem 0.58rem;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.reelCenter {
+  margin: auto 0;
+  text-align: center;
+}
+
+.reelTitle {
+  margin: 0;
+  font-family: 'Cinzel', serif;
+  font-size: 1.55rem;
+  color: #fff0dd;
+}
+
+.reelSubtitle {
+  margin: 0.65rem auto 0;
+  color: #e8d7ff;
+  max-width: 90%;
+  line-height: 1.6;
+}
+
+.reelMeta {
+  margin-top: 1rem;
+  color: #c6c7df;
+  font-size: 0.86rem;
+}
+
+.reelControls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  background: rgba(8, 8, 20, 0.72);
+  border-top: 1px solid rgba(171, 145, 255, 0.2);
+  padding: 0.8rem 1rem;
+}
+
+.reelActions {
+  display: flex;
+  gap: 0.6rem;
+}
+
+.ghostButton,
+.solidButton {
+  border-radius: 8px;
+  padding: 0.48rem 0.82rem;
+  font-weight: 700;
+  font-size: 0.82rem;
+  border: 1px solid transparent;
+  cursor: pointer;
+}
+
+.ghostButton {
+  background: transparent;
+  border-color: rgba(225, 179, 130, 0.5);
+  color: #f0c89b;
+}
+
+.solidButton {
+  background: linear-gradient(120deg, #e1b382, #c36e97);
+  color: #0d0c1d;
+}
+
+.reelAside {
+  display: grid;
+  gap: 0.9rem;
+  align-content: start;
+}
+
+.panel {
+  background: rgba(17, 17, 34, 0.88);
+  border: 1px solid #2f2f59;
+  border-radius: 12px;
+  padding: 0.9rem 1rem;
+}
+
+.panel h2 {
+  margin: 0 0 0.75rem;
+  font-size: 1rem;
+  color: #e3c29b;
+}
+
+.panel p {
+  margin: 0;
+  color: #bcbdd4;
+  line-height: 1.6;
+}
+
+.panel ul {
+  margin: 0;
+  padding-left: 1.1rem;
+  color: #d7d8ea;
+  display: grid;
+  gap: 0.42rem;
+}
+
+.emptyCard {
+  background: rgba(17, 17, 34, 0.88);
+  border: 1px dashed rgba(225, 179, 130, 0.45);
+  border-radius: 14px;
+  padding: 1rem;
+}
+
+.emptyCard p {
+  margin: 0;
+  color: #cbcce2;
+}
+
+@media (max-width: 980px) {
+  .layout {
+    grid-template-columns: 1fr;
+  }
+
+  .reelVideoShell {
+    min-height: 330px;
+  }
+}

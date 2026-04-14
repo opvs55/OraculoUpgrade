@@ -1,0 +1,231 @@
+.page {
+  padding-top: 6rem;
+  padding-bottom: 3rem;
+}
+
+.container {
+  max-width: 1100px;
+  margin: 0 auto;
+  background: rgba(17, 16, 37, 0.78);
+  border: 1px solid rgba(225, 179, 130, 0.2);
+  border-radius: 14px;
+  padding: 2rem;
+  box-shadow: 0 18px 38px rgba(0, 0, 0, 0.35);
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+  margin-bottom: 1.3rem;
+}
+
+.header h1 {
+  margin: 0;
+  font-family: 'Cinzel', serif;
+  color: #e1b382;
+  font-size: 2rem;
+}
+
+.header p {
+  margin: 0.35rem 0 0;
+  color: #b9bbd0;
+}
+
+.headerActions {
+  display: flex;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+}
+
+.primaryAction,
+.secondaryAction {
+  text-decoration: none;
+  border-radius: 8px;
+  font-weight: 700;
+  font-size: 0.9rem;
+  padding: 0.65rem 1rem;
+  transition: all 0.2s ease;
+}
+
+.primaryAction {
+  background: #e1b382;
+  color: #0f1024;
+}
+
+.primaryAction:hover {
+  transform: translateY(-1px);
+  filter: brightness(1.04);
+}
+
+.secondaryAction {
+  border: 1px solid rgba(225, 179, 130, 0.55);
+  color: #e8caa4;
+}
+
+.secondaryAction:hover {
+  background: rgba(225, 179, 130, 0.12);
+}
+
+.identityCard {
+  margin-top: 1rem;
+  border: 1px solid rgba(171, 145, 255, 0.25);
+  border-radius: 12px;
+  background: rgba(13, 12, 29, 0.7);
+  padding: 1rem;
+}
+
+.identityTop {
+  display: flex;
+  gap: 0.9rem;
+  align-items: center;
+}
+
+.avatar {
+  width: 72px;
+  height: 72px;
+  object-fit: cover;
+  border-radius: 50%;
+  border: 2px solid rgba(225, 179, 130, 0.65);
+}
+
+.identityNames h2 {
+  margin: 0;
+  color: #efcfac;
+}
+
+.identityNames p {
+  margin: 0.2rem 0 0;
+  color: #aeb0c7;
+}
+
+.bio {
+  margin: 0.85rem 0 0;
+  color: #ddddef;
+}
+
+.grid {
+  margin-top: 1.4rem;
+  display: grid;
+  grid-template-columns: 1.5fr 1fr;
+  gap: 1rem;
+}
+
+.panel {
+  border: 1px solid rgba(225, 179, 130, 0.15);
+  border-radius: 12px;
+  background: rgba(11, 11, 26, 0.78);
+  padding: 1rem;
+}
+
+.panel h3 {
+  margin-top: 0;
+  margin-bottom: 0.4rem;
+  color: #e9c9a6;
+  font-size: 1.03rem;
+}
+
+.panelIntro {
+  margin-top: 0;
+  color: #b7b9cf;
+  font-size: 0.92rem;
+}
+
+.oracleGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.7rem;
+}
+
+.oracleCard {
+  border: 1px solid rgba(171, 145, 255, 0.23);
+  border-radius: 10px;
+  background: rgba(20, 19, 41, 0.8);
+  padding: 0.75rem;
+}
+
+.oracleCard strong {
+  display: block;
+  color: #ead8ff;
+  margin-bottom: 0.28rem;
+}
+
+.oracleCard p {
+  margin: 0;
+  color: #d3d4e8;
+  font-size: 0.9rem;
+  line-height: 1.45;
+}
+
+.timelineList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: 0.7rem;
+}
+
+.timelineItem {
+  border: 1px solid rgba(225, 179, 130, 0.18);
+  border-radius: 9px;
+  background: rgba(17, 16, 35, 0.78);
+  padding: 0.7rem;
+}
+
+.timelineItem strong {
+  display: block;
+  color: #e9cfb2;
+}
+
+.timelineItem span {
+  color: #a6a8c2;
+  font-size: 0.82rem;
+}
+
+.timelineItem p {
+  margin: 0.35rem 0 0;
+  color: #d7d8ea;
+  font-size: 0.9rem;
+}
+
+.pillars {
+  margin: 0;
+  padding-left: 1.1rem;
+  color: #c6c8df;
+  line-height: 1.6;
+}
+
+.pillars li + li {
+  margin-top: 0.45rem;
+}
+
+.empty {
+  color: #a9abc4;
+  font-style: italic;
+}
+
+.loading,
+.error {
+  text-align: center;
+  color: #d2d3ea;
+  padding: 3rem 1rem;
+}
+
+@media (max-width: 900px) {
+  .container {
+    padding: 1.25rem;
+  }
+
+  .header {
+    flex-direction: column;
+  }
+
+  .grid {
+    grid-template-columns: 1fr;
+  }
+
+  .oracleGrid {
+    grid-template-columns: 1fr;
+  }
+}

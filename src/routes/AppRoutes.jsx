@@ -23,6 +23,8 @@ const NumerologyPage = lazy(() => import('../pages/NumerologyPage.jsx'));
 const GeneralOraclePage = lazy(() => import('../pages/GeneralOraclePage'));
 const RunesWeeklyPage = lazy(() => import('../pages/RunesWeeklyPage'));
 const IChingWeeklyPage = lazy(() => import('../pages/IChingWeeklyPage'));
+const MyProfilePage = lazy(() => import('../pages/profile/MyProfilePage'));
+const ReelsLabPage = lazy(() => import('../pages/reels/ReelsLabPage'));
 
 // Autenticação
 const CadastroPage = lazy(() => import('../pages/auth/CadastroPage'));
@@ -69,7 +71,9 @@ function AppRoutes() {
         {/* --- Rotas Protegidas (Agrupadas) --- */}
         <Route element={<ProtectedRoute />}>
           <Route path="/meu-grimorio" element={<MeuGrimorioPage />} />
+          <Route path="/perfil" element={<MyProfilePage />} />
           <Route path="/perfil/editar" element={<EditarPerfilPage />} />
+          <Route path="/reels" element={<ReelsLabPage />} />
           <Route path="/biblioteca" element={<CardLibraryPage />} />
           <Route path="/biblioteca/:cardSlug" element={<LearningCardDetailPage />} />
           <Route path="/oraculo/geral" element={<GeneralOraclePage />} />

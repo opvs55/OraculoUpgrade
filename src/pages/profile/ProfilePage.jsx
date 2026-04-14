@@ -1,17 +1,31 @@
-// src/pages/profile/ProfilePage.jsx (VERSÃO FINAL COMPLETA)
-
-import React from 'react';
+import React, { useMemo } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '../../supabaseClient';
 import Loader from '../../components/common/Loader/Loader';
 import styles from './ProfilePage.module.css';
 
-// --- 1. FUNÇÕES AUXILIARES ---
+const spreadTypeLabels = {
+  oneCard: 'Tarot (1 carta)',
+  threeCards: 'Tarot (3 cartas)',
+  celticCross: 'Tarot (Cruz Celta)',
+  templeOfAphrodite: 'Tarot (Templo de Afrodite)',
+  pathChoice: 'Tarot (Escolha de Caminho)',
+};
 
-/**
- * Renderiza texto formatado com quebras de linha e **negrito**.
- */
+const formatDate = (value) => {
+  if (!value) return 'Data indisponível';
+  const parsed = new Date(value);
+  if (Number.isNaN(parsed.getTime())) return 'Data indisponível';
+  return new Intl.DateTimeFormat('pt-BR', {
+    day: '2-digit',
+    month: 'short',
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+  }).format(parsed);
+};
+
 const renderFormattedText = (text, customClassName = '') => {
   if (!text) return null;
   const regex = /\*\*(.*?)\*\*/g;
@@ -25,9 +39,9 @@ const renderFormattedText = (text, customClassName = '') => {
         const parts = trimmedParagraph.split(regex);
         return (
           <p key={pIndex}>
-            {parts.map((part, partIndex) =>
+            {parts.map((part, partIndex) => (
               partIndex % 2 === 1 ? <strong key={partIndex}>{part}</strong> : part
-            )}
+            ))}
           </p>
         );
       })}
@@ -35,16 +49,13 @@ const renderFormattedText = (text, customClassName = '') => {
   );
 };
 
-/**
- * "Parte" o texto do Caminho de Vida em Essência, Luz, Sombra e Missão.
- */
 const parseLifePathMeaning = (lifePathMeaning) => {
   if (!lifePathMeaning) return null;
   const parts = {
     essence: lifePathMeaning.split('* **')[0]?.trim() || '',
     light: lifePathMeaning.match(/\* \*\*Luz:\*\*(.*?)(?=\* \*\*|$)/s)?.[1]?.trim() || '',
     shadow: lifePathMeaning.match(/\* \*\*Sombra:\*\*(.*?)(?=\* \*\*|$)/s)?.[1]?.trim() || '',
-    mission: lifePathMeaning.match(/\* \*\*Missão:\*\*(.*?)(?=\* \*\*|$)/s)?.[1]?.trim() || ''
+    mission: lifePathMeaning.match(/\* \*\*Missão:\*\*(.*?)(?=\* \*\*|$)/s)?.[1]?.trim() || '',
   };
   if (parts.light.startsWith('Luz:**')) parts.light = parts.light.substring(6).trim();
   if (parts.shadow.startsWith('Sombra:**')) parts.shadow = parts.shadow.substring(9).trim();
@@ -53,9 +64,6 @@ const parseLifePathMeaning = (lifePathMeaning) => {
   return parts.essence ? parts : null;
 };
 
-/**
- * Faz o parse do JSON do Arquétipo da IA (ou lida com texto antigo).
- */
 const parseArchetype = (birthdaySecretMeaning) => {
   if (!birthdaySecretMeaning) return null;
   try {
@@ -63,27 +71,29 @@ const parseArchetype = (birthdaySecretMeaning) => {
     if (data.error) return null;
     return data;
   } catch (error) {
-    // Fallback para texto antigo (se não for JSON)
     console.warn('Falha ao interpretar o arquétipo da IA:', error);
     return {
-      archetype_title: "O Arquétipo do Dia",
+      archetype_title: 'O Arquétipo do Dia',
       archetype_description: birthdaySecretMeaning,
-      // Define os outros campos como nulos para o renderArchetypeCard usar o modo simples
       numerology_details: null,
       tarot_card: null,
       advice: null,
       strengths: [],
-      weaknesses: []
+      weaknesses: [],
     };
   }
 };
 
+const getPayloadHeadline = (payload) => (
+  payload?.headline
+  || payload?.summary
+  || payload?.one_liner
+  || payload?.weekly_focus
+  || ''
+);
 
-// --- 2. HOOKS DE BUSCA DE DADOS ---
+const getPayloadWeekLabel = (weekRef) => (weekRef ? `Semana ${weekRef}` : 'Semana atual');
 
-/**
- * Hook Principal: Busca dados da tabela 'profiles'.
- */
 function usePublicProfile(username) {
   return useQuery({
     queryKey: ['publicProfile', username],
@@ -104,13 +114,10 @@ function usePublicProfile(username) {
       return data;
     },
     enabled: !!username,
-    staleTime: 1000 * 60 * 5, // Cache de 5 min
+    staleTime: 1000 * 60 * 5,
   });
 }
 
-/**
- * Hook: Busca contagem de leituras.
- */
 function usePublicReadingCount(userId) {
   return useQuery({
     queryKey: ['publicReadingCount', userId],
@@ -124,60 +131,241 @@ function usePublicReadingCount(userId) {
       return count;
     },
     enabled: !!userId,
-    staleTime: 1000 * 60 * 15, // Cache de 15 min
+    staleTime: 1000 * 60 * 15,
   });
 }
 
-/**
- * Hook de Numerologia: Chama a função RPC segura.
- */
 function usePublicNumerology(userId) {
   return useQuery({
     queryKey: ['publicNumerology', userId],
     queryFn: async () => {
       if (!userId) return null;
 
-      // Chama a função SQL criada no Supabase
       const { data, error } = await supabase
         .rpc('get_public_numerology_by_user_id', { profile_id: userId })
         .maybeSingle();
 
       if (error) throw error;
-      return data; // Retorna { life_path_meaning, birthday_secret_meaning } ou null
+      return data;
     },
     enabled: !!userId,
-    staleTime: 1000 * 60 * 60, // Cache de 1 hora
+    staleTime: 1000 * 60 * 60,
   });
 }
 
-// --- 3. COMPONENTE PRINCIPAL ---
+function useProfileOracleData(userId) {
+  return useQuery({
+    queryKey: ['profileOracleData', userId],
+    enabled: !!userId,
+    staleTime: 1000 * 60 * 5,
+    queryFn: async () => {
+      if (!userId) {
+        return {
+          summary: null,
+          timeline: [],
+        };
+      }
+
+      const safeQuery = async (label, query, fallback) => {
+        const { data, error } = await query;
+        if (error) {
+          console.warn(`Falha ao buscar ${label} no perfil dinâmico:`, error.message);
+          return fallback;
+        }
+        return data ?? fallback;
+      };
+
+      const [
+        readings,
+        weeklyCards,
+        modules,
+        unifiedReadings,
+        numerologyWeekly,
+      ] = await Promise.all([
+        safeQuery(
+          'leituras',
+          supabase
+            .from('readings')
+            .select('id, created_at, spread_type, is_public')
+            .eq('user_id', userId)
+            .order('created_at', { ascending: false })
+            .limit(10),
+          [],
+        ),
+        safeQuery(
+          'tarot semanal',
+          supabase
+            .from('weekly_cards')
+            .select('id, card_name, week_start, created_at')
+            .eq('user_id', userId)
+            .order('week_start', { ascending: false })
+            .limit(4),
+          [],
+        ),
+        safeQuery(
+          'módulos semanais',
+          supabase
+            .from('oracle_weekly_modules')
+            .select('id, oracle_type, output_payload, week_start, updated_at, status')
+            .eq('user_id', userId)
+            .order('updated_at', { ascending: false })
+            .limit(24),
+          [],
+        ),
+        safeQuery(
+          'síntese semanal',
+          supabase
+            .from('unified_readings')
+            .select('id, week_ref, created_at, final_reading')
+            .eq('user_id', userId)
+            .order('created_at', { ascending: false })
+            .limit(6),
+          [],
+        ),
+        safeQuery(
+          'numerologia semanal',
+          supabase
+            .from('numerology_weekly_readings')
+            .select('id, week_start, created_at, result_payload')
+            .eq('user_id', userId)
+            .order('week_start', { ascending: false })
+            .limit(4),
+          [],
+        ),
+      ]);
+
+      const latestWeeklyCard = weeklyCards?.[0] || null;
+      const runesModule = modules.find((item) => String(item.oracle_type || '').includes('runes') && item.status === 'ok') || null;
+      const ichingModule = modules.find((item) => String(item.oracle_type || '').includes('iching') && item.status === 'ok') || null;
+      const latestUnifiedReading = unifiedReadings?.[0] || null;
+      const latestNumerologyWeekly = numerologyWeekly?.[0] || null;
+
+      const summary = {
+        tarot: latestWeeklyCard
+          ? {
+              title: latestWeeklyCard.card_name || 'Carta semanal registrada',
+              description: latestWeeklyCard.card_name ? `Carta da semana: ${latestWeeklyCard.card_name}.` : 'Leitura semanal registrada.',
+              meta: getPayloadWeekLabel(latestWeeklyCard.week_start),
+              updatedAt: latestWeeklyCard.created_at || latestWeeklyCard.week_start,
+            }
+          : null,
+        runes: runesModule
+          ? {
+              title: 'Runas semanais',
+              description: getPayloadHeadline(runesModule.output_payload) || 'Módulo de runas atualizado.',
+              meta: getPayloadWeekLabel(runesModule.week_start),
+              updatedAt: runesModule.updated_at || runesModule.week_start,
+            }
+          : null,
+        iching: ichingModule
+          ? {
+              title: 'I Ching semanal',
+              description: getPayloadHeadline(ichingModule.output_payload) || 'Módulo de I Ching atualizado.',
+              meta: getPayloadWeekLabel(ichingModule.week_start),
+              updatedAt: ichingModule.updated_at || ichingModule.week_start,
+            }
+          : null,
+        synthesis: latestUnifiedReading
+          ? {
+              title: latestUnifiedReading.final_reading?.title || 'Síntese Semanal',
+              description: latestUnifiedReading.final_reading?.one_liner || 'Síntese integrada disponível.',
+              meta: getPayloadWeekLabel(latestUnifiedReading.week_ref),
+              updatedAt: latestUnifiedReading.created_at,
+            }
+          : null,
+        numerologyWeekly: latestNumerologyWeekly
+          ? {
+              title: 'Numerologia semanal',
+              description: getPayloadHeadline(latestNumerologyWeekly.result_payload) || 'Energia numerológica da semana disponível.',
+              meta: getPayloadWeekLabel(latestNumerologyWeekly.week_start),
+              updatedAt: latestNumerologyWeekly.created_at || latestNumerologyWeekly.week_start,
+            }
+          : null,
+      };
+
+      const readingEvents = (readings || []).map((reading) => ({
+        id: `reading-${reading.id}`,
+        at: reading.created_at,
+        title: spreadTypeLabels[reading.spread_type] || 'Leitura de Tarot registrada',
+        description: reading.is_public ? 'Leitura marcada como compartilhável.' : 'Leitura salva no grimório pessoal.',
+      }));
+
+      const weeklyCardEvents = (weeklyCards || []).map((record) => ({
+        id: `weekly-card-${record.id}`,
+        at: record.created_at || record.week_start,
+        title: 'Carta semanal revelada',
+        description: record.card_name ? `Carta da semana: ${record.card_name}.` : 'Carta semanal atualizada.',
+      }));
+
+      const moduleEvents = (modules || []).slice(0, 8).map((module) => {
+        const moduleType = String(module.oracle_type || '').toLowerCase();
+        const label = moduleType.includes('runes')
+          ? 'Módulo semanal de Runas'
+          : moduleType.includes('iching')
+            ? 'Módulo semanal de I Ching'
+            : 'Módulo semanal atualizado';
+        return {
+          id: `module-${module.id}`,
+          at: module.updated_at || module.week_start,
+          title: label,
+          description: getPayloadHeadline(module.output_payload) || 'Novo sinal adicionado ao oráculo semanal.',
+        };
+      });
+
+      const unifiedEvents = (unifiedReadings || []).map((reading) => ({
+        id: `unified-${reading.id}`,
+        at: reading.created_at,
+        title: reading.final_reading?.title || 'Síntese Semanal gerada',
+        description: reading.final_reading?.one_liner || 'Síntese integrada registrada no grimório.',
+      }));
+
+      const numerologyEvents = (numerologyWeekly || []).map((record) => ({
+        id: `numerology-${record.id}`,
+        at: record.created_at || record.week_start,
+        title: 'Numerologia semanal calculada',
+        description: getPayloadHeadline(record.result_payload) || 'Energia da semana consolidada.',
+      }));
+
+      const timeline = [
+        ...readingEvents,
+        ...weeklyCardEvents,
+        ...moduleEvents,
+        ...unifiedEvents,
+        ...numerologyEvents,
+      ]
+        .filter((event) => event.at)
+        .sort((a, b) => new Date(b.at).getTime() - new Date(a.at).getTime())
+        .slice(0, 12);
+
+      return {
+        summary,
+        timeline,
+      };
+    },
+  });
+}
 
 function ProfilePage() {
   const { username } = useParams();
   const navigate = useNavigate();
   const location = useLocation();
 
-  // Busca o perfil base
   const { data: profile, isLoading: isLoadingProfile, isError, error } = usePublicProfile(username);
-
-  // Obtém o ID do perfil (se existir)
   const profileId = profile?.id;
 
-  // Busca os dados extras (só rodam se 'profileId' existir)
   const { data: readingCount, isLoading: isLoadingCount } = usePublicReadingCount(profileId);
   const { data: numerology, isLoading: isLoadingNumerology } = usePublicNumerology(profileId);
+  const { data: oracleData, isLoading: isLoadingOracleData } = useProfileOracleData(profileId);
 
-  // Função "Voltar"
+  const oracleSummary = oracleData?.summary || {};
+  const timeline = oracleData?.timeline || [];
+
   const handleBackClick = () => {
-    if (location.key !== "default") navigate(-1);
+    if (location.key !== 'default') navigate(-1);
     else navigate('/');
   };
 
-  /**
-   * Renderiza o cartão do Arquétipo (reutilizado)
-   */
   const renderArchetypeCard = (archetypeData) => {
-    // Se for texto antigo (sem o layout JSON), usa formatação simples
     if (!archetypeData.numerology_details) {
       return (
         <div className={styles.cardSubSection}>
@@ -185,10 +373,8 @@ function ProfilePage() {
         </div>
       );
     }
-    // Se for o layout JSON completo
     return (
       <div className={styles.archetypeGridContainer}>
-        {/* Coluna Principal (Texto) */}
         <div className={styles.archetypeMain}>
           <div className={styles.archetypeSection}>
             {renderFormattedText(archetypeData.archetype_description)}
@@ -206,7 +392,6 @@ function ProfilePage() {
             </div>
           )}
         </div>
-        {/* Coluna Lateral (Listas) */}
         <div className={styles.archetypeSidebar}>
           {archetypeData.advice && (
             <div className={`${styles.archetypeListCard} ${styles.adviceCard}`}>
@@ -235,11 +420,36 @@ function ProfilePage() {
     );
   };
 
-  /**
-   * Renderização principal
-   */
+  const hasOracleSummary = useMemo(
+    () => Boolean(
+      oracleSummary.tarot
+      || oracleSummary.runes
+      || oracleSummary.iching
+      || oracleSummary.synthesis
+      || oracleSummary.numerologyWeekly,
+    ),
+    [oracleSummary],
+  );
+
+  const renderOracleCard = (label, data) => (
+    <article className={styles.oracleMiniCard}>
+      <p className={styles.oracleMiniLabel}>{label}</p>
+      {data ? (
+        <>
+          <h4>{data.title}</h4>
+          <p>{data.description}</p>
+          <div className={styles.oracleMiniMeta}>
+            <span>{data.meta}</span>
+            <span>{formatDate(data.updatedAt)}</span>
+          </div>
+        </>
+      ) : (
+        <p className={styles.noDataMessage}>Ainda sem dados registrados.</p>
+      )}
+    </article>
+  );
+
   const renderContent = () => {
-    // Combina todos os loaders. Graças ao aquecimento da cache, isto será rápido.
     if (isLoadingProfile || isLoadingCount || isLoadingNumerology) {
       return <Loader customText={`Carregando perfil de @${username}...`} />;
     }
@@ -254,13 +464,11 @@ function ProfilePage() {
     }
 
     if (profile) {
-      // Prepara os dados de numerologia (pode ser null)
       const lifePathParts = parseLifePathMeaning(numerology?.life_path_meaning);
       const archetypeData = parseArchetype(numerology?.birthday_secret_meaning);
+
       return (
         <div className={styles.profileLayoutGrid}>
-
-          {/* --- Coluna da Esquerda (Avatar e Bio) --- */}
           <aside className={styles.profileLeftColumn}>
             <img
               src={profile.avatar_url || 'https://i.imgur.com/6VBx3io.png'}
@@ -274,7 +482,6 @@ function ProfilePage() {
               <p className={styles.profileBio}>"{profile.bio}"</p>
             )}
 
-            {/* --- CARTÃO DE ESTATÍSTICAS --- */}
             <div className={styles.statsCard}>
               <div className={styles.statItem}>
                 <span className={styles.statValue}>{profile.life_path_number || '-'}</span>
@@ -292,10 +499,52 @@ function ProfilePage() {
             <button onClick={handleBackClick} className={styles.backButton}>← Voltar</button>
           </aside>
 
-          {/* --- Coluna da Direita (Números e História) --- */}
           <main className={styles.profileRightColumn}>
+            <section className={`${styles.profileSection} ${styles.oracleSection}`}>
+              <h2>Painel Dinâmico dos Oráculos</h2>
+              <p className={styles.introText}>
+                Visão rápida dos sinais recentes de Tarot, Runas, I Ching, Numerologia e da Síntese Semanal.
+              </p>
+              {isLoadingOracleData ? (
+                <p className={styles.noDataMessage}>Carregando sinais recentes...</p>
+              ) : hasOracleSummary ? (
+                <div className={styles.oracleGrid}>
+                  {renderOracleCard('Tarot Semanal', oracleSummary.tarot)}
+                  {renderOracleCard('Runas', oracleSummary.runes)}
+                  {renderOracleCard('I Ching', oracleSummary.iching)}
+                  {renderOracleCard('Síntese Semanal', oracleSummary.synthesis)}
+                  {renderOracleCard('Numerologia Semanal', oracleSummary.numerologyWeekly)}
+                </div>
+              ) : (
+                <p className={styles.noDataMessage}>Este perfil ainda não possui módulos suficientes para montar o painel dinâmico.</p>
+              )}
+            </section>
 
-            {/* --- CARTÃO CAMINHO DE VIDA --- */}
+            <section className={`${styles.profileSection} ${styles.timelineSection}`}>
+              <div className={styles.timelineHeader}>
+                <h2>Linha do Tempo Pessoal</h2>
+                <span>{timeline.length} eventos</span>
+              </div>
+              {isLoadingOracleData ? (
+                <p className={styles.noDataMessage}>Montando linha do tempo...</p>
+              ) : timeline.length > 0 ? (
+                <ol className={styles.timelineList}>
+                  {timeline.map((event) => (
+                    <li key={event.id} className={styles.timelineItem}>
+                      <div className={styles.timelineDot} />
+                      <div className={styles.timelineBody}>
+                        <p className={styles.timelineDate}>{formatDate(event.at)}</p>
+                        <h4>{event.title}</h4>
+                        {event.description && <p>{event.description}</p>}
+                      </div>
+                    </li>
+                  ))}
+                </ol>
+              ) : (
+                <p className={styles.noDataMessage}>Sem eventos suficientes para a linha do tempo até o momento.</p>
+              )}
+            </section>
+
             {lifePathParts ? (
               <section className={`${styles.profileSection} ${styles.numerologyCard}`}>
                 <h2>Caminho de Vida: {profile.life_path_number}</h2>
@@ -303,27 +552,46 @@ function ProfilePage() {
                   <h4>Essência da Jornada:</h4>
                   {renderFormattedText(lifePathParts.essence)}
                 </div>
-                {lifePathParts.light && (<div className={styles.cardSubSection}> <h4 className={styles.lightTitle}>Luz:</h4> {renderFormattedText(lifePathParts.light)} </div>)}
-                {lifePathParts.shadow && (<div className={styles.cardSubSection}> <h4 className={styles.shadowTitle}>Sombra:</h4> {renderFormattedText(lifePathParts.shadow)} </div>)}
-                {lifePathParts.mission && (<div className={styles.cardSubSection}> <h4 className={styles.missionTitle}>Missão:</h4> {renderFormattedText(lifePathParts.mission)} </div>)}
+                {lifePathParts.light && (
+                  <div className={styles.cardSubSection}>
+                    <h4 className={styles.lightTitle}>Luz:</h4>
+                    {renderFormattedText(lifePathParts.light)}
+                  </div>
+                )}
+                {lifePathParts.shadow && (
+                  <div className={styles.cardSubSection}>
+                    <h4 className={styles.shadowTitle}>Sombra:</h4>
+                    {renderFormattedText(lifePathParts.shadow)}
+                  </div>
+                )}
+                {lifePathParts.mission && (
+                  <div className={styles.cardSubSection}>
+                    <h4 className={styles.missionTitle}>Missão:</h4>
+                    {renderFormattedText(lifePathParts.mission)}
+                  </div>
+                )}
               </section>
             ) : (
-                // Mensagem se o user não tiver calculado numerologia
-                 profileId && !isLoadingNumerology && <section className={styles.profileSection}><p className={styles.noDataMessage}>Dados de numerologia ainda não calculados por este usuário.</p></section>
+              profileId && !isLoadingNumerology && (
+                <section className={styles.profileSection}>
+                  <p className={styles.noDataMessage}>Dados de numerologia ainda não calculados por este usuário.</p>
+                </section>
+              )
             )}
 
-            {/* --- CARTÃO ARQUÉTIPO --- */}
             {archetypeData ? (
               <section className={`${styles.profileSection} ${styles.archetypeCard}`}>
-                <h2>{archetypeData.archetype_title || "Arquétipo do Aniversário"}</h2>
+                <h2>{archetypeData.archetype_title || 'Arquétipo do Aniversário'}</h2>
                 {renderArchetypeCard(archetypeData)}
               </section>
             ) : (
-                // Mensagem se o user não tiver calculado OU se deu erro na IA
-                 profileId && !isLoadingNumerology && <section className={styles.profileSection}><p className={styles.noDataMessage}>Arquétipo do aniversário não disponível.</p></section>
+              profileId && !isLoadingNumerology && (
+                <section className={styles.profileSection}>
+                  <p className={styles.noDataMessage}>Arquétipo do aniversário não disponível.</p>
+                </section>
+              )
             )}
 
-            {/* --- Cartões Originais --- */}
             {profile.entidade_cultuada && (
               <section className={styles.profileSection}>
                 <h2>Cultua / Admira</h2>
@@ -342,20 +610,22 @@ function ProfilePage() {
               </section>
             )}
 
-             {/* Mensagem se não houver NADA na coluna direita */}
-             {!lifePathParts && !archetypeData && !profile.entidade_cultuada && !profile.minha_historia && (
-                 <p className={styles.noDataMessage}>Este perfil ainda não adicionou informações adicionais.</p>
-             )}
-
+            {!lifePathParts
+              && !archetypeData
+              && !profile.entidade_cultuada
+              && !profile.minha_historia
+              && !hasOracleSummary
+              && timeline.length === 0 && (
+                <p className={styles.noDataMessage}>Este perfil ainda não adicionou informações adicionais.</p>
+              )}
           </main>
         </div>
       );
     }
-    return null; // Se não houver perfil (caso raro, erro já tratado)
+    return null;
   };
 
   return (
-    // O wrapper renderiza instantaneamente
     <div className={`content_wrapper ${styles.profileGridWrapper}`}>
       <div className={styles.profileContainer}>
         {renderContent()}
