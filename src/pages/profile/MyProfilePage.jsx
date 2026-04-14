@@ -144,23 +144,6 @@ export default function MyProfilePage() {
     errorMessage,
   } = useWeeklyCard(user?.id);
 
-  const handleBack = () => {
-    if (location.key !== 'default') {
-      navigate(-1);
-      return;
-    }
-    navigate('/tarot');
-  };
-
-  if (isProfileLoading || isHubLoading) {
-    return (
-      <div className={`content_wrapper ${styles.page}`}>
-        <Loader customText="Montando seu painel oracular..." />
-      </div>
-    );
-  }
-
-  const avatarUrl = profile?.avatar_url || 'https://i.imgur.com/6VBx3io.png';
   const latestSynthesis = hubData?.latestSynthesis;
   const readings = hubData?.recentReadings || [];
   const reelOfDay = reelsLab.reelOfDay || null;
@@ -204,6 +187,24 @@ export default function MyProfilePage() {
     numerologyPersonal,
     hubData?.latestNumerologyWeekly,
   ]);
+
+  const handleBack = () => {
+    if (location.key !== 'default') {
+      navigate(-1);
+      return;
+    }
+    navigate('/tarot');
+  };
+
+  if (isProfileLoading || isHubLoading) {
+    return (
+      <div className={`content_wrapper ${styles.page}`}>
+        <Loader customText="Montando seu painel oracular..." />
+      </div>
+    );
+  }
+
+  const avatarUrl = profile?.avatar_url || 'https://i.imgur.com/6VBx3io.png';
 
   return (
     <div className={`content_wrapper ${styles.page}`}>
