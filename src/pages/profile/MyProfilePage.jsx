@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { useAuth } from '../../context/AuthContext';
@@ -131,6 +131,7 @@ export default function MyProfilePage() {
   const navigate = useNavigate();
   const location = useLocation();
   const { user } = useAuth();
+  const [focusMode, setFocusMode] = useState('tarot');
   const { profile, isLoading: isProfileLoading } = useUserProfile(user?.id);
   const { data: hubData, isLoading: isHubLoading } = useUnifiedOracleHub(user?.id);
   const reelsLab = useReelsLab(user?.id);
@@ -175,6 +176,34 @@ export default function MyProfilePage() {
       .map((rune) => resolveRune(rune?.key || rune?.name || rune?.symbol || rune).symbol),
     [runesPayload],
   );
+
+  const weeklySummary = useMemo(() => {
+    const tarotReady = Boolean(cardDetails || hubData?.latestWeeklyCard || latestSynthesis);
+    const runesReady = Boolean(hubData?.latestRunes);
+    const ichingReady = Boolean(hubData?.latestIChing);
+    const numerologyReady = Boolean(numerologyPersonal && hubData?.latestNumerologyWeekly);
+
+    const checklist = [
+      { id: 'tarot', label: 'Tarot', ready: tarotReady, cta: '/tarot' },
+      { id: 'runes', label: 'Runas', ready: runesReady, cta: '/runas' },
+      { id: 'iching', label: 'I Ching', ready: ichingReady, cta: '/iching' },
+      { id: 'numerology', label: 'Numerologia', ready: numerologyReady, cta: '/numerologia' },
+    ];
+
+    const completed = checklist.filter((item) => item.ready).length;
+    const total = checklist.length;
+    const percent = Math.round((completed / total) * 100);
+
+    return { checklist, completed, total, percent };
+  }, [
+    cardDetails,
+    hubData?.latestWeeklyCard,
+    latestSynthesis,
+    hubData?.latestRunes,
+    hubData?.latestIChing,
+    numerologyPersonal,
+    hubData?.latestNumerologyWeekly,
+  ]);
 
   return (
     <div className={`content_wrapper ${styles.page}`}>
@@ -221,8 +250,61 @@ export default function MyProfilePage() {
           </section>
         )}
 
+        <section className={styles.weeklySummarySection}>
+          <header className={styles.weeklySummaryHeader}>
+            <div>
+              <p className={styles.weeklySummaryEyebrow}>Resumo da semana</p>
+              <h2>Completude oracular</h2>
+            </div>
+            <strong className={styles.weeklySummaryScore}>
+              {weeklySummary.completed}/{weeklySummary.total}
+            </strong>
+          </header>
+          <div
+            className={styles.weeklyProgressTrack}
+            role="progressbar"
+            aria-valuemin={0}
+            aria-valuemax={100}
+            aria-valuenow={weeklySummary.percent}
+            aria-label={`Completude semanal de ${weeklySummary.percent}%`}
+          >
+            <span className={styles.weeklyProgressFill} style={{ width: `${weeklySummary.percent}%` }} />
+          </div>
+          <div className={styles.weeklySummaryChecklist}>
+            {weeklySummary.checklist.map((item) => (
+              <article
+                key={item.id}
+                className={`${styles.summaryPill} ${item.ready ? styles.summaryPillReady : styles.summaryPillPending}`}
+              >
+                <div>
+                  <p>{item.label}</p>
+                  <span>{item.ready ? 'Ativo' : 'Pendente'}</span>
+                </div>
+                <Link to={item.cta}>{item.ready ? 'Ver' : 'Gerar'}</Link>
+              </article>
+            ))}
+          </div>
+        </section>
+
+        <section className={styles.focusTabs} aria-label="Modo foco do painel">
+          <button
+            type="button"
+            className={focusMode === 'tarot' ? styles.focusTabActive : styles.focusTab}
+            onClick={() => setFocusMode('tarot')}
+          >
+            Foco Tarot
+          </button>
+          <button
+            type="button"
+            className={focusMode === 'oracles' ? styles.focusTabActive : styles.focusTab}
+            onClick={() => setFocusMode('oracles')}
+          >
+            Foco Outros Oráculos
+          </button>
+        </section>
+
         <section className={styles.experienceGrid}>
-          <article className={styles.tarotZone}>
+          <article className={`${styles.tarotZone} ${focusMode === 'tarot' ? styles.zoneVisible : styles.zoneMuted}`}>
             <header className={styles.zoneHeader}>
               <p className={styles.zoneEyebrow}>Pilar 01</p>
               <h2>Tarot</h2>
@@ -278,12 +360,14 @@ export default function MyProfilePage() {
                   ))}
                 </ul>
               ) : (
-                <p className={styles.emptyState}>Suas próximas leituras de Tarot aparecerão aqui.</p>
+                <p className={`${styles.emptyState} ${styles.emptyStateAnimated}`}>
+                  Suas próximas leituras de Tarot aparecerão aqui.
+                </p>
               )}
             </div>
           </article>
 
-          <article className={styles.oraclesZone}>
+          <article className={`${styles.oraclesZone} ${focusMode === 'oracles' ? styles.zoneVisible : styles.zoneMuted}`}>
             <header className={styles.zoneHeader}>
               <p className={styles.zoneEyebrow}>Pilar 02</p>
               <h2>Outros Oráculos</h2>
@@ -304,7 +388,9 @@ export default function MyProfilePage() {
                     <small>{formatDate(hubData.latestRunes.updated_at || hubData.latestRunes.week_start)}</small>
                   </>
                 ) : (
-                  <p className={styles.emptyState}>Sem módulo semanal de runas ainda.</p>
+                  <p className={`${styles.emptyState} ${styles.emptyStateAnimated}`}>
+                    Sem módulo semanal de runas ainda.
+                  </p>
                 )}
                 <Link to="/runas">Abrir Runas</Link>
               </article>
@@ -317,7 +403,9 @@ export default function MyProfilePage() {
                     <small>{formatDate(hubData.latestIChing.updated_at || hubData.latestIChing.week_start)}</small>
                   </>
                 ) : (
-                  <p className={styles.emptyState}>Sem módulo semanal de I Ching ainda.</p>
+                  <p className={`${styles.emptyState} ${styles.emptyStateAnimated}`}>
+                    Sem módulo semanal de I Ching ainda.
+                  </p>
                 )}
                 <Link to="/iching">Abrir I Ching</Link>
               </article>
@@ -340,7 +428,9 @@ export default function MyProfilePage() {
                     <small>{formatDate(hubData.latestNumerologyWeekly.week_start || hubData.latestNumerologyWeekly.created_at)}</small>
                   </>
                 ) : (
-                  <p className={styles.emptyState}>Gere sua numerologia semanal para ativar este bloco.</p>
+                  <p className={`${styles.emptyState} ${styles.emptyStateAnimated}`}>
+                    Gere sua numerologia semanal para ativar este bloco.
+                  </p>
                 )}
                 <Link to="/numerologia">Gerar semanal</Link>
               </article>
@@ -353,7 +443,9 @@ export default function MyProfilePage() {
                     <small>{latestSynthesis.week_ref || formatDate(latestSynthesis.created_at)}</small>
                   </>
                 ) : (
-                  <p className={styles.emptyState}>Sua síntese integrada ainda não foi gerada.</p>
+                  <p className={`${styles.emptyState} ${styles.emptyStateAnimated}`}>
+                    Sua síntese integrada ainda não foi gerada.
+                  </p>
                 )}
                 <Link to="/oraculo/geral">Abrir Síntese</Link>
               </article>
