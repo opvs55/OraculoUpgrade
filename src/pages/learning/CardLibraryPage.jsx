@@ -8,27 +8,25 @@ const oracleTracks = [
   {
     title: 'Runas',
     description: 'Estude símbolos nórdicos, polaridades e temas da semana com leitura ritual.',
-    to: '/biblioteca/oraculos',
+    to: '/biblioteca/oraculos?guia=runes',
     cta: 'Biblioteca de Runas',
   },
   {
     title: 'Numerologia',
     description: 'Entenda caminho de vida, arquétipo do nascimento e padrões pessoais.',
-    to: '/biblioteca/oraculos',
+    to: '/biblioteca/oraculos?guia=numerology',
     cta: 'Biblioteca de Numerologia',
   },
   {
     title: 'I Ching',
     description: 'Aprofunde decisões com hexagramas, linhas mutantes e estratégia.',
-    to: '/biblioteca/oraculos',
+    to: '/biblioteca/oraculos?guia=iching',
     cta: 'Biblioteca de I Ching',
   },
 ];
 
 function CardLibraryPage() {
   const [activeTab, setActiveTab] = useState('maiores');
-  const [selectedCardId, setSelectedCardId] = useState(null);
-  const [copiedCardId, setCopiedCardId] = useState(null);
 
   const tabs = useMemo(() => ({
     maiores: {
@@ -53,34 +51,6 @@ function CardLibraryPage() {
     }
   }), []);
 
-  const selectedCard = useMemo(
-    () => baralhoDetalhado.find((card) => card.id === selectedCardId) || null,
-    [selectedCardId],
-  );
-
-  const handleShareCard = async (card) => {
-    const baseUrl = typeof window !== 'undefined' ? window.location.origin : '';
-    const shareUrl = `${baseUrl}/biblioteca/${card.slug}`;
-    const shareText = [
-      `Estou estudando a carta "${card.nome}" no Grimório da Bruxa.`,
-      `Estudo completo: ${shareUrl}`,
-      'Referência para estudo pessoal semanal',
-    ].join('\n');
-
-    try {
-      if (navigator?.clipboard?.writeText) {
-        await navigator.clipboard.writeText(shareText);
-      } else {
-        throw new Error('clipboard_not_supported');
-      }
-      setCopiedCardId(card.id);
-      window.setTimeout(() => setCopiedCardId((prev) => (prev === card.id ? null : prev)), 1800);
-    } catch (error) {
-      console.error('Falha ao copiar texto da carta:', error);
-      window.alert('Não foi possível copiar automaticamente. Tente novamente.');
-    }
-  };
-
   const renderCardSection = (title, cards) => (
     <section className={styles.section}>
       <h2 className={styles.sectionTitle}>{title}</h2>
@@ -88,18 +58,6 @@ function CardLibraryPage() {
         {cards.map(card => (
           <article key={card.id} className={styles.cardItem}>
             <CardPreview card={card} />
-            <div className={styles.cardActions}>
-              <button
-                type="button"
-                onClick={() => setSelectedCardId(card.id)}
-                className={selectedCardId === card.id ? styles.selected : ''}
-              >
-                {selectedCardId === card.id ? 'Selecionada' : 'Selecionar carta'}
-              </button>
-              <button type="button" onClick={() => handleShareCard(card)}>
-                {copiedCardId === card.id ? 'Copiado!' : 'Compartilhar'}
-              </button>
-            </div>
           </article>
         ))}
       </div>
@@ -120,22 +78,6 @@ function CardLibraryPage() {
           </article>
         ))}
       </section>
-
-      {selectedCard && (
-        <section className={styles.selectedPanel}>
-          <p className={styles.selectedTag}>Carta selecionada para estudo</p>
-          <h2>{selectedCard.nome}</h2>
-          <p>
-            Use esta carta como tema da semana para aprofundar seus estudos e relacionar com
-            Tarot, Runas, Numerologia e I Ching.
-          </p>
-          <div className={styles.selectedActions}>
-            <Link to={`/biblioteca/${selectedCard.slug}`}>Estudo completo da carta</Link>
-            <Link to="/tarot">Aplicar na leitura de Tarot</Link>
-            <Link to="/oraculo/geral">Relacionar na Síntese Semanal</Link>
-          </div>
-        </section>
-      )}
 
       <nav className={styles.tabNav}>
         {Object.keys(tabs).map(tabKey => (
