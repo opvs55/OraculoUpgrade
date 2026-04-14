@@ -19,7 +19,6 @@ const normalizeQueue = (payload) => {
 };
 
 const isQueueEndpointUnavailable = (error) => error?.status === 404;
-
 const normalizeSession = (payload) => {
   const root = unwrap(payload);
   const session = root?.session || root || {};
