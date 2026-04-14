@@ -26,6 +26,11 @@ const IChingWeeklyPage = lazy(() => import('../pages/IChingWeeklyPage'));
 const MyProfilePage = lazy(() => import('../pages/profile/MyProfilePage'));
 const ReelsLabPage = lazy(() => import('../pages/reels/ReelsLabPage'));
 const OracleLibraryPage = lazy(() => import('../pages/learning/OracleLibraryPage'));
+const InteractiveReadingHubPage = lazy(() => import('../pages/interactive/InteractiveReadingHubPage'));
+const InteractiveReadingQueuePage = lazy(() => import('../pages/interactive/InteractiveReadingQueuePage'));
+const InteractiveReadingSessionPage = lazy(() => import('../pages/interactive/InteractiveReadingSessionPage'));
+const InteractiveReadingClosePage = lazy(() => import('../pages/interactive/InteractiveReadingClosePage'));
+const InteractiveReadingHistoryPage = lazy(() => import('../pages/interactive/InteractiveReadingHistoryPage'));
 
 // Autenticação
 const CadastroPage = lazy(() => import('../pages/auth/CadastroPage'));
@@ -81,6 +86,11 @@ function AppRoutes() {
           <Route path="/oraculo/geral/:id" element={<GeneralOraclePage />} />
           <Route path="/runas" element={<RunesWeeklyPage />} />
           <Route path="/iching" element={<IChingWeeklyPage />} />
+          <Route path="/leituras-interativas" element={<InteractiveReadingHubPage />} />
+          <Route path="/leituras-interativas/fila" element={<InteractiveReadingQueuePage />} />
+          <Route path="/leituras-interativas/s/:sessionId" element={<InteractiveReadingSessionPage />} />
+          <Route path="/leituras-interativas/s/:sessionId/encerrar" element={<InteractiveReadingClosePage />} />
+          <Route path="/leituras-interativas/historico" element={<InteractiveReadingHistoryPage />} />
         </Route>
 
       </Routes>

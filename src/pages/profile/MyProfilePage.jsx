@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { useAuth } from '../../context/AuthContext';
@@ -153,40 +153,27 @@ export default function MyProfilePage() {
   const numerologyPersonal = hubData?.latestNumerology;
   const cardImageUrl = getCardImageUrl(cardDetails?.img);
 
-  const runeSymbols = useMemo(
-    () => (Array.isArray(runesPayload?.runes) ? runesPayload.runes : [])
-      .slice(0, 3)
-      .map((rune) => resolveRune(rune?.key || rune?.name || rune?.symbol || rune).symbol),
-    [runesPayload],
-  );
+  const runeSymbols = (Array.isArray(runesPayload?.runes) ? runesPayload.runes : [])
+    .slice(0, 3)
+    .map((rune) => resolveRune(rune?.key || rune?.name || rune?.symbol || rune).symbol);
 
-  const weeklySummary = useMemo(() => {
-    const tarotReady = Boolean(cardDetails || hubData?.latestWeeklyCard || latestSynthesis);
-    const runesReady = Boolean(hubData?.latestRunes);
-    const ichingReady = Boolean(hubData?.latestIChing);
-    const numerologyReady = Boolean(numerologyPersonal && hubData?.latestNumerologyWeekly);
+  const tarotReady = Boolean(cardDetails || hubData?.latestWeeklyCard || latestSynthesis);
+  const runesReady = Boolean(hubData?.latestRunes);
+  const ichingReady = Boolean(hubData?.latestIChing);
+  const numerologyReady = Boolean(numerologyPersonal && hubData?.latestNumerologyWeekly);
 
-    const checklist = [
+  const weeklySummary = {
+    checklist: [
       { id: 'tarot', label: 'Tarot', ready: tarotReady, cta: '/tarot' },
       { id: 'runes', label: 'Runas', ready: runesReady, cta: '/runas' },
       { id: 'iching', label: 'I Ching', ready: ichingReady, cta: '/iching' },
       { id: 'numerology', label: 'Numerologia', ready: numerologyReady, cta: '/numerologia' },
-    ];
+    ],
+  };
 
-    const completed = checklist.filter((item) => item.ready).length;
-    const total = checklist.length;
-    const percent = Math.round((completed / total) * 100);
-
-    return { checklist, completed, total, percent };
-  }, [
-    cardDetails,
-    hubData?.latestWeeklyCard,
-    latestSynthesis,
-    hubData?.latestRunes,
-    hubData?.latestIChing,
-    numerologyPersonal,
-    hubData?.latestNumerologyWeekly,
-  ]);
+  weeklySummary.completed = weeklySummary.checklist.filter((item) => item.ready).length;
+  weeklySummary.total = weeklySummary.checklist.length;
+  weeklySummary.percent = Math.round((weeklySummary.completed / weeklySummary.total) * 100);
 
   const handleBack = () => {
     if (location.key !== 'default') {
@@ -205,34 +192,6 @@ export default function MyProfilePage() {
   }
 
   const avatarUrl = profile?.avatar_url || 'https://i.imgur.com/6VBx3io.png';
-
-  const weeklySummary = useMemo(() => {
-    const tarotReady = Boolean(cardDetails || hubData?.latestWeeklyCard || latestSynthesis);
-    const runesReady = Boolean(hubData?.latestRunes);
-    const ichingReady = Boolean(hubData?.latestIChing);
-    const numerologyReady = Boolean(numerologyPersonal && hubData?.latestNumerologyWeekly);
-
-    const checklist = [
-      { id: 'tarot', label: 'Tarot', ready: tarotReady, cta: '/tarot' },
-      { id: 'runes', label: 'Runas', ready: runesReady, cta: '/runas' },
-      { id: 'iching', label: 'I Ching', ready: ichingReady, cta: '/iching' },
-      { id: 'numerology', label: 'Numerologia', ready: numerologyReady, cta: '/numerologia' },
-    ];
-
-    const completed = checklist.filter((item) => item.ready).length;
-    const total = checklist.length;
-    const percent = Math.round((completed / total) * 100);
-
-    return { checklist, completed, total, percent };
-  }, [
-    cardDetails,
-    hubData?.latestWeeklyCard,
-    latestSynthesis,
-    hubData?.latestRunes,
-    hubData?.latestIChing,
-    numerologyPersonal,
-    hubData?.latestNumerologyWeekly,
-  ]);
 
   return (
     <div className={`content_wrapper ${styles.page}`}>

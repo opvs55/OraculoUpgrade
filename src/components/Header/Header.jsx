@@ -187,6 +187,12 @@ function Header() {
             >
               Síntese Semanal
             </NavLink>
+            <NavLink
+              to="/leituras-interativas"
+              className={({ isActive }) => (isActive ? `${styles.navLink} ${styles.activeLink}` : styles.navLink)}
+            >
+              Leituras ao Vivo
+            </NavLink>
           </>
         )}
         {!loading && !user && <div style={{ minWidth: '100px' }} />}
@@ -288,6 +294,9 @@ function Header() {
             </NavLink>
             <NavLink to="/oraculo/geral" className={styles.mobileLink} onClick={handleCloseMenu}>
               Síntese Semanal
+            </NavLink>
+            <NavLink to="/leituras-interativas" className={styles.mobileLink} onClick={handleCloseMenu}>
+              Leituras ao Vivo
             </NavLink>
             <NavLink to="/perfil" className={styles.mobileLink} onClick={handleCloseMenu}>
               Meu Espaço
