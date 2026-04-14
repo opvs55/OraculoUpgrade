@@ -1,0 +1,85 @@
+.page {
+  min-height: calc(100vh - 84px);
+  display: grid;
+  gap: 1rem;
+  color: #ececf5;
+}
+
+.header {
+  background: rgba(17, 17, 34, 0.88);
+  border: 1px solid #2f2f59;
+  border-radius: 14px;
+  padding: 1rem 1.2rem;
+}
+
+.header h1 {
+  margin: 0;
+  color: #f1d0ab;
+  font-size: 1.25rem;
+}
+
+.header p {
+  margin: 0.45rem 0 0;
+  color: #b9bad3;
+}
+
+.panel {
+  background: rgba(17, 17, 34, 0.88);
+  border: 1px solid #2f2f59;
+  border-radius: 14px;
+  padding: 1rem 1.2rem;
+}
+
+.panel h2 {
+  margin: 0;
+  color: #f1d0ab;
+  font-size: 1.02rem;
+}
+
+.panel p {
+  margin: 0.5rem 0 0;
+  color: #c7c9e1;
+}
+
+.primaryButton {
+  margin-top: 0.85rem;
+  border: none;
+  border-radius: 8px;
+  padding: 0.52rem 0.9rem;
+  font-weight: 700;
+  background: linear-gradient(120deg, #e1b382, #c36e97);
+  color: #111126;
+  cursor: pointer;
+}
+
+.primaryButton:disabled {
+  opacity: 0.65;
+  cursor: default;
+}
+
+.successBox {
+  margin-top: 0.9rem;
+  border: 1px solid rgba(106, 204, 168, 0.4);
+  border-radius: 12px;
+  background: rgba(21, 52, 47, 0.35);
+  padding: 0.8rem;
+}
+
+.actions {
+  margin-top: 0.6rem;
+  display: flex;
+  gap: 0.55rem;
+  flex-wrap: wrap;
+}
+
+.secondaryButton {
+  border: 1px solid rgba(225, 179, 130, 0.45);
+  border-radius: 8px;
+  background: transparent;
+  color: #f0c89b;
+  text-decoration: none;
+  padding: 0.45rem 0.8rem;
+  font-weight: 700;
+  font-size: 0.84rem;
+  cursor: pointer;
+}
