@@ -1,42 +1,16 @@
 .page {
-  padding-top: 6rem;
-  padding-bottom: 3rem;
+  padding-top: 5.5rem;
+  padding-bottom: 3.5rem;
 }
 
 .container {
-  max-width: 1100px;
+  max-width: 1240px;
   margin: 0 auto;
-  background: rgba(17, 16, 37, 0.78);
-  border: 1px solid rgba(225, 179, 130, 0.2);
-  border-radius: 14px;
-  padding: 2rem;
-  box-shadow: 0 18px 38px rgba(0, 0, 0, 0.35);
-}
-
-.header {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  gap: 1rem;
-  margin-bottom: 1.3rem;
-}
-
-.header h1 {
-  margin: 0;
-  font-family: 'Cinzel', serif;
-  color: #e1b382;
-  font-size: 2rem;
-}
-
-.header p {
-  margin: 0.35rem 0 0;
-  color: #b9bbd0;
-}
-
-.headerActions {
-  display: flex;
-  gap: 0.6rem;
-  flex-wrap: wrap;
+  background: linear-gradient(150deg, rgba(18, 16, 40, 0.92), rgba(10, 10, 28, 0.9));
+  border: 1px solid rgba(225, 179, 130, 0.25);
+  border-radius: 18px;
+  padding: 1.6rem;
+  box-shadow: 0 24px 56px rgba(0, 0, 0, 0.42);
 }
 
 .topBar {
@@ -44,7 +18,7 @@
   justify-content: space-between;
   align-items: center;
   gap: 1rem;
-  margin-bottom: 0.85rem;
+  margin-bottom: 1rem;
 }
 
 .backButton {
@@ -52,7 +26,7 @@
   background: rgba(13, 12, 29, 0.7);
   color: #f2dec7;
   border-radius: 8px;
-  padding: 0.5rem 0.85rem;
+  padding: 0.5rem 0.9rem;
   font-weight: 700;
   cursor: pointer;
 }
@@ -64,55 +38,17 @@
 .topActions {
   display: flex;
   gap: 0.6rem;
-}
-
-.hero {
-  margin-top: 0.35rem;
-  border: 1px solid rgba(171, 145, 255, 0.25);
-  border-radius: 12px;
-  background: rgba(13, 12, 29, 0.72);
-  padding: 1rem;
-  display: grid;
-  grid-template-columns: auto 1fr;
-  gap: 0.95rem;
-  align-items: center;
-}
-
-.heroContent h1 {
-  margin: 0;
-  color: #f1d3b0;
-  font-family: 'Cinzel', serif;
-  font-size: clamp(1.2rem, 2.8vw, 1.6rem);
-}
-
-.eyebrow {
-  margin: 0 0 0.2rem;
-  font-size: 0.72rem;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  color: #cdb2ff;
-}
-
-.username {
-  margin: 0.3rem 0 0;
-  color: #aeb0c7;
-}
-
-.heroActions {
-  margin-top: 0.75rem;
-  display: flex;
-  gap: 0.6rem;
   flex-wrap: wrap;
 }
 
 .primaryButton,
 .secondaryButton {
   text-decoration: none;
-  border-radius: 8px;
+  border-radius: 10px;
   font-weight: 700;
-  font-size: 0.88rem;
-  padding: 0.55rem 0.9rem;
-  transition: all 0.2s ease;
+  font-size: 0.86rem;
+  padding: 0.52rem 0.88rem;
+  transition: transform 0.2s ease, background 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
 .primaryButton {
@@ -121,7 +57,8 @@
 }
 
 .primaryButton:hover {
-  filter: brightness(1.05);
+  transform: translateY(-1px);
+  box-shadow: 0 8px 18px rgba(225, 179, 130, 0.3);
 }
 
 .secondaryButton {
@@ -134,290 +71,576 @@
   background: rgba(225, 179, 130, 0.12);
 }
 
-.primaryAction,
-.secondaryAction {
-  text-decoration: none;
-  border-radius: 8px;
-  font-weight: 700;
-  font-size: 0.9rem;
-  padding: 0.65rem 1rem;
-  transition: all 0.2s ease;
-}
-
-.primaryAction {
-  background: #e1b382;
-  color: #0f1024;
-}
-
-.primaryAction:hover {
-  transform: translateY(-1px);
-  filter: brightness(1.04);
-}
-
-.secondaryAction {
-  border: 1px solid rgba(225, 179, 130, 0.55);
-  color: #e8caa4;
-}
-
-.secondaryAction:hover {
-  background: rgba(225, 179, 130, 0.12);
-}
-
-.identityCard {
-  margin-top: 1rem;
-  border: 1px solid rgba(171, 145, 255, 0.25);
-  border-radius: 12px;
-  background: rgba(13, 12, 29, 0.7);
-  padding: 1rem;
-}
-
-.identityTop {
-  display: flex;
-  gap: 0.9rem;
-  align-items: center;
+.hero {
+  border: 1px solid rgba(171, 145, 255, 0.24);
+  border-radius: 14px;
+  background: rgba(10, 10, 26, 0.78);
+  padding: 1.1rem;
 }
 
 .avatar {
-  width: 72px;
-  height: 72px;
+  width: 88px;
+  height: 88px;
   object-fit: cover;
   border-radius: 50%;
   border: 2px solid rgba(225, 179, 130, 0.65);
 }
 
-.identityNames h2 {
+.heroContent h1 {
   margin: 0;
-  color: #efcfac;
+  color: #f1d3b0;
+  font-family: 'Cinzel', serif;
+  font-size: clamp(1.2rem, 2.8vw, 1.75rem);
 }
 
-.identityNames p {
-  margin: 0.2rem 0 0;
+.eyebrow {
+  margin: 0 0 0.2rem;
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #cdb2ff;
+}
+
+.username {
+  margin: 0.25rem 0 0;
   color: #aeb0c7;
 }
 
 .bio {
-  margin: 0.85rem 0 0;
+  margin: 0.6rem 0 0;
   color: #ddddef;
 }
 
-.grid {
-  margin-top: 1.4rem;
-  display: grid;
-  grid-template-columns: 1.5fr 1fr;
-  gap: 1rem;
+.heroMeta {
+  margin-top: 0.7rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
 }
 
-.reelOfDay {
+.heroMeta span {
+  border: 1px solid rgba(225, 179, 130, 0.32);
+  border-radius: 999px;
+  padding: 0.28rem 0.66rem;
+  font-size: 0.76rem;
+  color: #ead5ba;
+  background: rgba(225, 179, 130, 0.08);
+}
+
+.heroActions {
+  margin-top: 0.8rem;
+  display: flex;
+  gap: 0.58rem;
+  flex-wrap: wrap;
+}
+
+.reelSpotlight {
   margin-top: 1rem;
+  border: 1px solid rgba(225, 179, 130, 0.28);
+  border-radius: 14px;
+  background: linear-gradient(135deg, rgba(24, 18, 50, 0.92), rgba(10, 10, 24, 0.84));
+  padding: 1rem 1.1rem;
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  align-items: center;
 }
 
-.reelOfDayCard {
-  border: 1px solid rgba(225, 179, 130, 0.28);
-  border-radius: 12px;
-  background: linear-gradient(145deg, rgba(26, 19, 48, 0.92), rgba(13, 11, 31, 0.88));
+.reelSpotlight:hover {
+  border-color: rgba(225, 179, 130, 0.44);
+}
+
+.reelEyebrow {
+  margin: 0 0 0.2rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #d3b8ff;
+  font-size: 0.72rem;
+}
+
+.reelSpotlight h2 {
+  margin: 0;
+  color: #ffe2c1;
+  font-family: 'Cinzel', serif;
+  font-size: clamp(1.1rem, 2.6vw, 1.5rem);
+}
+
+.reelSpotlight p {
+  margin: 0.4rem 0 0;
+  color: #d7d2ea;
+}
+
+.inlineLink {
+  border: 1px solid rgba(225, 179, 130, 0.42);
+  border-radius: 999px;
+  padding: 0.44rem 0.9rem;
+  color: #f1d6b4;
+  text-decoration: none;
+  font-weight: 700;
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.inlineLink:hover {
+  background: rgba(225, 179, 130, 0.14);
+  text-decoration: none;
+  transform: translateY(-1px);
+}
+
+.weeklySummarySection {
+  margin-top: 1rem;
+  border: 1px solid rgba(225, 179, 130, 0.22);
+  border-radius: 14px;
+  background: rgba(13, 12, 31, 0.78);
   padding: 1rem;
 }
 
-.reelOfDayHeader {
+.weeklySummaryHeader {
   display: flex;
   justify-content: space-between;
   align-items: center;
   gap: 0.8rem;
-  margin-bottom: 0.6rem;
 }
 
-.reelOfDayHeader h2 {
+.weeklySummaryHeader h2 {
   margin: 0;
-  color: #f1d7b5;
-  font-size: 1.2rem;
-}
-
-.reelOfDayHeader p {
-  margin: 0;
-  color: #cfb4ff;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  font-size: 0.72rem;
-}
-
-.reelOfDayHeader a {
-  color: #f2d4b1;
-  text-decoration: none;
-  font-weight: 700;
-  font-size: 0.85rem;
-}
-
-.reelOfDayHeader a:hover {
-  text-decoration: underline;
-}
-
-.reelOfDayTag {
-  padding: 0.22rem 0.56rem;
-  border-radius: 999px;
-  border: 1px solid rgba(225, 179, 130, 0.44);
-  color: #f0d9bc;
-  font-size: 0.74rem;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-}
-
-.reelOfDayTitle {
-  margin: 0;
-  color: #fff2df;
+  color: #f1d3ad;
   font-family: 'Cinzel', serif;
-  font-size: 1.26rem;
 }
 
-.reelOfDayHook {
-  margin: 0.45rem 0 0;
-  color: #ddd2f0;
-  line-height: 1.6;
+.weeklySummaryEyebrow {
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
+  font-size: 0.72rem;
+  color: #c5a7ff;
 }
 
-.reelOfDayMeta {
-  margin-top: 0.65rem;
-  color: #aeb0c9;
-  font-size: 0.82rem;
+.weeklySummaryScore {
+  border: 1px solid rgba(225, 179, 130, 0.35);
+  border-radius: 999px;
+  padding: 0.35rem 0.7rem;
+  color: #f4ddc2;
+  font-size: 0.9rem;
 }
 
-.reelOfDayActions {
+.weeklyProgressTrack {
+  margin-top: 0.7rem;
+  height: 8px;
+  border-radius: 999px;
+  background: rgba(225, 179, 130, 0.12);
+  overflow: hidden;
+}
+
+.weeklyProgressFill {
+  display: block;
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #e1b382, #d3b0ff);
+  transition: width 0.4s ease;
+}
+
+.weeklySummaryChecklist {
   margin-top: 0.8rem;
-  display: flex;
-  gap: 0.65rem;
-  flex-wrap: wrap;
-}
-
-.panel {
-  border: 1px solid rgba(225, 179, 130, 0.15);
-  border-radius: 12px;
-  background: rgba(11, 11, 26, 0.78);
-  padding: 1rem;
-}
-
-.card {
-  border: 1px solid rgba(225, 179, 130, 0.15);
-  border-radius: 12px;
-  background: rgba(11, 11, 26, 0.78);
-  padding: 1rem;
-}
-
-.card h2 {
-  margin: 0 0 0.45rem;
-  color: #e9c9a6;
-  font-size: 1.03rem;
-}
-
-.card p {
-  color: #d7d8ea;
-  line-height: 1.55;
-}
-
-.inlineLink {
-  color: #e8caa4;
-  text-decoration: none;
-  font-weight: 700;
-}
-
-.inlineLink:hover {
-  text-decoration: underline;
-}
-
-.panel h3 {
-  margin-top: 0;
-  margin-bottom: 0.4rem;
-  color: #e9c9a6;
-  font-size: 1.03rem;
-}
-
-.panelIntro {
-  margin-top: 0;
-  color: #b7b9cf;
-  font-size: 0.92rem;
-}
-
-.oracleGrid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.55rem;
+}
+
+.summaryPill {
+  border-radius: 11px;
+  padding: 0.62rem 0.68rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   gap: 0.7rem;
 }
 
-.oracleCard {
-  border: 1px solid rgba(171, 145, 255, 0.23);
-  border-radius: 10px;
-  background: rgba(20, 19, 41, 0.8);
-  padding: 0.75rem;
+.summaryPill p {
+  margin: 0;
+  font-size: 0.88rem;
+  font-weight: 700;
 }
 
-.oracleCard strong {
+.summaryPill span {
   display: block;
-  color: #ead8ff;
-  margin-bottom: 0.28rem;
+  margin-top: 0.12rem;
+  font-size: 0.74rem;
+}
+
+.summaryPill a {
+  text-decoration: none;
+  font-weight: 700;
+  font-size: 0.8rem;
+  border-radius: 999px;
+  padding: 0.28rem 0.62rem;
+}
+
+.summaryPillReady {
+  border: 1px solid rgba(106, 204, 168, 0.34);
+  background: rgba(28, 62, 55, 0.35);
+}
+
+.summaryPillReady p {
+  color: #d6ffe8;
+}
+
+.summaryPillReady span {
+  color: #9ed2bd;
+}
+
+.summaryPillReady a {
+  color: #b8f2d5;
+  border: 1px solid rgba(106, 204, 168, 0.45);
+}
+
+.summaryPillPending {
+  border: 1px solid rgba(225, 179, 130, 0.28);
+  background: rgba(44, 34, 27, 0.45);
+}
+
+.summaryPillPending p {
+  color: #f3dfc7;
+}
+
+.summaryPillPending span {
+  color: #cbb5a0;
+}
+
+.summaryPillPending a {
+  color: #f1d5b1;
+  border: 1px solid rgba(225, 179, 130, 0.38);
+}
+
+.focusTabs {
+  margin-top: 1rem;
+  display: inline-flex;
+  gap: 0.52rem;
+  border: 1px solid rgba(171, 145, 255, 0.25);
+  border-radius: 999px;
+  padding: 0.25rem;
+  background: rgba(14, 13, 33, 0.82);
+}
+
+.focusTab,
+.focusTabActive {
+  border: none;
+  border-radius: 999px;
+  font-weight: 700;
+  padding: 0.45rem 0.9rem;
+  font-size: 0.82rem;
+  cursor: pointer;
+}
+
+.focusTab {
+  color: #d8d1ea;
+  background: transparent;
+}
+
+.focusTabActive {
+  color: #15162d;
+  background: linear-gradient(135deg, #e1b382, #d3b0ff);
+}
+
+.experienceGrid {
+  margin-top: 1.2rem;
+  display: grid;
+  grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr);
+  gap: 1rem;
+}
+
+.tarotZone,
+.oraclesZone {
+  border: 1px solid rgba(225, 179, 130, 0.2);
+  border-radius: 14px;
+  background: rgba(11, 10, 28, 0.78);
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  transition: opacity 0.22s ease, transform 0.22s ease, border-color 0.22s ease;
+}
+
+.zoneVisible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.zoneMuted {
+  opacity: 0.78;
+  transform: translateY(2px);
+}
+
+.zoneHeader h2 {
+  margin: 0;
+  color: #f3d4ae;
+  font-family: 'Cinzel', serif;
+}
+
+.zoneHeader p {
+  margin: 0.4rem 0 0;
+  color: #c7c8dc;
+  line-height: 1.45;
+}
+
+.zoneEyebrow {
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-size: 0.72rem;
+  color: #cfb3ff;
+}
+
+.tarotHeroCard {
+  border: 1px solid rgba(171, 145, 255, 0.22);
+  border-radius: 12px;
+  background: rgba(18, 17, 40, 0.78);
+  padding: 0.9rem;
+  display: grid;
+  grid-template-columns: 140px minmax(0, 1fr);
+  gap: 1rem;
+  transition: border-color 0.2s ease, transform 0.2s ease;
+}
+
+.tarotHeroCard:hover {
+  border-color: rgba(171, 145, 255, 0.38);
+  transform: translateY(-1px);
+}
+
+.tarotCardVisual {
+  width: 140px;
+  height: 216px;
+  border-radius: 12px;
+  border: 1px solid rgba(225, 179, 130, 0.34);
+  overflow: hidden;
+  background: rgba(10, 10, 24, 0.85);
+}
+
+.tarotCardVisual img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.tarotCardBack,
+.tarotCardPlaceholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #e7c79f;
+  font-size: 2rem;
+}
+
+.tarotHeroContent h3 {
+  margin: 0;
+  color: #f6dfc3;
+}
+
+.tarotHeroContent p {
+  margin: 0.45rem 0 0;
+  color: #d8d7e9;
+  line-height: 1.5;
+}
+
+.revealButton {
+  margin-top: 0.75rem;
+  border: none;
+  border-radius: 10px;
+  background: #e1b382;
+  color: #111126;
+  font-weight: 700;
+  padding: 0.62rem 1rem;
+  cursor: pointer;
+}
+
+.revealButton:disabled {
+  opacity: 0.65;
+  cursor: default;
+}
+
+.errorText {
+  margin-top: 0.45rem;
+  color: #ffb7b7;
+  font-size: 0.88rem;
+}
+
+.tarotLinks {
+  margin-top: 0.8rem;
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.tarotLinks a {
+  text-decoration: none;
+  border: 1px solid rgba(225, 179, 130, 0.4);
+  color: #f2d8b7;
+  border-radius: 999px;
+  padding: 0.34rem 0.72rem;
+  font-size: 0.82rem;
+  font-weight: 700;
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.tarotLinks a:hover {
+  background: rgba(225, 179, 130, 0.14);
+  transform: translateY(-1px);
+}
+
+.timelineCard {
+  border: 1px solid rgba(225, 179, 130, 0.18);
+  border-radius: 12px;
+  background: rgba(17, 16, 38, 0.78);
+  padding: 0.8rem;
+}
+
+.sectionTitleRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 0.6rem;
+}
+
+.sectionTitleRow h3 {
+  margin: 0;
+  color: #edd1ad;
+}
+
+.sectionTitleRow span {
+  color: #aeb0c8;
+  font-size: 0.82rem;
+}
+
+.timelineList {
+  margin-top: 0.7rem;
+  list-style: none;
+  padding: 0;
+  display: grid;
+  gap: 0.55rem;
+}
+
+.timelineList li {
+  border: 1px solid rgba(225, 179, 130, 0.14);
+  border-radius: 10px;
+  padding: 0.6rem;
+  background: rgba(13, 12, 30, 0.72);
+  display: flex;
+  justify-content: space-between;
+  gap: 0.8rem;
+  flex-wrap: wrap;
+}
+
+.timelineList li strong {
+  color: #f1ddc5;
+}
+
+.timelineList li span {
+  color: #adb0ca;
+  font-size: 0.82rem;
+}
+
+.oracleCardsGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.75rem;
+}
+
+.oracleCard {
+  border: 1px solid rgba(171, 145, 255, 0.24);
+  border-radius: 11px;
+  background: rgba(16, 15, 37, 0.82);
+  padding: 0.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  transition: border-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.oracleCard:hover {
+  border-color: rgba(171, 145, 255, 0.45);
+  transform: translateY(-1px);
+  box-shadow: 0 10px 22px rgba(0, 0, 0, 0.26);
+}
+
+.oracleCard h3 {
+  margin: 0;
+  color: #ecd4ff;
+  font-size: 0.96rem;
 }
 
 .oracleCard p {
   margin: 0;
-  color: #d3d4e8;
+  color: #d9d9eb;
   font-size: 0.9rem;
   line-height: 1.45;
 }
 
-.timelineList {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-  display: grid;
-  gap: 0.7rem;
+.oracleCard small {
+  color: #aeb0cb;
 }
 
-.timelineItem {
-  border: 1px solid rgba(225, 179, 130, 0.18);
-  border-radius: 9px;
-  background: rgba(17, 16, 35, 0.78);
-  padding: 0.7rem;
+.oracleCard a {
+  margin-top: auto;
+  text-decoration: none;
+  color: #f2d5b1;
+  font-weight: 700;
+  font-size: 0.84rem;
+  transition: color 0.2s ease, transform 0.2s ease;
 }
 
-.timelineItem strong {
-  display: block;
-  color: #e9cfb2;
+.oracleCard a:hover {
+  color: #ffe0ba;
+  transform: translateX(1px);
 }
 
-.timelineItem span {
-  color: #a6a8c2;
-  font-size: 0.82rem;
+.runeStrip {
+  display: flex;
+  gap: 0.35rem;
+  flex-wrap: wrap;
 }
 
-.timelineItem p {
-  margin: 0.35rem 0 0;
-  color: #d7d8ea;
-  font-size: 0.9rem;
+.runeStrip span {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 1px solid rgba(225, 179, 130, 0.42);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(11, 10, 28, 0.9);
+  color: #f6dfc2;
 }
 
-.pillars {
-  margin: 0;
-  padding-left: 1.1rem;
-  color: #c6c8df;
-  line-height: 1.6;
-}
-
-.pillars li + li {
-  margin-top: 0.45rem;
-}
-
-.empty {
-  color: #a9abc4;
+.emptyState {
+  color: #a9acc6;
   font-style: italic;
+  margin: 0;
 }
 
-.loading,
-.error {
-  text-align: center;
-  color: #d2d3ea;
-  padding: 3rem 1rem;
+.emptyStateAnimated {
+  animation: pulseEmpty 2.4s ease-in-out infinite;
+}
+
+@keyframes pulseEmpty {
+  0%,
+  100% {
+    opacity: 0.75;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+@media (max-width: 1024px) {
+  .experienceGrid {
+    grid-template-columns: 1fr;
+  }
 }
 
 @media (max-width: 900px) {
   .container {
-    padding: 1.25rem;
+    padding: 1rem;
   }
 
   .topBar {
@@ -427,28 +650,46 @@
 
   .topActions {
     width: 100%;
-    flex-wrap: wrap;
   }
 
   .hero {
     grid-template-columns: 1fr;
-    justify-items: center;
     text-align: center;
+    justify-items: center;
+  }
+
+  .heroMeta {
+    justify-content: center;
   }
 
   .heroActions {
     justify-content: center;
   }
 
-  .header {
+  .reelSpotlight {
     flex-direction: column;
+    align-items: flex-start;
   }
 
-  .grid {
+  .weeklySummaryChecklist {
     grid-template-columns: 1fr;
   }
 
-  .oracleGrid {
+  .focusTabs {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .tarotHeroCard {
+    grid-template-columns: 1fr;
+  }
+
+  .tarotCardVisual {
+    margin: 0 auto;
+  }
+
+  .oracleCardsGrid {
     grid-template-columns: 1fr;
   }
 }
