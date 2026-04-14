@@ -8,6 +8,7 @@ import { resolveRune } from '../../constants/runes';
 import { supabase } from '../../supabaseClient';
 import Loader from '../../components/common/Loader/Loader';
 import { useReelsLab } from '../../features/reels/useReelsLab';
+import { goBackOrFallback } from '../../utils/navigation';
 import styles from './MyProfilePage.module.css';
 
 const spreadTypeLabels = {
@@ -176,11 +177,11 @@ export default function MyProfilePage() {
   weeklySummary.percent = Math.round((weeklySummary.completed / weeklySummary.total) * 100);
 
   const handleBack = () => {
-    if (location.key !== 'default') {
-      navigate(-1);
-      return;
-    }
-    navigate('/tarot');
+    goBackOrFallback({
+      navigate,
+      location,
+      fallbackPath: '/tarot',
+    });
   };
 
   if (isProfileLoading || isHubLoading) {

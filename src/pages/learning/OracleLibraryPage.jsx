@@ -1,6 +1,7 @@
 import React, { useMemo } from 'react';
 import { Link, useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import { RUNES } from '../../constants/runes';
+import { goBackOrFallback } from '../../utils/navigation';
 import styles from './OracleLibraryPage.module.css';
 
 const ICHING_HEXAGRAMS = [
@@ -90,11 +91,7 @@ function OracleLibraryPage() {
   const tab = ['runes', 'iching', 'numerology'].includes(guideParam) ? guideParam : 'runes';
 
   const handleBack = () => {
-    if (location.key !== 'default') {
-      navigate(-1);
-      return;
-    }
-    navigate('/biblioteca');
+    goBackOrFallback({ navigate, location, fallbackPath: '/biblioteca' });
   };
 
   const activeTitle = useMemo(() => {

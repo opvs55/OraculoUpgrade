@@ -18,6 +18,7 @@ const normalizeQueue = (payload) => {
   return root.queue || root.status || root;
 };
 
+const isQueueEndpointUnavailable = (error) => error?.status === 404;
 const normalizeSession = (payload) => {
   const root = unwrap(payload);
   const session = root?.session || root || {};
@@ -62,7 +63,16 @@ export function useInteractiveQueue(userId) {
   const queueQuery = useQuery({
     queryKey: ['interactive-readings', 'queue-status', userId],
     enabled: !!userId,
-    queryFn: async () => normalizeQueue(await interactiveReadingsApi.getQueueStatus()),
+    queryFn: async () => {
+      try {
+        return normalizeQueue(await interactiveReadingsApi.getQueueStatus());
+      } catch (error) {
+        if (isQueueEndpointUnavailable(error)) {
+          return null;
+        }
+        throw error;
+      }
+    },
     refetchInterval: POLL_MS,
   });
 

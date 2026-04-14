@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { useInteractiveQueue } from '../../features/interactive-readings/useInteractiveReadings';
+import { goBackOrFallback } from '../../utils/navigation';
 import styles from './InteractiveReadingQueuePage.module.css';
 
 const MODE_OPTIONS = [
@@ -29,13 +30,10 @@ export default function InteractiveReadingQueuePage() {
   } = useInteractiveQueue(user?.id);
 
   const hasActiveQueue = Boolean(queue?.status && !['cancelled', 'timeout'].includes(queue.status));
+  const queueBackendUnavailable = errorQueue?.status === 404;
 
   const handleBack = () => {
-    if (location.key !== 'default') {
-      navigate(-1);
-      return;
-    }
-    navigate('/leituras-interativas');
+    goBackOrFallback({ navigate, location, fallbackPath: '/leituras-interativas' });
   };
 
   useEffect(() => {
@@ -94,7 +92,13 @@ export default function InteractiveReadingQueuePage() {
         <div className={styles.statusRow}>
           <article className={styles.pill}>
             <p>Status</p>
-            <strong>{isLoadingQueue ? 'Carregando…' : queue?.status || 'fora da fila'}</strong>
+            <strong>
+              {isLoadingQueue
+                ? 'Carregando...'
+                : queueBackendUnavailable
+                  ? 'backend indisponível'
+                  : queue?.status || 'fora da fila'}
+            </strong>
           </article>
           <article className={styles.pill}>
             <p>Modo</p>
@@ -126,7 +130,18 @@ export default function InteractiveReadingQueuePage() {
           </Link>
         </div>
         {feedback && <p className={styles.hint}>{feedback}</p>}
-        {errorQueue && <p className={styles.error}>{errorQueue.message}</p>}
+        {queueBackendUnavailable ? (
+          <div className={styles.errorBox}>
+            <p className={styles.error}>
+              O endpoint de matchmaking ainda nao esta publicado no backend (404).
+            </p>
+            <p className={styles.hint}>
+              Frontend e banco ja estao preparados; falta ativar as rotas reais de fila/sessao/chat no servidor de API.
+            </p>
+          </div>
+        ) : (
+          errorQueue && <p className={styles.error}>{errorQueue.message}</p>
+        )}
       </section>
     </div>
   );
