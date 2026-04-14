@@ -55,6 +55,30 @@ const endpointConfig = {
   unifiedReadings: {
     v1: '/api/v1/unified/readings',
   },
+  readingQueueJoin: {
+    v1: '/api/v1/readings/queue/join',
+  },
+  readingQueueLeave: {
+    v1: '/api/v1/readings/queue/leave',
+  },
+  readingQueueStatus: {
+    v1: '/api/v1/readings/queue/status',
+  },
+  readingMatchAccept: {
+    v1: '/api/v1/readings/match/accept',
+  },
+  readingSessions: {
+    v1: '/api/v1/readings/sessions',
+  },
+  readingHistory: {
+    v1: '/api/v1/readings/history',
+  },
+  readingShareBase: {
+    v1: '/api/v1/readings/shares',
+  },
+  publicReadingBase: {
+    v1: '/api/public/readings',
+  },
 };
 
 export const API_V1_ENDPOINTS = Object.fromEntries(

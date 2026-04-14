@@ -20,7 +20,7 @@ function CadastroPage() {
 
   useEffect(() => {
     if (user) {
-      navigate('/meu-grimorio');
+      navigate('/perfil');
     }
   }, [user, navigate]);
 
@@ -65,7 +65,7 @@ function CadastroPage() {
             username: username 
           },
           // IMPORTANTE: Define para onde o usuário volta após clicar no link do email
-          emailRedirectTo: `${window.location.origin}/meu-grimorio`, 
+          emailRedirectTo: `${window.location.origin}/perfil`, 
         }
       });
 
@@ -87,7 +87,7 @@ function CadastroPage() {
       } 
       // Cenário B: Caso a confirmação esteja desligada (fallback)
       else if (data.session) {
-         navigate('/meu-grimorio');
+         navigate('/perfil');
       }
 
     } catch (err) {

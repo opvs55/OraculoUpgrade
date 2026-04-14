@@ -47,7 +47,7 @@ function ContinueReadingSection({ readings, isLoading, isError, onRetry }) {
     <section className={styles.section}>
       <div className={styles.sectionHeader}>
         <h2 className={styles.sectionTitle}>Continue de onde parou</h2>
-        <Link to="/meu-grimorio" className={styles.sectionLink}>
+        <Link to="/perfil" className={styles.sectionLink}>
           Ver histórico completo
         </Link>
       </div>
