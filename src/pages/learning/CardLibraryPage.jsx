@@ -8,20 +8,20 @@ const oracleTracks = [
   {
     title: 'Runas',
     description: 'Estude símbolos nórdicos, polaridades e temas da semana com leitura ritual.',
-    to: '/runas',
-    cta: 'Abrir Runas',
+    to: '/biblioteca/oraculos',
+    cta: 'Biblioteca de Runas',
   },
   {
     title: 'Numerologia',
     description: 'Entenda caminho de vida, arquétipo do nascimento e padrões pessoais.',
-    to: '/numerologia',
-    cta: 'Abrir Numerologia',
+    to: '/biblioteca/oraculos',
+    cta: 'Biblioteca de Numerologia',
   },
   {
     title: 'I Ching',
     description: 'Aprofunde decisões com hexagramas, linhas mutantes e estratégia.',
-    to: '/iching',
-    cta: 'Abrir I Ching',
+    to: '/biblioteca/oraculos',
+    cta: 'Biblioteca de I Ching',
   },
 ];
 

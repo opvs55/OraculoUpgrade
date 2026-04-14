@@ -1,12 +1,13 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useAuth } from '../../context/AuthContext';
-import { NavLink, Link, useLocation } from 'react-router-dom';
+import { NavLink, Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAutoHideHeader } from '../../hooks/useAutoHideHeader';
 import styles from './Header.module.css';
 
 function Header() {
   const { user, loading, signOut } = useAuth();
   const location = useLocation();
+  const navigate = useNavigate();
   const isWelcome = location.pathname === '/';
   const isInternal = Boolean(user);
   const isPublicHome = isWelcome && !user;
@@ -77,6 +78,28 @@ function Header() {
     }, 220);
   };
 
+  const resolveFallbackRoute = (pathname) => {
+    if (pathname.startsWith('/perfil/editar')) return '/perfil';
+    if (pathname.startsWith('/perfil')) return '/meu-grimorio';
+    if (pathname.startsWith('/reels')) return '/perfil';
+    if (pathname.startsWith('/oraculo/geral')) return '/meu-grimorio';
+    if (pathname.startsWith('/runas')) return '/meu-grimorio';
+    if (pathname.startsWith('/iching')) return '/meu-grimorio';
+    if (pathname.startsWith('/numerologia')) return '/meu-grimorio';
+    if (pathname.startsWith('/biblioteca')) return '/meu-grimorio';
+    if (pathname.startsWith('/tarot')) return '/meu-grimorio';
+    return '/meu-grimorio';
+  };
+
+  const canShowQuickBack = isInternal && location.pathname !== '/meu-grimorio';
+  const handleQuickBack = () => {
+    if (location.key !== 'default') {
+      navigate(-1);
+      return;
+    }
+    navigate(resolveFallbackRoute(location.pathname));
+  };
+
   return (
     <header
       className={`${styles.header} ${isPublicHome ? styles.headerWelcome : ''} ${
@@ -85,16 +108,28 @@ function Header() {
     >
       <nav className={`${styles.nav} ${styles.navLeft}`} aria-label="Navegação principal">
         {isInternal && (
-          <button
-            type="button"
-            className={styles.menuButton}
-            onClick={handleToggleMenu}
-            aria-label="Abrir menu"
-            aria-expanded={isMenuOpen}
-            aria-controls="menu-interno"
-          >
-            <span className={styles.menuIcon} />
-          </button>
+          <>
+            {canShowQuickBack && (
+              <button
+                type="button"
+                className={styles.quickBackButton}
+                onClick={handleQuickBack}
+                aria-label="Voltar para página anterior"
+              >
+                ← Voltar
+              </button>
+            )}
+            <button
+              type="button"
+              className={styles.menuButton}
+              onClick={handleToggleMenu}
+              aria-label="Abrir menu"
+              aria-expanded={isMenuOpen}
+              aria-controls="menu-interno"
+            >
+              <span className={styles.menuIcon} />
+            </button>
+          </>
         )}
 
         {!loading && user && (
@@ -200,10 +235,20 @@ function Header() {
                 </button>
                 {isAccountOpen && (
                   <div className={styles.accountMenu} role="menu">
-                    <Link to="/perfil" role="menuitem" className={styles.accountMenuLink}>
+                    <Link
+                      to="/perfil"
+                      role="menuitem"
+                      className={styles.accountMenuLink}
+                      state={{ from: location.pathname }}
+                    >
                       Meu Perfil
                     </Link>
-                    <Link to="/perfil/editar" role="menuitem" className={styles.accountMenuLink}>
+                    <Link
+                      to="/perfil/editar"
+                      role="menuitem"
+                      className={styles.accountMenuLink}
+                      state={{ from: location.pathname }}
+                    >
                       Configurações
                     </Link>
                     <button type="button" role="menuitem" onClick={signOut}>

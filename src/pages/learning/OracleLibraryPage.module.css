@@ -1,0 +1,206 @@
+.page {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 2rem 1rem 3rem;
+  color: #e8e8f1;
+}
+
+.hero {
+  border: 1px solid rgba(225, 179, 130, 0.24);
+  border-radius: 14px;
+  background: linear-gradient(145deg, rgba(17, 16, 38, 0.92), rgba(11, 10, 28, 0.9));
+  padding: 1.2rem 1.3rem;
+  margin-bottom: 1.2rem;
+}
+
+.hero h1 {
+  margin: 0;
+  font-family: 'Cinzel', serif;
+  color: #e9c8a2;
+  font-size: clamp(1.7rem, 3.4vw, 2.5rem);
+}
+
+.hero p {
+  margin: 0.55rem 0 0;
+  color: rgba(233, 236, 249, 0.82);
+  line-height: 1.6;
+}
+
+.backLink {
+  display: inline-block;
+  margin-top: 0.8rem;
+  text-decoration: none;
+  border: 1px solid rgba(225, 179, 130, 0.42);
+  border-radius: 999px;
+  color: #f3d7b3;
+  padding: 0.35rem 0.8rem;
+  font-size: 0.86rem;
+  font-weight: 700;
+}
+
+.tabs {
+  display: flex;
+  gap: 0.55rem;
+  flex-wrap: wrap;
+  margin-bottom: 1rem;
+}
+
+.tabButton {
+  border: 1px solid rgba(171, 145, 255, 0.34);
+  background: rgba(15, 14, 35, 0.8);
+  color: #ddd2f0;
+  border-radius: 999px;
+  padding: 0.4rem 0.85rem;
+  font-size: 0.82rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.tabButtonActive {
+  border-color: rgba(225, 179, 130, 0.6);
+  background: rgba(225, 179, 130, 0.2);
+  color: #ffe6c3;
+}
+
+.sectionCard {
+  border: 1px solid rgba(225, 179, 130, 0.18);
+  border-radius: 14px;
+  background: rgba(12, 11, 30, 0.88);
+  padding: 1rem;
+}
+
+.sectionHeader h2 {
+  margin: 0;
+  color: #f0cfac;
+  font-family: 'Cinzel', serif;
+}
+
+.sectionHeader p {
+  margin: 0.45rem 0 0;
+  color: #bfc1d8;
+  line-height: 1.55;
+}
+
+.statsRow {
+  margin-top: 0.85rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.statPill {
+  border: 1px solid rgba(171, 145, 255, 0.35);
+  border-radius: 999px;
+  padding: 0.28rem 0.68rem;
+  font-size: 0.78rem;
+  color: #ddd2f0;
+  background: rgba(24, 21, 48, 0.65);
+}
+
+.subSection {
+  margin-top: 1.15rem;
+}
+
+.subSection h3 {
+  margin: 0;
+  color: #e8d7ff;
+  font-size: 1rem;
+}
+
+.subSection p {
+  margin: 0.42rem 0 0;
+  color: #c8cade;
+  font-size: 0.92rem;
+  line-height: 1.55;
+}
+
+.runesGrid {
+  margin-top: 0.85rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 0.68rem;
+}
+
+.runeCard {
+  border: 1px solid rgba(171, 145, 255, 0.23);
+  border-radius: 10px;
+  background: rgba(18, 16, 41, 0.72);
+  padding: 0.72rem;
+}
+
+.runeSymbol {
+  font-size: 1.45rem;
+  color: #ffe2bd;
+}
+
+.runeCard h4 {
+  margin: 0.35rem 0 0;
+  color: #f5d4b0;
+  font-size: 0.96rem;
+}
+
+.runeKeywords {
+  margin: 0.42rem 0 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.36rem;
+}
+
+.runeKeywords span {
+  border: 1px solid rgba(225, 179, 130, 0.28);
+  border-radius: 999px;
+  padding: 0.16rem 0.5rem;
+  font-size: 0.72rem;
+  color: #e9d4b7;
+}
+
+.icGrid {
+  margin-top: 0.8rem;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.65rem;
+}
+
+.icCard {
+  border: 1px solid rgba(225, 179, 130, 0.18);
+  border-radius: 10px;
+  background: rgba(16, 14, 36, 0.72);
+  padding: 0.72rem;
+}
+
+.icCard h4 {
+  margin: 0;
+  color: #f1d4b2;
+  font-size: 0.88rem;
+}
+
+.icCard p {
+  margin: 0.35rem 0 0;
+  color: #c8cbe0;
+  font-size: 0.82rem;
+  line-height: 1.5;
+}
+
+.list {
+  margin: 0.65rem 0 0;
+  padding-left: 1rem;
+  color: #d8d9ea;
+  line-height: 1.7;
+}
+
+.note {
+  margin-top: 1.1rem;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 205, 138, 0.34);
+  background: rgba(255, 205, 138, 0.1);
+  color: #ffe4bf;
+  padding: 0.75rem;
+  font-size: 0.9rem;
+  line-height: 1.55;
+}
+
+@media (max-width: 900px) {
+  .icGrid {
+    grid-template-columns: 1fr;
+  }
+}
