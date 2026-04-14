@@ -1,5 +1,5 @@
-import React, { useMemo, useState } from 'react';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
+import React, { useMemo } from 'react';
+import { Link, useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import { RUNES } from '../../constants/runes';
 import styles from './OracleLibraryPage.module.css';
 
@@ -85,7 +85,9 @@ const RUNES_LIST = Object.entries(RUNES).map(([key, rune]) => ({
 function OracleLibraryPage() {
   const navigate = useNavigate();
   const location = useLocation();
-  const [tab, setTab] = useState('runes');
+  const [searchParams, setSearchParams] = useSearchParams();
+  const guideParam = searchParams.get('guia');
+  const tab = ['runes', 'iching', 'numerology'].includes(guideParam) ? guideParam : 'runes';
 
   const handleBack = () => {
     if (location.key !== 'default') {
@@ -101,53 +103,51 @@ function OracleLibraryPage() {
     return 'Numerologia';
   }, [tab]);
 
+  const handleTabChange = (nextTab) => {
+    setSearchParams({ guia: nextTab });
+  };
+
   return (
     <div className={`content_wrapper ${styles.page}`}>
-      <header className={styles.header}>
-        <button type="button" className={styles.backButton} onClick={handleBack}>← Voltar</button>
+      <header className={styles.hero}>
         <h1>Biblioteca de Oráculos</h1>
         <p>
-          Estrutura de estudo completa para Runas, I Ching e Numerologia no mesmo espírito da biblioteca de Tarot.
+          Estrutura de estudo completa para Runas, I Ching e Numerologia, com organização didática no mesmo
+          espírito da biblioteca de Tarot.
         </p>
+        <button type="button" className={styles.backLink} onClick={handleBack}>← Voltar</button>
       </header>
 
       <nav className={styles.tabs}>
-        <button type="button" onClick={() => setTab('runes')} className={tab === 'runes' ? styles.activeTab : ''}>Runas</button>
-        <button type="button" onClick={() => setTab('iching')} className={tab === 'iching' ? styles.activeTab : ''}>I Ching</button>
-        <button type="button" onClick={() => setTab('numerology')} className={tab === 'numerology' ? styles.activeTab : ''}>Numerologia</button>
+        <button type="button" onClick={() => handleTabChange('runes')} className={tab === 'runes' ? styles.tabButtonActive : styles.tabButton}>Runas</button>
+        <button type="button" onClick={() => handleTabChange('iching')} className={tab === 'iching' ? styles.tabButtonActive : styles.tabButton}>I Ching</button>
+        <button type="button" onClick={() => handleTabChange('numerology')} className={tab === 'numerology' ? styles.tabButtonActive : styles.tabButton}>Numerologia</button>
       </nav>
 
-      <section className={styles.introCard}>
-        <h2>{activeTitle}</h2>
-        {tab === 'runes' && (
-          <p>
-            As 24 runas do Futhark antigo representam forças arquetípicas. Leia símbolo, nome e palavras-chave para
-            construir interpretação objetiva e ritualística.
-          </p>
-        )}
-        {tab === 'iching' && (
-          <p>
-            O I Ching trabalha com 64 hexagramas. Cada forma combina trigramas e descreve dinâmica de mudança,
-            contexto estratégico e postura recomendada.
-          </p>
-        )}
-        {tab === 'numerology' && (
-          <p>
-            A numerologia da aplicação integra camada pessoal e semanal: base natal (identidade) + orientação de
-            curto prazo (foco do ciclo atual).
-          </p>
-        )}
-      </section>
-
       {tab === 'runes' && (
-        <section className={styles.gridSection}>
-          <h3>As 24 Runas</h3>
+        <section className={styles.sectionCard}>
+          <div className={styles.sectionHeader}>
+            <h2>{activeTitle}</h2>
+            <p>
+              As 24 runas do Futhark antigo representam forças arquetípicas. Leia símbolo, nome e palavras-chave
+              para construir interpretações práticas e ritualísticas.
+            </p>
+          </div>
+          <div className={styles.statsRow}>
+            <span className={styles.statPill}>24 runas</span>
+            <span className={styles.statPill}>Luz e sombra</span>
+            <span className={styles.statPill}>Aplicação semanal</span>
+          </div>
+
+          <div className={styles.subSection}>
+            <h3>As 24 runas</h3>
+          </div>
           <div className={styles.runesGrid}>
             {RUNES_LIST.map((rune) => (
               <article key={rune.key} className={styles.runeCard}>
                 <span className={styles.runeSymbol}>{rune.symbol}</span>
                 <h4>{rune.name}</h4>
-                <div className={styles.keywords}>
+                <div className={styles.runeKeywords}>
                   {rune.keywords.map((keyword) => (
                     <span key={keyword}>{keyword}</span>
                   ))}
@@ -155,18 +155,59 @@ function OracleLibraryPage() {
               </article>
             ))}
           </div>
-          <div className={styles.ctaRow}>
-            <Link to="/runas">Abrir Runas Semanais</Link>
+          <div className={styles.subSection}>
+            <h3>Como estudar</h3>
+            <ul className={styles.list}>
+              <li>Observe o símbolo e associe a palavra-chave principal.</li>
+              <li>Interprete em luz (expansão) e em sombra (excesso ou bloqueio).</li>
+              <li>Conecte com o momento da semana no seu grimório.</li>
+            </ul>
           </div>
+          <p className={styles.note}>
+            Dica: use 1 runa para foco diário ou 3 runas para leitura de passado, presente e direção.
+          </p>
         </section>
       )}
 
       {tab === 'iching' && (
-        <section className={styles.gridSection}>
-          <h3>64 Hexagramas</h3>
-          <div className={styles.hexagramGrid}>
+        <section className={styles.sectionCard}>
+          <div className={styles.sectionHeader}>
+            <h2>{activeTitle}</h2>
+            <p>
+              O I Ching trabalha com 64 hexagramas. Cada forma combina trigramas e revela dinâmica de mudança,
+              contexto estratégico e postura recomendada.
+            </p>
+          </div>
+          <div className={styles.statsRow}>
+            <span className={styles.statPill}>64 hexagramas</span>
+            <span className={styles.statPill}>8 trigramas</span>
+            <span className={styles.statPill}>Linhas mutantes</span>
+          </div>
+
+          <div className={styles.subSection}>
+            <h3>Como interpretar</h3>
+            <div className={styles.icGrid}>
+              <article className={styles.icCard}>
+                <h4>1) Estrutura</h4>
+                <p>Leia trigrama superior e inferior para entender contexto externo e interno.</p>
+              </article>
+              <article className={styles.icCard}>
+                <h4>2) Movimento</h4>
+                <p>Linhas mutantes mostram onde a situação pede ajuste imediato.</p>
+              </article>
+              <article className={styles.icCard}>
+                <h4>3) Decisão</h4>
+                <p>Extraia uma ação concreta e um ponto de prudência para a semana.</p>
+              </article>
+            </div>
+          </div>
+
+          <div className={styles.subSection}>
+            <h3>Catálogo dos 64 hexagramas</h3>
+          </div>
+          <div className={styles.icGrid}>
             {ICHING_HEXAGRAMS.map((hexagram) => (
-              <article key={hexagram.number} className={styles.hexagramCard}>
+              <article key={hexagram.number} className={styles.icCard}>
                 <strong>Hexagrama {hexagram.number}</strong>
                 <h4>{hexagram.name}</h4>
                 <p>{hexagram.focus}</p>
@@ -174,28 +215,61 @@ function OracleLibraryPage() {
               </article>
             ))}
           </div>
-          <div className={styles.ctaRow}>
-            <Link to="/iching">Abrir I Ching Semanal</Link>
-          </div>
+          <p className={styles.note}>
+            Leitura rápida: combine mensagem central + linha mutante principal + ação prática para os próximos 7 dias.
+          </p>
         </section>
       )}
 
       {tab === 'numerology' && (
-        <section className={styles.gridSection}>
-          <h3>Como a Numerologia funciona no app</h3>
-          <div className={styles.numerologyGrid}>
+        <section className={styles.sectionCard}>
+          <div className={styles.sectionHeader}>
+            <h2>{activeTitle}</h2>
+            <p>
+              A numerologia do app funciona em duas camadas: leitura pessoal (base natal) e leitura semanal
+              (foco de ciclo). Juntas, elas orientam identidade e timing.
+            </p>
+          </div>
+          <div className={styles.statsRow}>
+            <span className={styles.statPill}>Leitura pessoal</span>
+            <span className={styles.statPill}>Leitura semanal</span>
+            <span className={styles.statPill}>Aplicação prática</span>
+          </div>
+
+          <div className={styles.subSection}>
+            <h3>Como funciona no app</h3>
+          </div>
+          <div className={styles.icGrid}>
             {NUMEROLOGY_GUIDE.map((item) => (
-              <article key={item.title} className={styles.numerologyCard}>
+              <article key={item.title} className={styles.icCard}>
                 <h4>{item.title}</h4>
                 <p>{item.description}</p>
               </article>
             ))}
           </div>
-          <div className={styles.ctaRow}>
-            <Link to="/numerologia">Abrir Numerologia</Link>
+
+          <div className={styles.subSection}>
+            <h3>Fluxo recomendado</h3>
+            <ul className={styles.list}>
+              <li>Faça a leitura pessoal uma vez para definir seu eixo base.</li>
+              <li>Gere a numerologia semanal para orientar foco e prioridade.</li>
+              <li>Cruze numerologia com Tarot e Síntese Semanal para decisões mais consistentes.</li>
+            </ul>
           </div>
+          <p className={styles.note}>
+            Numerologia não substitui leitura de Tarot; ela calibra contexto, ritmo e momento de ação.
+          </p>
         </section>
       )}
+
+      <div className={styles.subSection}>
+        <h3>Leituras práticas</h3>
+        <div className={styles.statsRow}>
+          <Link to="/runas" className={styles.ctaLink}>Abrir Runas Semanais</Link>
+          <Link to="/iching" className={styles.ctaLink}>Abrir I Ching Semanal</Link>
+          <Link to="/numerologia" className={styles.ctaLink}>Abrir Numerologia</Link>
+        </div>
+      </div>
     </div>
   );
 }

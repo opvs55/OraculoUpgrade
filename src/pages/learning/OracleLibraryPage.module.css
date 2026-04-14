@@ -36,6 +36,20 @@
   padding: 0.35rem 0.8rem;
   font-size: 0.86rem;
   font-weight: 700;
+  background: transparent;
+  cursor: pointer;
+}
+
+.ctaLink {
+  display: inline-block;
+  text-decoration: none;
+  border: 1px solid rgba(225, 179, 130, 0.42);
+  border-radius: 999px;
+  color: #f3d7b3;
+  padding: 0.35rem 0.8rem;
+  font-size: 0.86rem;
+  font-weight: 700;
+  background: rgba(225, 179, 130, 0.08);
 }
 
 .tabs {
