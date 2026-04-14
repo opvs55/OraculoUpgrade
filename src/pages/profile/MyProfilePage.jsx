@@ -5,6 +5,7 @@ import { useAuth } from '../../context/AuthContext';
 import { useUserProfile } from '../../hooks/useUserProfile';
 import { supabase } from '../../supabaseClient';
 import Loader from '../../components/common/Loader/Loader';
+import { useReelsLab } from '../../features/reels/useReelsLab';
 import styles from './MyProfilePage.module.css';
 
 const formatDate = (value) => {
@@ -34,7 +35,7 @@ function useMyProfileOverview(userId) {
         return data || [];
       };
 
-      const [recentReadings, weeklyCardRows, unifiedRows] = await Promise.all([
+      const [recentReadings, weeklyCardRows, unifiedRows, reelOfDayRow] = await Promise.all([
         safeQuery(
           supabase
             .from('readings')
@@ -59,12 +60,21 @@ function useMyProfileOverview(userId) {
             .order('created_at', { ascending: false })
             .limit(1),
         ),
+        safeQuery(
+          supabase
+            .from('reels')
+            .select('id, title, hook, cta_path, source_type, updated_at')
+            .eq('user_id', userId)
+            .order('updated_at', { ascending: false })
+            .limit(1),
+        ),
       ]);
 
       return {
         recentReadings,
         latestWeeklyCard: weeklyCardRows[0] || null,
         latestUnifiedReading: unifiedRows[0] || null,
+        reelOfDay: reelOfDayRow[0] || null,
       };
     },
   });
@@ -76,6 +86,7 @@ export default function MyProfilePage() {
   const { user } = useAuth();
   const { profile, isLoading: isProfileLoading } = useUserProfile(user?.id);
   const { data: overview, isLoading: isOverviewLoading } = useMyProfileOverview(user?.id);
+  const reelsLab = useReelsLab(user?.id);
 
   const handleBack = () => {
     if (location.key !== 'default') {
@@ -96,6 +107,7 @@ export default function MyProfilePage() {
   const latestCard = overview?.latestWeeklyCard;
   const latestSynthesis = overview?.latestUnifiedReading;
   const readings = overview?.recentReadings || [];
+  const reelOfDay = overview?.reelOfDay || reelsLab.reels[0] || null;
   const avatarUrl = profile?.avatar_url || 'https://i.imgur.com/6VBx3io.png';
 
   return (
@@ -127,6 +139,25 @@ export default function MyProfilePage() {
               )}
             </div>
           </div>
+        </section>
+
+        <section className={styles.reelOfDay}>
+          <div className={styles.reelOfDayHeader}>
+            <p>Reel do dia</p>
+            <Link to="/reels">Ver todos</Link>
+          </div>
+          {reelOfDay ? (
+            <div className={styles.reelOfDayCard}>
+              <strong>{reelOfDay.title}</strong>
+              <p>{reelOfDay.hook || 'Resumo rápido dos sinais do seu momento atual.'}</p>
+              <div className={styles.reelOfDayMeta}>
+                <span>{reelOfDay.source_type || reelOfDay.kind || 'oráculo'}</span>
+                <Link to={reelOfDay.cta_path || reelOfDay.ctaTo || '/reels'}>Abrir</Link>
+              </div>
+            </div>
+          ) : (
+            <p className={styles.empty}>Gere seus primeiros oráculos para desbloquear o reel do dia.</p>
+          )}
         </section>
 
         <section className={styles.grid}>
