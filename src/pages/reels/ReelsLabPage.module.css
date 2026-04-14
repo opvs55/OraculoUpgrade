@@ -11,6 +11,9 @@
   border: 1px solid #2f2f59;
   border-radius: 14px;
   padding: 1.1rem 1.3rem;
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
 }
 
 .header h1 {
@@ -22,6 +25,40 @@
 .header p {
   margin: 0.45rem 0 0;
   color: #b9bad3;
+}
+
+.eyebrow {
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-size: 0.75rem;
+  color: #a7abd1;
+}
+
+.headerActions {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.6rem;
+}
+
+.secondaryButton {
+  text-decoration: none;
+  border: 1px solid rgba(225, 179, 130, 0.45);
+  color: #f0c89b;
+  border-radius: 8px;
+  padding: 0.5rem 0.85rem;
+  font-weight: 700;
+}
+
+.backButton {
+  background: transparent;
+  border: 1px solid rgba(225, 179, 130, 0.45);
+  color: #f0c89b;
+  border-radius: 8px;
+  padding: 0.4rem 0.72rem;
+  font-weight: 700;
+  margin-bottom: 0.8rem;
+  cursor: pointer;
 }
 
 .layout {
@@ -92,11 +129,17 @@
 .reelControls {
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: flex-start;
   gap: 1rem;
   background: rgba(8, 8, 20, 0.72);
   border-top: 1px solid rgba(171, 145, 255, 0.2);
   padding: 0.8rem 1rem;
+}
+
+.reelControls p {
+  margin: 0;
+  color: #d2d4eb;
+  line-height: 1.6;
 }
 
 .reelActions {
@@ -123,6 +166,7 @@
 .solidButton {
   background: linear-gradient(120deg, #e1b382, #c36e97);
   color: #0d0c1d;
+  text-decoration: none;
 }
 
 .reelAside {
@@ -158,6 +202,15 @@
   gap: 0.42rem;
 }
 
+.panel li a {
+  color: #e4c49e;
+  text-decoration: none;
+}
+
+.panel li a:hover {
+  text-decoration: underline;
+}
+
 .emptyCard {
   background: rgba(17, 17, 34, 0.88);
   border: 1px dashed rgba(225, 179, 130, 0.45);
@@ -171,11 +224,19 @@
 }
 
 @media (max-width: 980px) {
+  .header {
+    flex-direction: column;
+  }
+
   .layout {
     grid-template-columns: 1fr;
   }
 
   .reelVideoShell {
     min-height: 330px;
+  }
+
+  .reelControls {
+    flex-direction: column;
   }
 }

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { useAuth } from '../../context/AuthContext';
 import { supabase } from '../../supabaseClient';
@@ -156,20 +156,36 @@ function useReelsLabData(userId) {
 
 export default function ReelsLabPage() {
   const { user } = useAuth();
+  const navigate = useNavigate();
+  const location = useLocation();
   const { data, isLoading } = useReelsLabData(user?.id);
   const reels = data || [];
+  const handleBackClick = () => {
+    if (location.key !== 'default') navigate(-1);
+    else navigate('/perfil');
+  };
 
   return (
     <div className={`content_wrapper ${styles.page}`}>
       <header className={styles.header}>
-        <p className={styles.eyebrow}>Laboratório</p>
-        <h1>Reels Oraculares</h1>
-        <p>
-          Um feed curto para consumo rápido dos sinais da semana, sem substituir as leituras completas.
-        </p>
+        <div>
+          <button type="button" className={styles.backButton} onClick={handleBackClick}>
+            ← Voltar
+          </button>
+          <p className={styles.eyebrow}>Laboratório</p>
+          <h1>Reels Oraculares</h1>
+          <p>
+            Um feed curto para consumo rápido dos sinais da semana, sem substituir as leituras completas.
+          </p>
+        </div>
+        <div className={styles.headerActions}>
+          <Link to="/perfil" className={styles.secondaryButton}>
+            Meu Perfil
+          </Link>
+        </div>
       </header>
 
-      <section className={styles.introCard}>
+      <section className={styles.panel}>
         <h2>Como isso evolui no produto</h2>
         <ul>
           <li>Fase 1: reels pessoais gerados dos seus próprios oráculos</li>
@@ -179,37 +195,63 @@ export default function ReelsLabPage() {
       </section>
 
       {isLoading ? (
-        <section className={styles.emptyState}>
+        <section className={styles.emptyCard}>
           <p>Montando seu feed de reels...</p>
         </section>
       ) : reels.length === 0 ? (
-        <section className={styles.emptyState}>
+        <section className={styles.emptyCard}>
           <h2>Sem reels por enquanto</h2>
           <p>Gere seus oráculos semanais para habilitar os primeiros reels automáticos.</p>
-          <div className={styles.emptyActions}>
-            <Link to="/tarot">Tarot</Link>
-            <Link to="/numerologia">Numerologia</Link>
-            <Link to="/runas">Runas</Link>
-            <Link to="/iching">I Ching</Link>
+          <div className={styles.reelActions}>
+            <Link to="/tarot" className={styles.ghostButton}>Tarot</Link>
+            <Link to="/numerologia" className={styles.ghostButton}>Numerologia</Link>
+            <Link to="/runas" className={styles.ghostButton}>Runas</Link>
+            <Link to="/iching" className={styles.ghostButton}>I Ching</Link>
           </div>
         </section>
       ) : (
-        <div className={styles.reelsFeed}>
-          {reels.map((reel) => (
-            <article key={reel.id} className={styles.reelCard}>
-              <div className={styles.reelMeta}>
-                <span>{reel.kind}</span>
-                <span>{reel.duration}</span>
-              </div>
-              <h3>{reel.title}</h3>
-              <p className={styles.reelHook}>{reel.hook}</p>
-              <p>{reel.description}</p>
-              <div className={styles.reelFooter}>
-                <small>{formatDate(reel.createdAt)}</small>
-                <Link to={reel.ctaTo}>{reel.ctaLabel}</Link>
-              </div>
-            </article>
-          ))}
+        <div className={styles.layout}>
+          <div className={styles.feed}>
+            {reels.map((reel) => (
+              <article key={reel.id} className={styles.reelCard}>
+                <div className={styles.reelVideoShell}>
+                  <span className={styles.reelChip}>{reel.kind}</span>
+                  <div className={styles.reelCenter}>
+                    <h3 className={styles.reelTitle}>{reel.title}</h3>
+                    <p className={styles.reelSubtitle}>{reel.hook}</p>
+                    <p className={styles.reelMeta}>
+                      {reel.duration} • {formatDate(reel.createdAt)}
+                    </p>
+                  </div>
+                </div>
+                <div className={styles.reelControls}>
+                  <p>{reel.description}</p>
+                  <div className={styles.reelActions}>
+                    <button type="button" className={styles.ghostButton}>Salvar</button>
+                    <button type="button" className={styles.ghostButton}>Compartilhar</button>
+                    <Link to={reel.ctaTo} className={styles.solidButton}>{reel.ctaLabel}</Link>
+                  </div>
+                </div>
+              </article>
+            ))}
+          </div>
+
+          <aside className={styles.reelAside}>
+            <section className={styles.panel}>
+              <h2>Navegação rápida</h2>
+              <ul>
+                <li><Link to="/perfil">Meu Perfil</Link></li>
+                <li><Link to="/meu-grimorio">Grimório</Link></li>
+                <li><Link to="/oraculo/geral">Síntese Semanal</Link></li>
+              </ul>
+            </section>
+            <section className={styles.panel}>
+              <h2>Direção de produto</h2>
+              <p>
+                Estes reels são pessoais e curtos, funcionando como porta de entrada para a leitura completa.
+              </p>
+            </section>
+          </aside>
         </div>
       )}
     </div>

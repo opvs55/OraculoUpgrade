@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { useAuth } from '../../context/AuthContext';
 import { useUserProfile } from '../../hooks/useUserProfile';
@@ -71,9 +71,19 @@ function useMyProfileOverview(userId) {
 }
 
 export default function MyProfilePage() {
+  const navigate = useNavigate();
+  const location = useLocation();
   const { user } = useAuth();
   const { profile, isLoading: isProfileLoading } = useUserProfile(user?.id);
   const { data: overview, isLoading: isOverviewLoading } = useMyProfileOverview(user?.id);
+
+  const handleBack = () => {
+    if (location.key !== 'default') {
+      navigate(-1);
+      return;
+    }
+    navigate('/meu-grimorio');
+  };
 
   if (isProfileLoading || isOverviewLoading) {
     return (
@@ -90,70 +100,82 @@ export default function MyProfilePage() {
 
   return (
     <div className={`content_wrapper ${styles.page}`}>
-      <section className={styles.hero}>
-        <img src={avatarUrl} alt={`Avatar de ${profile?.username || 'usuário'}`} className={styles.avatar} />
-        <div className={styles.heroContent}>
-          <p className={styles.eyebrow}>Meu Perfil</p>
-          <h1>{profile?.full_name || profile?.username || 'Seu espaço oracular'}</h1>
-          <p className={styles.username}>@{profile?.username || 'usuario'}</p>
-          {profile?.bio && <p className={styles.bio}>{profile.bio}</p>}
-          <div className={styles.heroActions}>
-            <Link to="/perfil/editar" className={styles.secondaryButton}>Editar dados</Link>
-            {profile?.username && (
-              <Link to={`/perfil/${profile.username}`} className={styles.primaryButton}>
-                Ver perfil público
-              </Link>
-            )}
+      <div className={styles.container}>
+        <header className={styles.topBar}>
+          <button type="button" className={styles.backButton} onClick={handleBack}>
+            ← Voltar
+          </button>
+          <div className={styles.topActions}>
+            <Link to="/meu-grimorio" className={styles.secondaryButton}>Grimório</Link>
+            <Link to="/reels" className={styles.secondaryButton}>Reels</Link>
           </div>
-        </div>
-      </section>
+        </header>
 
-      <section className={styles.grid}>
-        <article className={styles.card}>
-          <h2>Momento atual</h2>
-          {latestCard ? (
+        <section className={styles.hero}>
+          <img src={avatarUrl} alt={`Avatar de ${profile?.username || 'usuário'}`} className={styles.avatar} />
+          <div className={styles.heroContent}>
+            <p className={styles.eyebrow}>Meu Perfil</p>
+            <h1>{profile?.full_name || profile?.username || 'Seu espaço oracular'}</h1>
+            <p className={styles.username}>@{profile?.username || 'usuario'}</p>
+            {profile?.bio && <p className={styles.bio}>{profile.bio}</p>}
+            <div className={styles.heroActions}>
+              <Link to="/perfil/editar" className={styles.secondaryButton}>Editar dados</Link>
+              {profile?.username && (
+                <Link to={`/perfil/${profile.username}`} className={styles.primaryButton}>
+                  Ver perfil público
+                </Link>
+              )}
+            </div>
+          </div>
+        </section>
+
+        <section className={styles.grid}>
+          <article className={styles.card}>
+            <h2>Momento atual</h2>
+            {latestCard ? (
+              <p>
+                Carta da semana: <strong>{latestCard.card_name || 'registrada'}</strong> ({formatDate(latestCard.week_start || latestCard.created_at)}).
+              </p>
+            ) : (
+              <p>Você ainda não revelou sua carta da semana.</p>
+            )}
+            {latestSynthesis ? (
+              <p>
+                Síntese: <strong>{latestSynthesis.final_reading?.title || 'Síntese Semanal'}</strong>.
+              </p>
+            ) : (
+              <p>Síntese Semanal ainda não gerada nesta conta.</p>
+            )}
+            <Link to="/oraculo/geral" className={styles.inlineLink}>Abrir Síntese Semanal</Link>
+          </article>
+
+          <article className={styles.card}>
+            <h2>Linha do tempo curta</h2>
+            {readings.length > 0 ? (
+              <ul className={styles.timelineList}>
+                {readings.map((reading) => (
+                  <li key={reading.id}>
+                    <span>{formatDate(reading.created_at)}</span>
+                    <p>{reading.spread_type || 'Leitura de Tarot'}</p>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p>Suas leituras aparecerão aqui conforme o uso.</p>
+            )}
+            <Link to="/meu-grimorio" className={styles.inlineLink}>Ver histórico completo</Link>
+          </article>
+
+          <article className={styles.card}>
+            <h2>Laboratório de Reels</h2>
             <p>
-              Carta da semana: <strong>{latestCard.card_name || 'registrada'}</strong> ({formatDate(latestCard.week_start || latestCard.created_at)}).
+              Transforme sinais da semana em vídeos curtos (MVP pessoal). Esta etapa prepara o formato
+              de reels sem depender de comunidade.
             </p>
-          ) : (
-            <p>Você ainda não revelou sua carta da semana.</p>
-          )}
-          {latestSynthesis ? (
-            <p>
-              Síntese: <strong>{latestSynthesis.final_reading?.title || 'Síntese Semanal'}</strong>.
-            </p>
-          ) : (
-            <p>Síntese Semanal ainda não gerada nesta conta.</p>
-          )}
-          <Link to="/oraculo/geral" className={styles.inlineLink}>Abrir Síntese Semanal</Link>
-        </article>
-
-        <article className={styles.card}>
-          <h2>Linha do tempo curta</h2>
-          {readings.length > 0 ? (
-            <ul className={styles.timelineList}>
-              {readings.map((reading) => (
-                <li key={reading.id}>
-                  <span>{formatDate(reading.created_at)}</span>
-                  <p>{reading.spread_type || 'Leitura de Tarot'}</p>
-                </li>
-              ))}
-            </ul>
-          ) : (
-            <p>Suas leituras aparecerão aqui conforme o uso.</p>
-          )}
-          <Link to="/meu-grimorio" className={styles.inlineLink}>Ver histórico completo</Link>
-        </article>
-
-        <article className={styles.card}>
-          <h2>Laboratório de Reels</h2>
-          <p>
-            Transforme sinais da semana em vídeos curtos (MVP pessoal). Esta etapa prepara o formato
-            de reels sem depender de comunidade.
-          </p>
-          <Link to="/reels" className={styles.primaryButton}>Abrir laboratório</Link>
-        </article>
-      </section>
+            <Link to="/reels" className={styles.primaryButton}>Abrir laboratório</Link>
+          </article>
+        </section>
+      </div>
     </div>
   );
 }

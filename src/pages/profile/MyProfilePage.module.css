@@ -39,6 +39,33 @@
   flex-wrap: wrap;
 }
 
+.topBar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 0.85rem;
+}
+
+.backButton {
+  border: 1px solid rgba(225, 179, 130, 0.45);
+  background: rgba(13, 12, 29, 0.7);
+  color: #f2dec7;
+  border-radius: 8px;
+  padding: 0.5rem 0.85rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.backButton:hover {
+  background: rgba(225, 179, 130, 0.14);
+}
+
+.topActions {
+  display: flex;
+  gap: 0.6rem;
+}
+
 .primaryAction,
 .secondaryAction {
   text-decoration: none;
@@ -215,6 +242,16 @@
 @media (max-width: 900px) {
   .container {
     padding: 1.25rem;
+  }
+
+  .topBar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .topActions {
+    width: 100%;
+    flex-wrap: wrap;
   }
 
   .header {
