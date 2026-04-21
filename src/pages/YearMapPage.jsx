@@ -6,9 +6,18 @@ import { usePageTitle } from '../hooks/usePageTitle';
 import { Link } from 'react-router-dom';
 import DecorativeDivider from '../components/common/DecorativeDivider/DecorativeDivider';
 import { getArcanaImageUrl, MAJOR_ARCANA } from '../utils/arcanaMap';
+import { arcanosMenores } from '../data/arcanosMenores';
 import styles from './YearMapPage.module.css';
 
 const MONTH_NAMES = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
+
+const ALL_MINOR_ARCANA_YEAR = [
+  ...arcanosMenores.Paus,
+  ...arcanosMenores.Copas,
+  ...arcanosMenores.Espadas,
+  ...arcanosMenores.Ouros,
+];
+
 const CURRENT_MONTH = new Date().getMonth() + 1;
 const CURRENT_YEAR = new Date().getFullYear();
 
@@ -36,8 +45,12 @@ export default function YearMapPage() {
   const resolveCardImg = (card) => {
     if (!card) return null;
     if (card.img_path) return getArcanaImageUrl(card.img_path);
-    const arcana = MAJOR_ARCANA.find(a => a.name === card.name);
-    return arcana ? getArcanaImageUrl(arcana.img) : null;
+    const norm = (card.name || '').toLowerCase().trim();
+    const major = MAJOR_ARCANA.find(a => a.name.toLowerCase() === norm);
+    if (major) return getArcanaImageUrl(major.img);
+    const minor = ALL_MINOR_ARCANA_YEAR.find(a => (a.nome || '').toLowerCase() === norm);
+    if (minor) return getArcanaImageUrl(minor.img);
+    return null;
   };
 
   const selectedCardImgUrl = resolveCardImg(selectedCard);

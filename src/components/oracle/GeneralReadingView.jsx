@@ -95,16 +95,30 @@ export default function GeneralReadingView({ finalReading }) {
     reflection_question: practicalRaw?.reflection_question || practicalRaw?.question || '',
   };
 
+  const tarotRaw = signals?.tarot || '';
   const tarotCardName = finalReading?.tarot_card_name ||
-    (signals?.tarot ? signals.tarot.replace(/^Carta da semana:\s*/i, '').trim() : null);
+    (tarotRaw ? tarotRaw.replace(/^Carta da semana:\s*/i, '').trim() : null);
   const tarotCardImg = resolveCardImg(tarotCardName);
 
+  const isTarotLabelOnly = tarotRaw && tarotRaw.replace(/^Carta da semana:\s*/i, '').trim() === tarotRaw.trim();
+  const tarotDisplayValue = tarotRaw.replace(/^Carta da semana:\s*/i, '').trim();
+
+  const ABSENT_PATTERN = /sinal ausente|sem sinal|ausente nesta semana/i;
+
   const signalCards = [
-    { key: 'tarot', title: 'Tarot', value: signals?.tarot, img: tarotCardImg, cardName: tarotCardName },
-    { key: 'runes', title: 'Runas', value: signals?.runes },
-    { key: 'i_ching', title: 'I Ching', value: signals?.i_ching },
-    { key: 'numerology', title: 'Numerologia', value: signals?.numerology },
-  ].filter((item) => item.value);
+    {
+      key: 'tarot',
+      title: 'Tarot',
+      value: tarotRaw,
+      displayValue: tarotDisplayValue,
+      img: tarotCardImg,
+      cardName: tarotCardName,
+      labelOnly: tarotDisplayValue === tarotCardName,
+    },
+    { key: 'runes', title: 'Runas', value: signals?.runes, displayValue: signals?.runes },
+    { key: 'i_ching', title: 'I Ching', value: signals?.i_ching, displayValue: signals?.i_ching },
+    { key: 'numerology', title: 'Numerologia', value: signals?.numerology, displayValue: signals?.numerology },
+  ].filter((item) => item.value && !ABSENT_PATTERN.test(item.value));
 
   return (
     <div className={styles.wrapper}>
@@ -129,7 +143,7 @@ export default function GeneralReadingView({ finalReading }) {
               return (
                 <article
                   key={signal.key}
-                  className={`${styles.signalCard} ${styles.appear} ${styles[`tone_${tone}`]}`}
+                  className={`${styles.signalCard} ${styles.appear} ${styles[`tone_${tone}`]} ${signal.labelOnly ? styles.signalCardCompact : ''}`}
                   style={{ '--d': `${180 + index * 70}ms` }}
                 >
                   {signal.img ? (
@@ -145,8 +159,14 @@ export default function GeneralReadingView({ finalReading }) {
                   )}
                   <div className={styles.signalCardBody}>
                     <h4 className={styles[`signalTitle_${tone}`]}>{signal.title}</h4>
-                    {signal.cardName && <p className={styles.cardNameLabel}>{signal.cardName}</p>}
-                    <StyledText text={signal.value} />
+                    {signal.labelOnly ? (
+                      <p className={styles.signalCardArcana}>{signal.cardName}</p>
+                    ) : (
+                      <>
+                        {signal.cardName && <p className={styles.cardNameLabel}>{signal.cardName}</p>}
+                        <StyledText text={signal.displayValue} />
+                      </>
+                    )}
                   </div>
                 </article>
               );

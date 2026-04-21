@@ -6,6 +6,7 @@ import { usePageTitle } from '../hooks/usePageTitle';
 import { Link } from 'react-router-dom';
 import DecorativeDivider from '../components/common/DecorativeDivider/DecorativeDivider';
 import { getArcanaImageUrl, MAJOR_ARCANA } from '../utils/arcanaMap';
+import { arcanosMenores } from '../data/arcanosMenores';
 import { supabase } from '../supabaseClient';
 import styles from './DailyOraclePage.module.css';
 
@@ -53,20 +54,32 @@ const CARD_IMG_MAP = {
 
 const todayStr = () => new Date().toLocaleDateString('pt-BR', { weekday: 'long', day: 'numeric', month: 'long' });
 
+const ALL_MINOR_ARCANA = [
+  ...arcanosMenores.Paus,
+  ...arcanosMenores.Copas,
+  ...arcanosMenores.Espadas,
+  ...arcanosMenores.Ouros,
+];
+
 function resolveWeeklyCardImg(cardName) {
   if (!cardName) return null;
-  const norm = cardName.toLowerCase();
-  const arcana = MAJOR_ARCANA.find(a =>
+  const norm = cardName.toLowerCase().trim();
+
+  const major = MAJOR_ARCANA.find(a =>
     a.name.toLowerCase() === norm ||
     norm.includes(a.name.toLowerCase()) ||
     a.name.toLowerCase().includes(norm)
   );
-  if (arcana) return getArcanaImageUrl(arcana.img);
-  const byDeck = Object.values(CARD_IMG_MAP).find((_, i) => {
-    const key = Object.keys(CARD_IMG_MAP)[i];
-    return CARD_IMG_MAP[key]?.toLowerCase().includes(norm.replace(/\s+/g, '_'));
-  });
-  return byDeck ? getArcanaImageUrl(byDeck) : null;
+  if (major) return getArcanaImageUrl(major.img);
+
+  const minor = ALL_MINOR_ARCANA.find(a =>
+    (a.nome || '').toLowerCase() === norm ||
+    norm.includes((a.nome || '').toLowerCase()) ||
+    (a.nome || '').toLowerCase().includes(norm)
+  );
+  if (minor) return getArcanaImageUrl(minor.img.replace(/^\//, ''));
+
+  return null;
 }
 
 export default function DailyOraclePage() {
@@ -155,7 +168,7 @@ export default function DailyOraclePage() {
               {data.interpretation ? (
                 <p className={styles.interpretation}>{data.interpretation}</p>
               ) : (
-                <p className={styles.interpretationEmpty}>Carregando mensagem…</p>
+                <p className={styles.interpretationEmpty}>Medite sobre a energia desta carta ao longo do dia.</p>
               )}
               <div className={styles.actions}>
                 <Link to="/oraculo/geral" className={styles.primaryButton}>
