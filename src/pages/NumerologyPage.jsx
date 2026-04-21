@@ -232,10 +232,11 @@ function NumerologyPage() {
       <section className={styles.card}>
         {(isLoadingReading || isCalculating || isResetting) && (
           <div className={styles.loadingBlock}>
-            <Loader />
-            <p className={styles.loadingHint}>
-              {isCalculating ? 'Calculando sua numerologia...' : isResetting ? 'Apagando leitura...' : 'Carregando...'}
-            </p>
+            <Loader customText={
+              isCalculating ? 'Calculando sua numerologia...' :
+              isResetting ? 'Apagando leitura...' :
+              'Carregando seus dados...'
+            } />
           </div>
         )}
 

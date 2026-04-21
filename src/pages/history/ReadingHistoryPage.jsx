@@ -17,6 +17,24 @@ const extractPreview = (reading) => {
   return null;
 };
 
+const getQuestionText = (question) => {
+  if (!question) return null;
+  if (typeof question === 'string') {
+    try {
+      const parsed = JSON.parse(question);
+      if (parsed.name1 && parsed.name2) return `${parsed.name1} & ${parsed.name2}`;
+      if (parsed.path1 && parsed.path2) return `${parsed.path1} vs ${parsed.path2}`;
+    } catch {
+      return question;
+    }
+  }
+  if (typeof question === 'object') {
+    if (question.name1 && question.name2) return `${question.name1} & ${question.name2}`;
+    if (question.path1 && question.path2) return `${question.path1} vs ${question.path2}`;
+  }
+  return String(question);
+};
+
 const spreadTypeLabels = {
   threeCards: 'Três Cartas',
   celticCross: 'Cruz Celta',
@@ -36,6 +54,7 @@ const formatDate = (iso) => {
 export default function ReadingHistoryPage() {
   const navigate = useNavigate();
   const { user } = useAuth();
+  const goBack = () => navigate(-1);
   const tarotQuery = useQuery({
     queryKey: ['history', 'tarot', user?.id],
     enabled: !!user?.id,
@@ -56,8 +75,8 @@ export default function ReadingHistoryPage() {
   return (
     <div className={`content_wrapper ${styles.page}`}>
       <header className={styles.header}>
-        <button type="button" className={styles.backButton} onClick={() => navigate('/perfil')}>
-          ← Perfil
+        <button type="button" className={styles.backButton} onClick={goBack}>
+          ← Voltar
         </button>
         <div>
           <h1>Histórico de Leituras</h1>
@@ -80,20 +99,24 @@ export default function ReadingHistoryPage() {
               <ul className={styles.list}>
                 {tarotQuery.data.map((reading) => (
                   <li key={reading.id} className={styles.item}>
-                    <Link to={`/leitura/${reading.id}`} className={styles.itemLink}>
-                      <div className={styles.itemMain}>
-                        <strong>{spreadTypeLabels[reading.spread_type] || 'Leitura de Tarot'}</strong>
-                        {reading.question && (
-                          <p className={styles.itemQuestion}>"{reading.question}"</p>
-                        )}
-                        {extractPreview(reading) && (
-                          <p className={styles.itemPreview}>
-                            {extractPreview(reading)}
-                          </p>
-                        )}
-                      </div>
-                      <time className={styles.itemDate}>{formatDate(reading.created_at)}</time>
-                    </Link>
+                    {(() => {
+                      const questionText = getQuestionText(reading.question);
+                      const preview = extractPreview(reading);
+                      return (
+                        <Link to={`/leitura/${reading.id}`} className={styles.itemLink}>
+                          <div className={styles.itemMain}>
+                            <strong>{spreadTypeLabels[reading.spread_type] || 'Leitura de Tarot'}</strong>
+                            {questionText && (
+                              <p className={styles.itemQuestion}>"{questionText}"</p>
+                            )}
+                            {preview && (
+                              <p className={styles.itemPreview}>{preview}</p>
+                            )}
+                          </div>
+                          <time className={styles.itemDate}>{formatDate(reading.created_at)}</time>
+                        </Link>
+                      );
+                    })()}
                   </li>
                 ))}
               </ul>

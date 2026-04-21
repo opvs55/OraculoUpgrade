@@ -142,6 +142,14 @@ export default function IChingWeeklyPage() {
                 <div className={styles.statusRow}>
                   <span className={styles.badge}>Semanal • {normalized.weekRef || 'Semana atual'}</span>
                   {normalized.cached && <span className={styles.cacheInfo}>Já gerado nesta semana</span>}
+                  <button
+                    type="button"
+                    className={styles.regenButton}
+                    onClick={() => handleGenerate(true)}
+                    disabled={generateMutation.isPending}
+                  >
+                    {generateMutation.isPending ? 'Gerando...' : '↺ Nova leitura'}
+                  </button>
                 </div>
 
                 <div className={styles.resultCard}>

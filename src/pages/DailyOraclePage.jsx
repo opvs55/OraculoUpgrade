@@ -52,7 +52,7 @@ const CARD_IMG_MAP = {
   21: 'assets/cartas/RWS1909_-_21_World.jpeg',
 };
 
-const todayStr = () => new Date().toLocaleDateString('pt-BR', { weekday: 'long', day: 'numeric', month: 'long' });
+const todayStr = () => new Date().toLocaleDateString('pt-BR', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
 
 const ALL_MINOR_ARCANA = [
   ...arcanosMenores.Paus,
@@ -115,7 +115,7 @@ export default function DailyOraclePage() {
       <header className={styles.header}>
         <p className={styles.eyebrow}>Tarot · Arcanos Maiores</p>
         <h1>Carta do Dia</h1>
-        <p className={styles.subtitle}>{todayStr()}</p>
+        <p className={styles.subtitle} style={{ textTransform: 'capitalize' }}>{todayStr()}</p>
       </header>
 
       <DecorativeDivider />
