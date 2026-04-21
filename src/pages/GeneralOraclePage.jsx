@@ -208,6 +208,8 @@ export default function GeneralOraclePage() {
   const modulesQuery = useQuery({
     queryKey: ['general-oracle', 'fallback-modules', user?.id],
     enabled: !!user?.id,
+    staleTime: 0,
+    refetchOnMount: 'always',
     queryFn: async () => {
       const [modulesRes, weeklyCardRes, numerologyRes] = await Promise.all([
         supabase
@@ -325,15 +327,24 @@ export default function GeneralOraclePage() {
     window.localStorage.setItem(storageKey, JSON.stringify(currentReading));
   }, [id, user?.id, hasCurrentWeekReading, storageKey, currentReading]);
 
-  const isLoading = isLoadingRequirements || isLoadingUnifiedReadings;
+  const isLoading = isLoadingRequirements || isLoadingUnifiedReadings || modulesQuery.isLoading;
 
-  const completedCount = ORACLE_MODULES.filter(m => requirements?.requirements_status?.[m.key] === true || requirements?.[m.key] === true).length;
   const totalModules = ORACLE_MODULES.length;
-  const allComplete = completedCount === totalModules;
 
-  const numerologyData = modulesQuery.data;
-  const lifePathNumber = null; // enriquecimento futuro via numerology_readings join
-  const yearArcana = getYearArcana(user?.created_at); // placeholder — idealmente virá do perfil
+  // Progresso calculado direto do Supabase (fonte de verdade)
+  const moduleStatuses = useMemo(() => {
+    const md = modulesQuery.data;
+    if (!md) return {};
+    return {
+      has_weekly_card: !!md.tarotCard,
+      has_numerology_weekly: !!md.numerologyOutput,
+      has_runes_weekly: !!md.runesOutput,
+      has_iching_weekly: !!md.ichingOutput,
+    };
+  }, [modulesQuery.data]);
+
+  const completedCount = ORACLE_MODULES.filter(m => moduleStatuses[m.key]).length;
+  const allComplete = completedCount === totalModules;
 
   return (
     <div className={`content_wrapper ${styles.page}`}>
@@ -391,7 +402,7 @@ export default function GeneralOraclePage() {
 
             <div className={styles.modulesGrid}>
               {ORACLE_MODULES.map((mod) => {
-                const done = requirements?.requirements_status?.[mod.key] === true || requirements?.[mod.key] === true;
+                const done = !!moduleStatuses[mod.key];
                 return (
                   <div key={mod.key} className={`${styles.moduleCard} ${done ? styles.moduleCardDone : ''}`}>
                     <div className={styles.moduleIcon}>{mod.icon}</div>
