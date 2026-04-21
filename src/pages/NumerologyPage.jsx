@@ -51,47 +51,39 @@ function NumerologyPage() {
   const weeklyMutation = useMutation({
     mutationFn: async ({ birthDateInput }) => {
       const weekStart = getWeekStart();
-      const apiData = await oraclesApi.getWeeklyNumerology({
+      const data = await oraclesApi.getWeeklyNumerology({
         birthDate: birthDateInput,
         userId: user.id,
         weekStart,
       });
-      const payload = {
-        user_id: user.id,
-        week_start: weekStart,
-        week_ref: `${weekStart}`,
-        result_payload: apiData,
-        input_payload: { birthDate: birthDateInput },
-      };
-      const { data, error } = await supabase
-        .from('numerology_weekly_readings')
-        .upsert(payload, { onConflict: 'user_id,week_start' })
-        .select('id, week_start, week_ref, result_payload, input_payload, created_at, updated_at')
-        .single();
-      if (error) throw error;
       return data;
     },
-    onSuccess: (data) => {
-      queryClient.setQueryData(['numerology', 'weekly', user?.id], data);
+    onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['numerology', 'weekly', user?.id] });
     },
   });
 
   const weeklySummary = useMemo(() => {
-    const payload = weeklyNumerologyQuery.data?.result_payload || null;
-    if (!payload) return null;
+    if (!weeklyNumerologyQuery.data) return null;
+
+    // Desanhar payload recursivo: percorre até encontrar os campos reais
+    const unwrap = (obj, depth = 0) => {
+      if (!obj || depth > 8) return obj;
+      if (obj?.narrative || obj?.themes || obj?.life_path_number) return obj;
+      if (obj?.result_payload) return unwrap(obj.result_payload, depth + 1);
+      return obj;
+    };
+
+    const raw = unwrap(weeklyNumerologyQuery.data);
+    if (!raw) return null;
+
     return {
-      headline:
-        payload?.headline
-        || payload?.summary
-        || payload?.weekly_focus
-        || 'Leitura semanal de numerologia pronta.',
-      focus:
-        payload?.weekly_focus
-        || payload?.focus
-        || payload?.focus_of_week
-        || payload?.energy
-        || '',
+      narrative: raw?.narrative || null,
+      themes: Array.isArray(raw?.themes) ? raw.themes : [],
+      lifePathNumber: raw?.life_path_number || null,
+      personalWeekVibe: raw?.personal_week_vibe || null,
+      weekRef: raw?.week_ref || weeklyNumerologyQuery.data?.week_ref || null,
+      headline: raw?.headline || raw?.summary || raw?.weekly_focus || 'Leitura semanal pronta.',
     };
   }, [weeklyNumerologyQuery.data]);
 
@@ -241,8 +233,17 @@ function NumerologyPage() {
             </p>
             {weeklySummary ? (
               <div className={styles.weeklySummary}>
-                <strong>{weeklySummary.headline}</strong>
-                {weeklySummary.focus && <span>{weeklySummary.focus}</span>}
+                {weeklySummary.personalWeekVibe && (
+                  <span className={styles.weeklyVibe}>Vibração {weeklySummary.personalWeekVibe} · {weeklySummary.weekRef}</span>
+                )}
+                {weeklySummary.narrative && (
+                  <p className={styles.weeklyNarrative}>{weeklySummary.narrative}</p>
+                )}
+                {weeklySummary.themes.length > 0 && (
+                  <ul className={styles.weeklyThemes}>
+                    {weeklySummary.themes.map((t, i) => <li key={i}>{t}</li>)}
+                  </ul>
+                )}
               </div>
             ) : (
               <span className={styles.dynamicMeta}>Ainda não gerado nesta semana.</span>

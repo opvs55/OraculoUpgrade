@@ -56,7 +56,7 @@ function useUnifiedOracleHub(userId) {
         safeQuery(
           supabase
             .from('readings')
-            .select('id, created_at, spread_type')
+            .select('id, created_at, spread_type, question')
             .eq('user_id', userId)
             .order('created_at', { ascending: false })
             .limit(6),
@@ -174,10 +174,10 @@ export default function MyProfilePage() {
 
   const weeklySummary = {
     checklist: [
-      { id: 'tarot', label: 'Tarot', ready: tarotReady, cta: '/tarot' },
-      { id: 'runes', label: 'Runas', ready: runesReady, cta: '/runas' },
-      { id: 'iching', label: 'I Ching', ready: ichingReady, cta: '/iching' },
-      { id: 'numerology', label: 'Numerologia', ready: numerologyReady, cta: '/numerologia' },
+      { id: 'tarot', label: 'Tarot', icon: '🜲', ready: tarotReady, cta: '/tarot' },
+      { id: 'runes', label: 'Runas', icon: 'ᚱ', ready: runesReady, cta: '/runas' },
+      { id: 'iching', label: 'I Ching', icon: '☯', ready: ichingReady, cta: '/iching' },
+      { id: 'numerology', label: 'Numerologia', icon: '∞', ready: numerologyReady, cta: '/numerologia' },
     ],
   };
 
@@ -251,11 +251,17 @@ export default function MyProfilePage() {
         <section className={styles.weeklySummarySection}>
           <header className={styles.weeklySummaryHeader}>
             <div>
-              <p className={styles.weeklySummaryEyebrow}>Resumo da semana</p>
-              <h2>Completude oracular</h2>
+              <p className={styles.weeklySummaryEyebrow}>Ritmo semanal</p>
+              <h2>
+                {weeklySummary.percent === 100
+                  ? 'Semana completa ✦'
+                  : weeklySummary.completed === 0
+                  ? 'Inicie sua semana oracular'
+                  : `${weeklySummary.completed} de ${weeklySummary.total} oráculos ativos`}
+              </h2>
             </div>
             <strong className={styles.weeklySummaryScore}>
-              {weeklySummary.completed}/{weeklySummary.total}
+              {weeklySummary.percent}%
             </strong>
           </header>
           <div
@@ -275,10 +281,11 @@ export default function MyProfilePage() {
                 className={`${styles.summaryPill} ${item.ready ? styles.summaryPillReady : styles.summaryPillPending}`}
               >
                 <div>
+                  <span className={styles.pillIcon}>{item.icon}</span>
                   <p>{item.label}</p>
-                  <span>{item.ready ? 'Ativo' : 'Pendente'}</span>
+                  <span>{item.ready ? '✓ Ativo' : 'Pendente'}</span>
                 </div>
-                <Link to={item.cta}>{item.ready ? 'Ver' : 'Gerar'}</Link>
+                <Link to={item.cta}>{item.ready ? 'Ver' : 'Iniciar →'}</Link>
               </article>
             ))}
           </div>
@@ -352,15 +359,21 @@ export default function MyProfilePage() {
                 <ul className={styles.timelineList}>
                   {readings.map((reading) => (
                     <li key={reading.id}>
-                      <strong>{spreadTypeLabels[reading.spread_type] || 'Leitura de Tarot'}</strong>
+                      <div className={styles.timelineItemMain}>
+                        <strong>{spreadTypeLabels[reading.spread_type] || 'Leitura de Tarot'}</strong>
+                        {reading.question && (
+                          <p className={styles.timelineQuestion}>"{reading.question}"</p>
+                        )}
+                      </div>
                       <span>{formatDate(reading.created_at)}</span>
                     </li>
                   ))}
                 </ul>
               ) : (
-                <p className={`${styles.emptyState} ${styles.emptyStateAnimated}`}>
-                  Suas próximas leituras de Tarot aparecerão aqui.
-                </p>
+                <div className={`${styles.emptyState} ${styles.emptyStateAnimated}`}>
+                  <p>Nenhuma leitura ainda.</p>
+                  <Link to="/tarot" className={styles.emptyStateCta}>Fazer primeira leitura →</Link>
+                </div>
               )}
             </div>
           </article>

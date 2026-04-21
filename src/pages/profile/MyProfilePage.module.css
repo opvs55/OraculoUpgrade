@@ -612,10 +612,52 @@
   color: #f6dfc2;
 }
 
+.pillIcon {
+  font-size: 1.1rem;
+  line-height: 1;
+  display: block;
+  margin-bottom: 0.15rem;
+}
+
+.timelineItemMain {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  min-width: 0;
+}
+
+.timelineQuestion {
+  margin: 0;
+  font-size: 0.8rem;
+  color: #b0b2cc;
+  font-style: italic;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 260px;
+}
+
 .emptyState {
   color: #a9acc6;
   font-style: italic;
   margin: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.5rem;
+}
+
+.emptyStateCta {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #e1b382 !important;
+  text-decoration: none !important;
+  font-style: normal;
+  transition: color 0.2s ease;
+}
+
+.emptyStateCta:hover {
+  color: #f0d0a0 !important;
 }
 
 .emptyStateAnimated {
