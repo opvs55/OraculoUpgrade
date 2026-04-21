@@ -1097,3 +1097,132 @@
     grid-template-columns: 1fr;
   }
 }
+
+/* ── Onboarding banner ── */
+.onboardingBanner {
+  background: linear-gradient(135deg, rgba(30, 18, 60, 0.95), rgba(16, 12, 40, 0.98));
+  border: 1px solid rgba(171, 145, 255, 0.3);
+  border-radius: 16px;
+  padding: 2rem;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 8px 32px rgba(100, 60, 200, 0.15);
+}
+
+.onboardingIcon {
+  font-size: 2rem;
+  color: #c9a6ff;
+  margin-bottom: 0.75rem;
+  text-align: center;
+}
+
+.onboardingText {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.onboardingText h2 {
+  font-family: 'Cinzel', serif;
+  color: #e8d4ff;
+  font-size: 1.3rem;
+  margin: 0 0 0.4rem;
+}
+
+.onboardingText p {
+  color: #a9acc6;
+  font-size: 0.9rem;
+  margin: 0;
+}
+
+.onboardingSteps {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.onboardingStep {
+  display: grid;
+  grid-template-columns: 2.2rem 1fr auto;
+  align-items: center;
+  gap: 1rem;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(171, 145, 255, 0.15);
+  border-radius: 10px;
+  padding: 0.85rem 1rem;
+  transition: border-color 0.2s;
+}
+
+.onboardingStep:hover {
+  border-color: rgba(171, 145, 255, 0.35);
+}
+
+.onboardingStepNum {
+  width: 2rem;
+  height: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: rgba(171, 145, 255, 0.18);
+  border: 1px solid rgba(171, 145, 255, 0.4);
+  color: #c9a6ff;
+  font-family: 'Cinzel', serif;
+  font-size: 0.85rem;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.onboardingStep div strong {
+  display: block;
+  color: #ede0ff;
+  font-size: 0.9rem;
+  margin-bottom: 0.15rem;
+}
+
+.onboardingStep div p {
+  margin: 0;
+  color: #8a8caa;
+  font-size: 0.8rem;
+  line-height: 1.4;
+}
+
+.onboardingCta {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #c9a6ff;
+  text-decoration: none;
+  border: 1px solid rgba(171, 145, 255, 0.35);
+  border-radius: 999px;
+  padding: 0.3rem 0.8rem;
+  white-space: nowrap;
+  transition: all 0.2s;
+  flex-shrink: 0;
+}
+
+.onboardingCta:hover {
+  background: rgba(171, 145, 255, 0.12);
+  border-color: rgba(171, 145, 255, 0.6);
+}
+
+.onboardingCtaFinal {
+  color: #e1b382;
+  border-color: rgba(225, 179, 130, 0.4);
+}
+
+.onboardingCtaFinal:hover {
+  background: rgba(225, 179, 130, 0.1);
+  border-color: rgba(225, 179, 130, 0.65);
+}
+
+@media (max-width: 560px) {
+  .onboardingStep {
+    grid-template-columns: 2rem 1fr;
+    grid-template-rows: auto auto;
+  }
+  .onboardingCta {
+    grid-column: 2;
+    justify-self: start;
+  }
+}

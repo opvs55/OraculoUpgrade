@@ -46,7 +46,6 @@ function useUnifiedOracleHub(userId) {
       const safeQuery = async (query, label = '', fallback = []) => {
         const { data, error } = await query;
         if (error) {
-          console.warn(`[unifiedOracleHub][${label}] Falha:`, error.message, error);
           return fallback;
         }
         return data ?? fallback;
@@ -209,8 +208,8 @@ export default function MyProfilePage() {
             ← Voltar
           </button>
           <div className={styles.topActions}>
+            <Link to="/historico" className={styles.secondaryButton}>Histórico</Link>
             <Link to="/perfil/editar" className={styles.secondaryButton}>Editar perfil</Link>
-            <Link to="/reels" className={styles.secondaryButton}>Reels</Link>
           </div>
         </header>
 
@@ -243,6 +242,50 @@ export default function MyProfilePage() {
               <p>{reelOfDay.hook || 'Resumo rápido dos sinais mais vivos do seu momento.'}</p>
             </div>
             <Link to={reelOfDay.ctaTo || '/reels'} className={styles.inlineLink}>Abrir reel</Link>
+          </section>
+        )}
+
+        {weeklySummary.completed === 0 && (
+          <section className={styles.onboardingBanner}>
+            <div className={styles.onboardingIcon}>✦</div>
+            <div className={styles.onboardingText}>
+              <h2>Bem-vindo ao seu espaço oracular</h2>
+              <p>Sua jornada começa agora. Siga o caminho abaixo para ativar sua primeira semana.</p>
+            </div>
+            <ol className={styles.onboardingSteps}>
+              <li className={styles.onboardingStep}>
+                <span className={styles.onboardingStepNum}>1</span>
+                <div>
+                  <strong>Faça uma leitura de Tarot</strong>
+                  <p>Escolha uma pergunta e revele as cartas da sua semana.</p>
+                </div>
+                <Link to="/tarot" className={styles.onboardingCta}>Ir para Tarot →</Link>
+              </li>
+              <li className={styles.onboardingStep}>
+                <span className={styles.onboardingStepNum}>2</span>
+                <div>
+                  <strong>Calcule sua Numerologia</strong>
+                  <p>Descubra seu Caminho de Vida e a vibração desta semana.</p>
+                </div>
+                <Link to="/numerologia" className={styles.onboardingCta}>Ir para Numerologia →</Link>
+              </li>
+              <li className={styles.onboardingStep}>
+                <span className={styles.onboardingStepNum}>3</span>
+                <div>
+                  <strong>Explore Runas e I Ching</strong>
+                  <p>Ative os oráculos semanais para complementar sua leitura.</p>
+                </div>
+                <Link to="/runas" className={styles.onboardingCta}>Ir para Runas →</Link>
+              </li>
+              <li className={styles.onboardingStep}>
+                <span className={styles.onboardingStepNum}>4</span>
+                <div>
+                  <strong>Gere a Síntese Integrada</strong>
+                  <p>Unifique todos os oráculos em uma leitura personalizada da sua semana.</p>
+                </div>
+                <Link to="/oraculo/geral" className={`${styles.onboardingCta} ${styles.onboardingCtaFinal}`}>Gerar Síntese →</Link>
+              </li>
+            </ol>
           </section>
         )}
 
