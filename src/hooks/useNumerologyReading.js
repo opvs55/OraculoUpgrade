@@ -22,13 +22,19 @@ export function useNumerologyReading() {
     mutationFn: async () => {
       if (!userId) throw new Error('Você precisa estar logado para resetar.');
 
-      const { error } = await supabase.from('numerology_readings').delete().eq('user_id', userId);
-      if (error) throw error;
+      const [r1, r2] = await Promise.all([
+        supabase.from('numerology_readings').delete().eq('user_id', userId),
+        supabase.from('numerology_weekly_readings').delete().eq('user_id', userId),
+      ]);
+      if (r1.error) throw r1.error;
+      if (r2.error) throw r2.error;
 
       return true;
     },
     onSuccess: () => {
-      queryClient.setQueryData(['numerology', 'personal', userId], null);
+      queryClient.removeQueries({ queryKey: ['numerology', 'personal', userId] });
+      queryClient.removeQueries({ queryKey: ['numerology', 'weekly', userId] });
+      queryClient.invalidateQueries({ queryKey: ['numerology'] });
     },
   });
 
