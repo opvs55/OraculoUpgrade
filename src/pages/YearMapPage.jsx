@@ -5,7 +5,7 @@ import { oraclesApi } from '../services/api/oraclesApi';
 import { usePageTitle } from '../hooks/usePageTitle';
 import { Link } from 'react-router-dom';
 import DecorativeDivider from '../components/common/DecorativeDivider/DecorativeDivider';
-import { getArcanaImageUrl, MAJOR_ARCANA } from '../utils/arcanaMap';
+import { getArcanaImageUrl, MAJOR_ARCANA, findArcanaByName } from '../utils/arcanaMap';
 import { arcanosMenores } from '../data/arcanosMenores';
 import styles from './YearMapPage.module.css';
 
@@ -34,8 +34,7 @@ export default function YearMapPage() {
   });
 
   const getCardKeyword = (cardName) => {
-    const arcana = MAJOR_ARCANA.find(a => a.name === cardName);
-    return arcana?.keyword || null;
+    return findArcanaByName(cardName)?.keyword || null;
   };
 
   const cards = data?.cards_data || [];
@@ -45,9 +44,9 @@ export default function YearMapPage() {
   const resolveCardImg = (card) => {
     if (!card) return null;
     if (card.img_path) return getArcanaImageUrl(card.img_path);
-    const norm = (card.name || '').toLowerCase().trim();
-    const major = MAJOR_ARCANA.find(a => a.name.toLowerCase() === norm);
+    const major = findArcanaByName(card.name);
     if (major) return getArcanaImageUrl(major.img);
+    const norm = (card.name || '').toLowerCase().trim();
     const minor = ALL_MINOR_ARCANA_YEAR.find(a => (a.nome || '').toLowerCase() === norm);
     if (minor) return getArcanaImageUrl(minor.img);
     return null;

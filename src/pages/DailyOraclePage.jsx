@@ -5,7 +5,7 @@ import { oraclesApi } from '../services/api/oraclesApi';
 import { usePageTitle } from '../hooks/usePageTitle';
 import { Link } from 'react-router-dom';
 import DecorativeDivider from '../components/common/DecorativeDivider/DecorativeDivider';
-import { getArcanaImageUrl, MAJOR_ARCANA } from '../utils/arcanaMap';
+import { getArcanaImageUrl, MAJOR_ARCANA, findArcanaByName } from '../utils/arcanaMap';
 import { arcanosMenores } from '../data/arcanosMenores';
 import { supabase } from '../supabaseClient';
 import styles from './DailyOraclePage.module.css';
@@ -63,15 +63,10 @@ const ALL_MINOR_ARCANA = [
 
 function resolveWeeklyCardImg(cardName) {
   if (!cardName) return null;
-  const norm = cardName.toLowerCase().trim();
-
-  const major = MAJOR_ARCANA.find(a =>
-    a.name.toLowerCase() === norm ||
-    norm.includes(a.name.toLowerCase()) ||
-    a.name.toLowerCase().includes(norm)
-  );
+  const major = findArcanaByName(cardName);
   if (major) return getArcanaImageUrl(major.img);
 
+  const norm = cardName.toLowerCase().trim();
   const minor = ALL_MINOR_ARCANA.find(a =>
     (a.nome || '').toLowerCase() === norm ||
     norm.includes((a.nome || '').toLowerCase()) ||

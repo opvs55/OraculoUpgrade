@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { useAuth } from '../context/AuthContext';
 import { oraclesApi } from '../services/api/oraclesApi';
@@ -36,6 +36,12 @@ export default function NumerologyTransitsPage() {
 
   const birthDate = numerologyQuery.data?.input_birth_date;
   const result = mutation.data?.result_payload;
+
+  useEffect(() => {
+    if (birthDate && !mutation.isPending && !result) {
+      mutation.mutate({ birthDate, transitDate: todayStr() });
+    }
+  }, [birthDate]);
 
   const handleCalculate = () => {
     setFormError(null);
@@ -75,13 +81,13 @@ export default function NumerologyTransitsPage() {
 
         {user && birthDate && !result && (
           <div className={styles.calculateBox}>
-            <p className={styles.calculateDesc}>
-              Calculado a partir da sua data de nascimento registrada: <strong>{new Date(birthDate + 'T12:00:00Z').toLocaleDateString('pt-BR')}</strong>
-            </p>
-            {formError && <p className={styles.error}>{formError}</p>}
-            <button className={styles.submitButton} onClick={handleCalculate} disabled={mutation.isPending} type="button">
-              {mutation.isPending ? 'Calculando...' : 'Ver meus trânsitos de hoje'}
-            </button>
+            {mutation.isPending && <p className={styles.calculateDesc}>Calculando seus trânsitos de hoje…</p>}
+            {formError && (
+              <>
+                <p className={styles.error}>{formError}</p>
+                <button className={styles.submitButton} onClick={handleCalculate} type="button">Tentar novamente</button>
+              </>
+            )}
           </div>
         )}
 

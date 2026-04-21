@@ -1,6 +1,6 @@
 // src/pages/WelcomePageFixed.jsx
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, Navigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import styles from './WelcomePageFixed.module.css';
 
@@ -32,7 +32,9 @@ const features = [
 ];
 
 function WelcomePageFixed() {
-  const { user } = useAuth();
+  const { user, loading } = useAuth();
+
+  if (!loading && user) return <Navigate to="/tarot" replace />;
 
   return (
     <div className={styles.welcomeContainer}>
