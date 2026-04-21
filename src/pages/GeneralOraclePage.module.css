@@ -1,37 +1,39 @@
 /* ── GeneralOraclePage — padrão unificado ── */
 
 .page {
-  padding: 24px 0 48px;
+  padding-bottom: 4rem;
   color: #f4efe6;
   width: 100%;
 }
 
 /* ── Header ── */
 .header {
-  display: grid;
-  gap: 10px;
-  margin-bottom: 8px;
+  text-align: center;
+  padding: 3.5rem 1rem 1rem;
 }
 
 .eyebrow {
-  margin: 0;
+  margin: 0 0 0.4rem;
   text-transform: uppercase;
-  letter-spacing: 0.16em;
-  font-size: 0.78rem;
-  color: rgba(225, 179, 130, 0.75);
+  letter-spacing: 0.14em;
+  font-size: 0.74rem;
+  color: rgba(225, 179, 130, 0.7);
+  font-family: 'Cinzel', serif;
 }
 
 .header h1 {
-  margin: 0;
-  font-size: clamp(1.85rem, 3.8vw, 2.8rem);
-  color: #e1b382;
-  font-family: 'Cormorant Garamond', Georgia, serif;
-  font-weight: 600;
+  margin: 0 0 0.5rem;
+  font-size: clamp(1.8rem, 3.5vw, 2.6rem);
+  color: #f0d8b8;
+  font-family: 'Cinzel', serif;
+  font-weight: 700;
 }
 
 .subtitle {
   margin: 0;
-  color: rgba(244, 239, 230, 0.8);
+  font-size: 0.9rem;
+  color: #8a8caa;
+  line-height: 1.5;
 }
 
 /* ── Card principal ── */
@@ -113,10 +115,10 @@
 
 .modulesSectionHeader h2 {
   margin: 0;
-  font-family: 'Cormorant Garamond', Georgia, serif;
-  font-size: clamp(1.2rem, 2vw, 1.6rem);
-  color: #f0ce9f;
-  font-weight: 600;
+  font-family: 'Cinzel', serif;
+  font-size: clamp(1.1rem, 2vw, 1.45rem);
+  color: #f0d8b8;
+  font-weight: 700;
 }
 
 .modulesHint {
@@ -295,9 +297,15 @@
 }
 
 /* ── Resultado ── */
+@keyframes revealResult {
+  from { opacity: 0; transform: translateY(14px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
 .resultBlock {
   display: grid;
   gap: 16px;
+  animation: revealResult 0.5s ease both;
 }
 
 .resultHeader {
@@ -310,10 +318,10 @@
 
 .resultHeader h2 {
   margin: 0;
-  font-family: 'Cormorant Garamond', Georgia, serif;
-  font-size: clamp(1.2rem, 2.2vw, 1.7rem);
-  color: #f0ce9f;
-  font-weight: 600;
+  font-family: 'Cinzel', serif;
+  font-size: clamp(1.1rem, 2.2vw, 1.5rem);
+  color: #f0d8b8;
+  font-weight: 700;
 }
 
 /* ── CTA gerar ── */
@@ -328,35 +336,37 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  border-radius: 10px;
-  padding: 11px 20px;
+  border-radius: 999px;
+  padding: 0.75rem 1.6rem;
+  font-family: 'Cinzel', serif;
   font-weight: 700;
-  font-size: 0.95rem;
+  font-size: 0.9rem;
+  letter-spacing: 0.04em;
   cursor: pointer;
   transition: transform 0.2s ease, opacity 0.2s ease;
   border: none;
-  color: #1f182f;
-  background: #e1b382;
+  color: #0d0c1d;
+  background: linear-gradient(120deg, #e1b382, #c9894a);
 }
 
-.primaryButton:hover { transform: translateY(-1px); opacity: 0.92; }
+.primaryButton:hover { transform: translateY(-1px); opacity: 0.9; }
 .primaryButton:disabled { opacity: 0.55; cursor: not-allowed; }
 
 .secondaryButton {
   display: inline-flex;
   align-items: center;
-  border-radius: 10px;
-  padding: 8px 14px;
+  border-radius: 999px;
+  padding: 0.6rem 1.2rem;
   font-weight: 600;
-  font-size: 0.88rem;
+  font-size: 0.85rem;
   cursor: pointer;
   background: transparent;
-  border: 1px solid rgba(225, 179, 130, 0.45);
-  color: #f9ddbf;
+  border: 1px solid rgba(225, 179, 130, 0.4);
+  color: #e1b382;
   transition: background 0.2s ease;
 }
 
-.secondaryButton:hover { background: rgba(225, 179, 130, 0.1); }
+.secondaryButton:hover { background: rgba(225, 179, 130, 0.09); }
 
 /* ── Histórico ── */
 .historyList {
@@ -399,10 +409,10 @@
 /* ── Como Funciona ── */
 .howTitle {
   margin: 0;
-  font-family: 'Cormorant Garamond', Georgia, serif;
-  font-size: clamp(1.2rem, 2.2vw, 1.7rem);
-  color: #f0ce9f;
-  font-weight: 600;
+  font-family: 'Cinzel', serif;
+  font-size: clamp(1.1rem, 2.2vw, 1.5rem);
+  color: #f0d8b8;
+  font-weight: 700;
 }
 
 .howSubtitle {
