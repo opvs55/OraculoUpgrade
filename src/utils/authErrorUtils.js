@@ -1,5 +1,7 @@
 // src/utils/authErrorUtils.js
 
+import logger from './logger.js';
+
 // Mapeia mensagens de erro comuns do Supabase Auth para português
 const errorMessages = {
   // Erros de Cadastro (signUp)
@@ -34,9 +36,8 @@ export function translateSupabaseError(error) {
       return "Muitas tentativas. Por favor, aguarde um pouco.";
   }
 
-  // Se não encontrar uma tradução específica, retorna a mensagem padrão ou a original (para debug)
-  // Em produção, talvez seja melhor retornar sempre a padrão por segurança.
-  console.warn("Erro Supabase não traduzido:", error.message); // Log para debug
+  // Se não encontrar uma tradução específica, retorna a mensagem padrão
+  logger.warn("Erro Supabase não traduzido:", error.message);
   return errorMessages.default; 
   // Ou: return error.message; // Se preferir mostrar o erro original (menos seguro)
 }

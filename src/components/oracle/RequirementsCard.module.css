@@ -1,0 +1,253 @@
+/* src/components/oracle/RequirementsCard.module.css */
+
+.requirementsCard {
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+  border: 1px solid #2d3561;
+  border-radius: 16px;
+  padding: 2rem;
+  margin: 2rem 0;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+}
+
+.requirementsHeader {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.requirementsHeader h2 {
+  color: #e1b382;
+  margin-bottom: 0.5rem;
+  font-size: 1.5rem;
+}
+
+.requirementsHeader p {
+  color: #b8b8b8;
+  line-height: 1.6;
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+/* Progress Bar */
+.progressContainer {
+  margin-bottom: 2rem;
+}
+
+.progressInfo {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.progressLabel {
+  color: #e0e0e0;
+  font-weight: 500;
+}
+
+.progressCount {
+  color: #e1b382;
+  font-weight: 700;
+  background: rgba(225, 179, 130, 0.1);
+  padding: 0.25rem 0.75rem;
+  border-radius: 20px;
+  font-size: 0.875rem;
+}
+
+.progressBar {
+  width: 100%;
+  height: 8px;
+  background: #2d3561;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.progressFill {
+  height: 100%;
+  background: linear-gradient(90deg, #c36e97 0%, #e1b382 100%);
+  border-radius: 10px;
+  transition: width 0.3s ease;
+}
+
+/* Modules Grid */
+.modulesGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.moduleCard {
+  display: flex;
+  align-items: center;
+  padding: 1.25rem;
+  border: 2px solid;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.02);
+  transition: all 0.3s ease;
+}
+
+.moduleCard.completed {
+  border-color: #4caf50;
+  background: rgba(76, 175, 80, 0.05);
+}
+
+.moduleCard.pending {
+  border-color: #2d3561;
+  background: rgba(45, 53, 97, 0.1);
+}
+
+.moduleCard.pending:hover {
+  border-color: #e1b382;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px rgba(225, 179, 130, 0.2);
+}
+
+.moduleIcon {
+  font-size: 2rem;
+  margin-right: 1rem;
+  filter: grayscale(0.3);
+}
+
+.moduleCard.completed .moduleIcon {
+  filter: grayscale(0);
+}
+
+.moduleInfo {
+  flex: 1;
+}
+
+.moduleInfo h4 {
+  color: #e0e0e0;
+  margin: 0 0 0.25rem 0;
+  font-size: 1rem;
+}
+
+.moduleInfo p {
+  color: #b8b8b8;
+  margin: 0;
+  font-size: 0.875rem;
+  line-height: 1.4;
+}
+
+.moduleStatus {
+  margin-left: 1rem;
+}
+
+.completedBadge {
+  background: #4caf50;
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.actionButton {
+  background: linear-gradient(135deg, #c36e97 0%, #e1b382 100%);
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  text-decoration: none;
+  font-size: 0.75rem;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+}
+
+.actionButton:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(195, 110, 151, 0.3);
+}
+
+/* Ready Message */
+.readyMessage {
+  display: flex;
+  align-items: center;
+  background: linear-gradient(135deg, rgba(76, 175, 80, 0.1) 0%, rgba(76, 175, 80, 0.05) 100%);
+  border: 2px solid #4caf50;
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.readyIcon {
+  font-size: 2.5rem;
+  margin-right: 1.5rem;
+}
+
+.readyText h3 {
+  color: #4caf50;
+  margin: 0 0 0.5rem 0;
+  font-size: 1.25rem;
+}
+
+.readyText p {
+  color: #e0e0e0;
+  margin: 0;
+  line-height: 1.5;
+}
+
+/* Tip Box */
+.tipBox {
+  display: flex;
+  align-items: flex-start;
+  background: rgba(225, 179, 130, 0.1);
+  border: 1px solid rgba(225, 179, 130, 0.3);
+  border-radius: 12px;
+  padding: 1.5rem;
+}
+
+.tipIcon {
+  font-size: 1.5rem;
+  margin-right: 1rem;
+  margin-top: 0.25rem;
+}
+
+.tipText h4 {
+  color: #e1b382;
+  margin: 0 0 0.5rem 0;
+  font-size: 1rem;
+}
+
+.tipText p {
+  color: #e0e0e0;
+  margin: 0;
+  line-height: 1.5;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .requirementsCard {
+    padding: 1.5rem;
+    margin: 1rem 0;
+  }
+  
+  .modulesGrid {
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+  }
+  
+  .moduleCard {
+    padding: 1rem;
+  }
+  
+  .moduleIcon {
+    font-size: 1.5rem;
+    margin-right: 0.75rem;
+  }
+  
+  .readyMessage,
+  .tipBox {
+    flex-direction: column;
+    text-align: center;
+  }
+  
+  .readyIcon,
+  .tipIcon {
+    margin-right: 0;
+    margin-bottom: 1rem;
+  }
+}

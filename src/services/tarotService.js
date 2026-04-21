@@ -1,6 +1,7 @@
 // src/services/tarotService.js (VERSÃO REFATORADA)
 
 import { baralhoDetalhado as baralho } from '../tarotDeck.js';
+import logger from '../utils/logger.js';
 
 // Função para embaralhar um array usando o algoritmo Fisher-Yates
 function embaralhar(array) {
@@ -26,13 +27,13 @@ function assignInversion(card) {
 // --- Funções de Sorteio com a Posição Adicionada ---
 
 export function sortearUmaCarta() {
-  console.log("Serviço de tarot: Sorteando 1 carta...");
+  logger.tarot.log('Serviço de tarot: Sorteando 1 carta...');
   const [carta] = getShuffledCards(1);
   return [{ ...assignInversion(carta), posicao: 'A Carta' }];
 }
 
 export function sortearTresCartas() {
-  console.log("Serviço de tarot: Sorteando 3 cartas...");
+  logger.tarot.log('Serviço de tarot: Sorteando 3 cartas...');
   const [passado, presente, futuro] = getShuffledCards(3);
   return [
     { ...assignInversion(passado), posicao: 'Passado' },
@@ -42,7 +43,7 @@ export function sortearTresCartas() {
 }
 
 export function sortearCruzCelta() {
-  console.log("Serviço de tarot: Sorteando 10 cartas para a Cruz Celta...");
+  logger.tarot.log('Serviço de tarot: Sorteando 10 cartas para a Cruz Celta...');
   const sorteadas = getShuffledCards(10);
   const posicoes = [
     'Situação Atual', 'Obstáculo', 'Base da Questão', 'Passado Recente',
@@ -56,7 +57,7 @@ export function sortearCruzCelta() {
 }
 
 export function sortearTemploDeAfrodite() {
-  console.log("Serviço de tarot: Sorteando 7 cartas para o Templo de Afrodite...");
+  logger.tarot.log('Serviço de tarot: Sorteando 7 cartas para o Templo de Afrodite...');
   const sorteadas = getShuffledCards(7);
   const posicoes = [
     'Pilar 1: O Eu Interior', 'Pilar 2: O Outro', 'Viga 1: A Relação no Passado',
@@ -64,13 +65,13 @@ export function sortearTemploDeAfrodite() {
     'A Oferenda: O que deve ser Cultivado', 'A Bênção de Afrodite: O Conselho Final'
   ];
   return sorteadas.map((carta, index) => ({
-      ...assignInversion(carta),
-      posicao: posicoes[index],
+    ...assignInversion(carta),
+    posicao: posicoes[index],
   }));
 }
 
 export function sortearEscolhaDeCaminho() {
-  console.log("Serviço de tarot: Sorteando 8 cartas para a Escolha de Caminho...");
+  logger.tarot.log('Serviço de tarot: Sorteando 8 cartas para a Escolha de Caminho...');
   const sorteadas = getShuffledCards(8);
   const posicoes = [
     'O Consulente', 'A Situação da Escolha', 'O Caminho da Luz: Opção 1',
