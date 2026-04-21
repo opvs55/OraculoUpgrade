@@ -1,6 +1,6 @@
 // src/pages/reading/PastReadingPage/PastReadingPage.jsx (VERSÃO CORRIGIDA+)
 
-import React, { useRef } from 'react';
+import React from 'react';
 import { useParams, Link, useLocation } from 'react-router-dom';
 import { useSingleReading } from '../../../hooks/useReadings';
 import styles from './PastReadingPage.module.css';
@@ -8,8 +8,6 @@ import Loader from '../../../components/common/Loader/Loader';
 import ReadingDisplay from '../../../components/ReadingDisplay/ReadingDisplay';
 import { useAuth } from '../../../context/AuthContext';
 import GuestPrompt from '../../../components/GuestPrompt/GuestPrompt';
-import ReadingInteractionBar from '../../../components/ReadingInteractionBar/ReadingInteractionBar';
-import CommentsSection from '../../../components/CommentsSection/CommentsSection';
 import ReadingJournal from '../../../components/journal/ReadingJournal';
 
 // Layouts das cartas
@@ -17,7 +15,6 @@ import CelticCrossLayout from '../../../components/CelticCrossLayout/CelticCross
 import ThreeCardLayout from '../../../components/ThreeCardLayout/ThreeCardLayout';
 import TempleOfAphroditeLayout from '../../../components/TempleOfAphroditeLayout/TempleOfAphroditeLayout';
 import PathChoiceLayout from '../../../components/PathChoiceLayout/PathChoiceLayout';
-import AuthorPost from '../../../components/AuthorPost/AuthorPost';
 
 // <<< MUDANÇA AQUI: Função getQuestionText agora tenta fazer parse de JSON >>>
 const getQuestionText = (question, spreadType) => {
@@ -73,7 +70,6 @@ function PastReadingPage() {
   const isError = isHookError;
   const error = hookError;
   const currentReading = temporaryReadingData || readingFromHook;
-  const commentsRef = useRef(null);
 
 
   // --- RENDERIZAÇÃO --- (O resto do componente permanece igual)
@@ -125,13 +121,6 @@ function PastReadingPage() {
 
   const isOwner = user && currentReading.user_id === user.id;
   const isTemporary = currentReading.id.startsWith('temp-');
-  const authorUsername = currentReading.profiles?.username || (isOwner ? user.profile?.username : 'desconhecido');
-  const pinnedCommentId = currentReading?.interpretation_data?.pinned_comment_id || null;
-  const communityPrompt = currentReading?.interpretation_data?.community_prompt || null;
-
-  const handleScrollToComments = () => {
-    commentsRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-  };
 
   return (
     <div className="content_wrapper">
@@ -163,50 +152,6 @@ function PastReadingPage() {
         {user && !isTemporary && (
           <div className={styles.journalSection}>
             <ReadingJournal sourceType="tarot" sourceId={currentReading.id} />
-          </div>
-        )}
-
-        {/* --- 2. SEÇÃO DE COMUNIDADE (Pública) --- */}
-        {!isTemporary && (
-          <div className={styles.communitySection}>
-            <ReadingInteractionBar 
-              reading={currentReading} 
-              user={user} 
-              isOwner={isOwner} 
-            />
-            
-            {currentReading.is_public && (
-              <div className={styles.publicContentGrid}>
-                
-                <div className={styles.reflectionColumn}>
-                  <AuthorPost 
-                    text={currentReading.shared_title} 
-                    username={authorUsername}
-                  />
-                </div>
-                
-                <div className={styles.commentsColumn} ref={commentsRef}>
-                  {communityPrompt?.question && (
-                    <div className={styles.communityPromptCallout}>
-                      <p>
-                        Pedido do autor: interprete a posição {communityPrompt.position || 'geral'}.
-                      </p>
-                      <p className={styles.promptQuestion}>“{communityPrompt.question}”</p>
-                      <button type="button" onClick={handleScrollToComments} className={styles.replyButton}>
-                        Responder
-                      </button>
-                    </div>
-                  )}
-                  <CommentsSection
-                    readingId={currentReading.id}
-                    isOwner={isOwner}
-                    pinnedCommentId={pinnedCommentId}
-                    reading={currentReading}
-                  />
-                </div>
-
-              </div>
-            )}
           </div>
         )}
         

@@ -84,7 +84,8 @@ export default function DailyOraclePage() {
   const { data: weeklyCard } = useQuery({
     queryKey: ['weekly-card-daily', user?.id],
     enabled: !!user?.id,
-    staleTime: 1000 * 60 * 60,
+    staleTime: 0,
+    refetchOnMount: true,
     queryFn: async () => {
       const { data, error } = await supabase
         .from('weekly_cards')
@@ -175,6 +176,32 @@ export default function DailyOraclePage() {
               </div>
             </div>
           </div>
+        )}
+
+        {user && !weeklyCard && data && (
+          <>
+            <div className={styles.sectionDivider}>
+              <span>Carta da Semana</span>
+            </div>
+            <div className={styles.oracleLayout}>
+              <div className={styles.cardArt}>
+                <div className={styles.cardFrame}>
+                  <p className={styles.cardName}>✶</p>
+                </div>
+              </div>
+              <div className={styles.cardContent}>
+                <p className={styles.sectionLabel}>Arquétipo Semanal</p>
+                <p className={styles.weeklyCardHint}>
+                  Você ainda não revelou sua carta da semana. Acesse seu painel e revele a carta que orienta sua semana.
+                </p>
+                <div className={styles.actions}>
+                  <Link to="/perfil" className={styles.primaryButton}>
+                    Revelar carta da semana →
+                  </Link>
+                </div>
+              </div>
+            </div>
+          </>
         )}
 
         {weeklyCard && (

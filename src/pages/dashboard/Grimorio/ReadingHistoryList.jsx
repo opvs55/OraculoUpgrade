@@ -85,13 +85,6 @@ function ReadingItem({ reading, userId, queryKey }) {
     updateMutation.mutate({ shared_title: trimmed || null });
   };
 
-  const handleTogglePrivacy = () => {
-    updateMutation.mutate({
-      is_public: !reading.is_public,
-      shared_title: !reading.is_public ? (reading.shared_title || title) : null,
-    });
-  };
-
   const handleDelete = () => {
     if (window.confirm('Tem certeza que deseja excluir esta leitura? Esta ação não pode ser desfeita.')) {
       deleteMutation.mutate();
@@ -163,14 +156,6 @@ function ReadingItem({ reading, userId, queryKey }) {
               </button>
               <button
                 type="button"
-                className={styles.historyMenuItem}
-                onClick={handleTogglePrivacy}
-                disabled={updateMutation.isPending}
-              >
-                {reading.is_public ? 'Tornar privada' : 'Tornar pública'}
-              </button>
-              <button
-                type="button"
                 className={styles.historyMenuItemDanger}
                 onClick={handleDelete}
                 disabled={deleteMutation.isPending}
@@ -204,11 +189,6 @@ function ReadingItem({ reading, userId, queryKey }) {
               <div className={styles.historyCardThumbPlaceholder} />
             </>
           )}
-        </div>
-        <div className={styles.historyIndicators}>
-          <span>{reading.is_public ? 'Pública' : 'Privada'}</span>
-          <span>⭐ {reading.stars?.[0]?.count ?? 0}</span>
-          <span>💬 {reading.comments?.[0]?.count ?? 0}</span>
         </div>
       </div>
     </article>

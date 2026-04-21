@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useMutation } from '@tanstack/react-query';
 import { useAuth } from '../context/AuthContext';
+import { useUserProfile } from '../hooks/useUserProfile';
 import { oraclesApi } from '../services/api/oraclesApi';
 import { usePageTitle } from '../hooks/usePageTitle';
 import { Link } from 'react-router-dom';
@@ -10,7 +11,15 @@ import styles from './NumerologyCompatibilityPage.module.css';
 export default function NumerologyCompatibilityPage() {
   usePageTitle('Compatibilidade Numerológica');
   const { user } = useAuth();
+  const { profile } = useUserProfile(user?.id);
   const [form, setForm] = useState({ name1: '', birthDate1: '', name2: '', birthDate2: '' });
+
+  useEffect(() => {
+    if (profile && !form.name1) {
+      setForm(f => ({ ...f, name1: profile.full_name || profile.username || '' }));
+    }
+  }, [profile]);
+
   const [formError, setFormError] = useState(null);
 
   const mutation = useMutation({

@@ -12,6 +12,24 @@ import { goBackOrFallback } from '../../utils/navigation';
 import styles from './MyProfilePage.module.css';
 import { usePageTitle } from '../../hooks/usePageTitle';
 
+const getQuestionText = (question) => {
+  if (!question) return null;
+  if (typeof question === 'string') {
+    try {
+      const parsed = JSON.parse(question);
+      if (parsed.name1 && parsed.name2) return `${parsed.name1} & ${parsed.name2}`;
+      if (parsed.path1 && parsed.path2) return `${parsed.path1} vs ${parsed.path2}`;
+    } catch {
+      return question;
+    }
+  }
+  if (typeof question === 'object') {
+    if (question.name1 && question.name2) return `${question.name1} & ${question.name2}`;
+    if (question.path1 && question.path2) return `${question.path1} vs ${question.path2}`;
+  }
+  return String(question);
+};
+
 const spreadTypeLabels = {
   oneCard: 'Tarot (1 carta)',
   threeCards: 'Tarot (3 cartas)',
@@ -404,7 +422,7 @@ export default function MyProfilePage() {
                       <div className={styles.timelineItemMain}>
                         <strong>{spreadTypeLabels[reading.spread_type] || 'Leitura de Tarot'}</strong>
                         {reading.question && (
-                          <p className={styles.timelineQuestion}>"{reading.question}"</p>
+                          <p className={styles.timelineQuestion}>"{getQuestionText(reading.question)}"</p>
                         )}
                       </div>
                       <span>{formatDate(reading.created_at)}</span>

@@ -5,6 +5,7 @@ import { oraclesApi } from '../services/api/oraclesApi';
 import { usePageTitle } from '../hooks/usePageTitle';
 import { Link } from 'react-router-dom';
 import DecorativeDivider from '../components/common/DecorativeDivider/DecorativeDivider';
+import HexagramDisplay from '../components/iching/HexagramDisplay';
 import styles from './IChingActivePage.module.css';
 
 export default function IChingActivePage() {
@@ -93,6 +94,10 @@ export default function IChingActivePage() {
                 {result.headline && <p className={styles.hexHeadline}>{result.headline}</p>}
               </div>
             </div>
+
+            {Array.isArray(result.lines) && result.lines.length === 6 && (
+              <HexagramDisplay lines={result.lines} />
+            )}
 
             <div className={styles.questionBox}>
               <p className={styles.questionBoxLabel}>Sua pergunta</p>
