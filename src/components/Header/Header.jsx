@@ -90,217 +90,133 @@ function Header() {
 
   return (
     <header
-      className={`${styles.header} ${isPublicHome ? styles.headerWelcome : ''} ${
-        isInternal ? styles.headerInternal : ''
-      } ${isInternal && isHidden && !isMenuOpen && !isAccountOpen ? styles.headerHidden : ''}`}
+      className={`${styles.header} ${
+        isInternal && isHidden && !isMenuOpen && !isAccountOpen ? styles.headerHidden : ''
+      }`}
     >
-      <nav className={`${styles.nav} ${styles.navLeft}`} aria-label="Navegação principal">
-        {isInternal && (
-          <>
-            {canShowQuickBack && (
-              <button
-                type="button"
-                className={styles.quickBackButton}
-                onClick={handleQuickBack}
-                aria-label="Voltar para página anterior"
-              >
-                ← Voltar
-              </button>
-            )}
-            <button
-              type="button"
-              className={styles.menuButton}
-              onClick={handleToggleMenu}
-              aria-label="Abrir menu"
-              aria-expanded={isMenuOpen}
-              aria-controls="menu-interno"
-            >
-              <span className={styles.menuIcon} />
-            </button>
-          </>
-        )}
+      {/* ── LOGO ── */}
+      <div className={styles.logoBlock}>
+        <Link to="/" className={styles.logoLink}>
+          <span className={styles.logoIcon}>✦</span>
+          <span className={styles.logoText}>
+            ESOTERICON
+            <small className={styles.logoTagline}>TAROT · RUNAS · ORÁCULOS</small>
+          </span>
+        </Link>
+      </div>
 
+      {/* ── NAV CENTRAL ── */}
+      <nav className={styles.navCenter} aria-label="Navegação principal">
         {!loading && user && (
           <>
-            <div className={styles.leftDropdownWrapper} ref={leftDropdownRef}>
-              <button
-                type="button"
-                className={styles.leftDropdownButton}
-                onClick={() => setIsLeftDropdownOpen((prev) => !prev)}
-                aria-expanded={isLeftDropdownOpen}
-              >
-                Explorar
-              </button>
-              {isLeftDropdownOpen && (
-                <div className={styles.leftDropdownMenu}>
-                  <NavLink to="/perfil" className={styles.accountMenuLink}>
-                    Meu Espaço
-                  </NavLink>
-                  <NavLink to="/reels" className={styles.accountMenuLink}>
-                    Reels
-                  </NavLink>
-                  <NavLink to="/biblioteca" className={styles.accountMenuLink}>
-                    Biblioteca
-                  </NavLink>
-                </div>
-              )}
-            </div>
-            <NavLink
-              to="/tarot"
-              className={({ isActive }) => (isActive ? `${styles.navLink} ${styles.activeLink}` : styles.navLink)}
-            >
+            <NavLink to="/tarot" className={({ isActive }) => isActive ? `${styles.navLink} ${styles.activeLink}` : styles.navLink}>
               Tarot
             </NavLink>
-            <NavLink
-              to="/numerologia"
-              className={({ isActive }) => (isActive ? `${styles.navLink} ${styles.activeLink}` : styles.navLink)}
-            >
+            <NavLink to="/numerologia" className={({ isActive }) => isActive ? `${styles.navLink} ${styles.activeLink}` : styles.navLink}>
               Numerologia
             </NavLink>
-            <NavLink
-              to="/runas"
-              className={({ isActive }) => (isActive ? `${styles.navLink} ${styles.activeLink}` : styles.navLink)}
-            >
+            <NavLink to="/runas" className={({ isActive }) => isActive ? `${styles.navLink} ${styles.activeLink}` : styles.navLink}>
               Runas
             </NavLink>
-            <NavLink
-              to="/iching"
-              className={({ isActive }) => (isActive ? `${styles.navLink} ${styles.activeLink}` : styles.navLink)}
-            >
+            <NavLink to="/iching" className={({ isActive }) => isActive ? `${styles.navLink} ${styles.activeLink}` : styles.navLink}>
               I Ching
             </NavLink>
-            <NavLink
-              to="/oraculo/geral"
-              className={({ isActive }) => (isActive ? `${styles.navLink} ${styles.activeLink}` : styles.navLink)}
-            >
+            <NavLink to="/oraculo/geral" className={({ isActive }) => isActive ? `${styles.navLink} ${styles.activeLink}` : styles.navLink}>
               Síntese Semanal
-            </NavLink>
-            <NavLink
-              to="/leituras-interativas"
-              className={({ isActive }) => (isActive ? `${styles.navLink} ${styles.activeLink}` : styles.navLink)}
-            >
-              Leituras ao Vivo
             </NavLink>
           </>
         )}
-        {!loading && !user && <div style={{ minWidth: '100px' }} />}
       </nav>
 
-      {!isPublicHome && !isInternal && (
-        <div className={styles.headerCenter}>
-          <Link to="/" className={styles.headerLogo}>
-            ESOTERICON
-          </Link>
-        </div>
-      )}
-
-      <nav className={`${styles.nav} ${styles.navRight}`} aria-label="Ações do usuário">
+      {/* ── AÇÕES DIREITA ── */}
+      <div className={styles.navRight}>
         {!loading && (
           <>
-            {isInternal && (
-              <Link to="/tarot" className={styles.primaryButton}>
-                <span className={styles.ctaFull}>Fazer leitura</span>
-                <span className={styles.ctaShort}>Leitura</span>
-              </Link>
-            )}
             {user ? (
-              <div className={styles.accountWrapper} ref={accountRef}>
+              <>
+                <Link to="/tarot" className={styles.ctaButton}>
+                  <span className={styles.ctaFull}>Fazer leitura</span>
+                  <span className={styles.ctaShort}>✦</span>
+                </Link>
+
+                <div className={styles.accountWrapper} ref={accountRef}>
+                  <button
+                    type="button"
+                    className={`${styles.accountButton} ${isAccountAnimating ? styles.accountButtonActive : ''}`}
+                    onClick={handleAccountToggle}
+                    aria-haspopup="menu"
+                    aria-expanded={isAccountOpen}
+                    aria-label="Menu do perfil"
+                  >
+                    <svg className={styles.accountIcon} viewBox="0 0 64 64" role="presentation" aria-hidden="true">
+                      <polygon
+                        points="32 6 38.5 24 57 24 42 35.5 47.5 54 32 43 16.5 54 22 35.5 7 24 25.5 24"
+                        fill="none" stroke="currentColor" strokeWidth="3" strokeLinejoin="round"
+                      />
+                      <circle cx="32" cy="32" r="10" fill="none" stroke="currentColor" strokeWidth="2" />
+                    </svg>
+                  </button>
+                  {isAccountOpen && (
+                    <div className={styles.accountMenu} role="menu">
+                      <Link to="/perfil" role="menuitem" className={styles.accountMenuLink} state={{ from: location.pathname }}>
+                        Meu Perfil
+                      </Link>
+                      <Link to="/biblioteca" role="menuitem" className={styles.accountMenuLink}>
+                        Biblioteca
+                      </Link>
+                      <Link to="/reels" role="menuitem" className={styles.accountMenuLink}>
+                        Reels
+                      </Link>
+                      <Link to="/perfil/editar" role="menuitem" className={styles.accountMenuLink} state={{ from: location.pathname }}>
+                        Configurações
+                      </Link>
+                      <button type="button" role="menuitem" className={styles.accountMenuLink} onClick={signOut}>
+                        Sair
+                      </button>
+                    </div>
+                  )}
+                </div>
+
+                {/* Mobile hamburger */}
                 <button
                   type="button"
-                  className={`${styles.accountButton} ${isAccountAnimating ? styles.accountButtonActive : ''}`}
-                  onClick={handleAccountToggle}
-                  aria-haspopup="menu"
-                  aria-expanded={isAccountOpen}
-                  aria-label="Menu do perfil"
+                  className={styles.menuButton}
+                  onClick={handleToggleMenu}
+                  aria-label="Abrir menu"
+                  aria-expanded={isMenuOpen}
+                  aria-controls="menu-interno"
                 >
-                  <svg className={styles.accountIcon} viewBox="0 0 64 64" role="presentation" aria-hidden="true">
-                    <polygon
-                      points="32 6 38.5 24 57 24 42 35.5 47.5 54 32 43 16.5 54 22 35.5 7 24 25.5 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="3"
-                      strokeLinejoin="round"
-                    />
-                    <circle cx="32" cy="32" r="10" fill="none" stroke="currentColor" strokeWidth="2" />
-                  </svg>
+                  <span className={styles.menuIcon} />
                 </button>
-                {isAccountOpen && (
-                  <div className={styles.accountMenu} role="menu">
-                    <Link
-                      to="/perfil"
-                      role="menuitem"
-                      className={styles.accountMenuLink}
-                      state={{ from: location.pathname }}
-                    >
-                      Meu Perfil
-                    </Link>
-                    <Link
-                      to="/perfil/editar"
-                      role="menuitem"
-                      className={styles.accountMenuLink}
-                      state={{ from: location.pathname }}
-                    >
-                      Configurações
-                    </Link>
-                    <button type="button" role="menuitem" onClick={signOut}>
-                      Sair
-                    </button>
-                  </div>
-                )}
-              </div>
+              </>
             ) : (
               <>
-                <NavLink
-                  to="/login"
-                  className={({ isActive }) => (isActive ? `${styles.navLink} ${styles.activeLink}` : styles.navLink)}
-                >
+                <NavLink to="/login" className={({ isActive }) => isActive ? `${styles.navLink} ${styles.activeLink}` : styles.navLink}>
                   Entrar
                 </NavLink>
-                <NavLink to="/cadastro" className={styles.signUpButton}>
-                  Cadastrar
+                <NavLink to="/cadastro" className={styles.ctaButton}>
+                  Fazer leitura ✦
                 </NavLink>
               </>
             )}
           </>
         )}
-      </nav>
+      </div>
 
-      {isInternal && (
+      {/* ── MOBILE MENU ── */}
+      {user && (
         <div id="menu-interno" className={`${styles.mobileMenu} ${isMenuOpen ? styles.mobileMenuOpen : ''}`}>
           <div className={styles.mobileMenuContent}>
-            <NavLink to="/tarot" className={styles.mobileLink} onClick={handleCloseMenu}>
-              Tarot
-            </NavLink>
-            <NavLink to="/numerologia" className={styles.mobileLink} onClick={handleCloseMenu}>
-              Numerologia
-            </NavLink>
-            <NavLink to="/runas" className={styles.mobileLink} onClick={handleCloseMenu}>
-              Runas
-            </NavLink>
-            <NavLink to="/iching" className={styles.mobileLink} onClick={handleCloseMenu}>
-              I Ching
-            </NavLink>
-            <NavLink to="/oraculo/geral" className={styles.mobileLink} onClick={handleCloseMenu}>
-              Síntese Semanal
-            </NavLink>
-            <NavLink to="/leituras-interativas" className={styles.mobileLink} onClick={handleCloseMenu}>
-              Leituras ao Vivo
-            </NavLink>
-            <NavLink to="/perfil" className={styles.mobileLink} onClick={handleCloseMenu}>
-              Meu Espaço
-            </NavLink>
-            <NavLink to="/reels" className={styles.mobileLink} onClick={handleCloseMenu}>
-              Reels
-            </NavLink>
-            <NavLink to="/biblioteca" className={styles.mobileLink} onClick={handleCloseMenu}>
-              Biblioteca
-            </NavLink>
-            <NavLink to="/perfil/editar" className={styles.mobileLink} onClick={handleCloseMenu}>
-              Configurações
-            </NavLink>
-            <button type="button" className={styles.mobileGhostButton} onClick={signOut}>
-              Sair
-            </button>
+            <NavLink to="/tarot" className={styles.mobileLink} onClick={handleCloseMenu}>Tarot</NavLink>
+            <NavLink to="/numerologia" className={styles.mobileLink} onClick={handleCloseMenu}>Numerologia</NavLink>
+            <NavLink to="/runas" className={styles.mobileLink} onClick={handleCloseMenu}>Runas</NavLink>
+            <NavLink to="/iching" className={styles.mobileLink} onClick={handleCloseMenu}>I Ching</NavLink>
+            <NavLink to="/oraculo/geral" className={styles.mobileLink} onClick={handleCloseMenu}>Síntese Semanal</NavLink>
+            <NavLink to="/perfil" className={styles.mobileLink} onClick={handleCloseMenu}>Meu Espaço</NavLink>
+            <NavLink to="/reels" className={styles.mobileLink} onClick={handleCloseMenu}>Reels</NavLink>
+            <NavLink to="/biblioteca" className={styles.mobileLink} onClick={handleCloseMenu}>Biblioteca</NavLink>
+            <NavLink to="/perfil/editar" className={styles.mobileLink} onClick={handleCloseMenu}>Configurações</NavLink>
+            <button type="button" className={styles.mobileGhostButton} onClick={signOut}>Sair</button>
           </div>
         </div>
       )}

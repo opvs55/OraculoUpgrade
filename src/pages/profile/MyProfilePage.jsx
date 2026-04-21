@@ -43,10 +43,10 @@ function useUnifiedOracleHub(userId) {
     queryFn: async () => {
       if (!userId) return null;
 
-      const safeQuery = async (query, fallback = []) => {
+      const safeQuery = async (query, label = '', fallback = []) => {
         const { data, error } = await query;
         if (error) {
-          console.warn('Falha ao buscar bloco do painel unificado:', error.message);
+          console.warn(`[unifiedOracleHub][${label}] Falha:`, error.message, error);
           return fallback;
         }
         return data ?? fallback;
@@ -60,6 +60,7 @@ function useUnifiedOracleHub(userId) {
             .eq('user_id', userId)
             .order('created_at', { ascending: false })
             .limit(6),
+          'readings',
         ),
         safeQuery(
           supabase
@@ -68,6 +69,7 @@ function useUnifiedOracleHub(userId) {
             .eq('user_id', userId)
             .order('week_start', { ascending: false })
             .limit(1),
+          'weekly_cards',
         ),
         safeQuery(
           supabase
@@ -76,6 +78,7 @@ function useUnifiedOracleHub(userId) {
             .eq('user_id', userId)
             .order('created_at', { ascending: false })
             .limit(1),
+          'unified_readings',
         ),
         safeQuery(
           supabase
@@ -86,6 +89,7 @@ function useUnifiedOracleHub(userId) {
             .eq('status', 'ok')
             .order('updated_at', { ascending: false })
             .limit(1),
+          'runes_weekly',
         ),
         safeQuery(
           supabase
@@ -96,6 +100,7 @@ function useUnifiedOracleHub(userId) {
             .eq('status', 'ok')
             .order('updated_at', { ascending: false })
             .limit(1),
+          'iching_weekly',
         ),
         safeQuery(
           supabase
@@ -104,6 +109,7 @@ function useUnifiedOracleHub(userId) {
             .eq('user_id', userId)
             .order('created_at', { ascending: false })
             .limit(1),
+          'numerology_readings',
         ),
         safeQuery(
           supabase
@@ -112,8 +118,11 @@ function useUnifiedOracleHub(userId) {
             .eq('user_id', userId)
             .order('week_start', { ascending: false })
             .limit(1),
+          'numerology_weekly_readings',
         ),
       ]);
+
+      console.log('[unifiedOracleHub] readings:', readings);
 
       return {
         recentReadings: readings,

@@ -112,7 +112,12 @@ export default function RunesWeeklyPage() {
       <DecorativeDivider />
 
       <section className={styles.card}>
-        {weeklyQuery.isLoading && <Loader />}
+        {weeklyQuery.isLoading && (
+          <div className={styles.loadingBlock}>
+            <Loader />
+            <p className={styles.loadingHint}>Conectando ao oráculo… pode levar alguns segundos.</p>
+          </div>
+        )}
 
         {weeklyQuery.isError && (
           <div className={styles.errorCard}>

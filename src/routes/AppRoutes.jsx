@@ -1,5 +1,5 @@
 import React, { Suspense, lazy } from 'react';
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, Navigate } from 'react-router-dom';
 import ProtectedRoute from '../components/common/ProtectedRoute/ProtectedRoute.jsx';
 
 // 1. O PageLoader continua definido aqui
@@ -86,11 +86,11 @@ function AppRoutes() {
           <Route path="/oraculo/geral/:id" element={<GeneralOraclePage />} />
           <Route path="/runas" element={<RunesWeeklyPage />} />
           <Route path="/iching" element={<IChingWeeklyPage />} />
-          <Route path="/leituras-interativas" element={<InteractiveReadingHubPage />} />
-          <Route path="/leituras-interativas/fila" element={<InteractiveReadingQueuePage />} />
-          <Route path="/leituras-interativas/s/:sessionId" element={<InteractiveReadingSessionPage />} />
-          <Route path="/leituras-interativas/s/:sessionId/encerrar" element={<InteractiveReadingClosePage />} />
-          <Route path="/leituras-interativas/historico" element={<InteractiveReadingHistoryPage />} />
+          <Route path="/leituras-interativas" element={<Navigate to="/perfil" replace />} />
+          <Route path="/leituras-interativas/fila" element={<Navigate to="/perfil" replace />} />
+          <Route path="/leituras-interativas/s/:sessionId" element={<Navigate to="/perfil" replace />} />
+          <Route path="/leituras-interativas/s/:sessionId/encerrar" element={<Navigate to="/perfil" replace />} />
+          <Route path="/leituras-interativas/historico" element={<Navigate to="/perfil" replace />} />
         </Route>
 
       </Routes>

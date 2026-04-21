@@ -106,12 +106,18 @@ export default function IChingWeeklyPage() {
       <DecorativeDivider />
 
       <section className={styles.card}>
-        {weeklyQuery.isLoading && <Loader />}
+        {weeklyQuery.isLoading && (
+          <div className={styles.loadingBlock}>
+            <Loader />
+            <p className={styles.loadingHint}>Conectando ao oráculo… pode levar alguns segundos.</p>
+          </div>
+        )}
 
         {weeklyQuery.isError && (
           <div className={styles.errorCard}>
             <h2>Falha ao carregar a leitura semanal</h2>
             <p>{weeklyQuery.error?.message || 'Não foi possível carregar seu módulo semanal de I Ching.'}</p>
+            <p className={styles.errorHint}>O servidor pode estar acordando do repouso — aguarde 30s e tente novamente.</p>
             <button type="button" className={styles.primaryButton} onClick={() => weeklyQuery.refetch()}>
               Tentar novamente
             </button>

@@ -52,14 +52,35 @@ function toApiError(status, data) {
 }
 
 async function requestSingleEndpoint(endpoint, options = {}) {
-  const response = await fetch(buildApiUrl(endpoint), options);
-  const data = await parseResponseBody(response);
+  const { timeoutMs = 30000, ...fetchOptions } = options;
 
-  if (!response.ok) {
-    throw toApiError(response.status, data);
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
+
+  try {
+    const response = await fetch(buildApiUrl(endpoint), {
+      ...fetchOptions,
+      signal: controller.signal,
+    });
+    clearTimeout(timeoutId);
+
+    const data = await parseResponseBody(response);
+
+    if (!response.ok) {
+      throw toApiError(response.status, data);
+    }
+
+    return data;
+  } catch (err) {
+    clearTimeout(timeoutId);
+    if (err.name === 'AbortError') {
+      throw new ApiError(
+        'O oráculo está acordando do repouso. Por favor, tente novamente em alguns instantes.',
+        { status: 503, code: 'SERVICE_UNAVAILABLE' },
+      );
+    }
+    throw err;
   }
-
-  return data;
 }
 
 function canTryFallback(error) {
