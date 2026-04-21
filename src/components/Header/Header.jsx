@@ -99,6 +99,7 @@ function Header() {
   };
 
   return (
+    <>
     <header
       className={`${styles.header} ${
         isInternal && isHidden && !isMenuOpen && !isAccountOpen ? styles.headerHidden : ''
@@ -268,7 +269,9 @@ function Header() {
         )}
       </div>
 
-      {/* ── MOBILE MENU ── */}
+    </header>
+
+      {/* ── MOBILE MENU (fora do header para evitar backdrop-filter stacking context) ── */}
       {user && (
         <div id="menu-interno" className={`${styles.mobileMenu} ${isMenuOpen ? styles.mobileMenuOpen : ''}`}>
           <div className={styles.mobileMenuContent}>
@@ -298,7 +301,7 @@ function Header() {
           </div>
         </div>
       )}
-    </header>
+    </>
   );
 }
 

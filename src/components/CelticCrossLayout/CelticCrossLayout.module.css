@@ -20,8 +20,49 @@
    5=topo(coroação), 4=esquerda(passado), 1=centro, 2=cruzado(sobre1), 6=direita(futuro), 3=base(inconsciente)
    Bastão direito: 10(top)→9→8→7(bottom)
 */
-.position1  { grid-area: 2 / 2 / 3 / 3; z-index: 1; }
-.position2  { grid-area: 2 / 2 / 3 / 3; transform: rotate(90deg); z-index: 2; }
+.centerWrapper {
+  grid-area: 2 / 2 / 3 / 3;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0;
+  position: relative;
+}
+
+.centerCardLink {
+  text-decoration: none;
+  color: inherit;
+  display: block;
+  width: 100%;
+  text-align: center;
+}
+
+.centerCardInner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.4rem;
+  animation: fadeInUp 0.5s ease both;
+}
+
+.crossedCardLink {
+  text-decoration: none;
+  color: inherit;
+  display: block;
+  text-align: center;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 2;
+}
+
+.crossedLabels {
+  margin-top: 0.35rem;
+  text-align: center;
+  width: 100%;
+}
+
 .position3  { grid-area: 3 / 2 / 4 / 3; }
 .position4  { grid-area: 2 / 1 / 3 / 2; }
 .position5  { grid-area: 1 / 2 / 2 / 3; }
@@ -51,6 +92,40 @@
   height: auto;
 }
 
+/* ── Carta cruzada (posição 2 - Desafio) ── */
+.crossedCardImg {
+  width: 100px;
+  height: auto;
+  border-radius: 8px;
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.55), 0 0 0 1px rgba(225, 179, 130, 0.18);
+  transform: rotate(90deg);
+  display: block;
+  margin: 0 auto 0.5rem;
+}
+
+.crossedCardImgInverted {
+  transform: rotate(270deg);
+}
+
+.crossedPositionName {
+  font-family: 'Cinzel', serif;
+  font-weight: 500;
+  font-size: 0.9rem;
+  color: #E1B382;
+  margin-top: 1rem;
+  margin-bottom: 0.25rem;
+  text-align: center;
+}
+
+.crossedCardName {
+  font-family: 'Lato', sans-serif;
+  font-size: 0.8rem;
+  color: #c7c7c7;
+  margin: 0;
+  text-align: center;
+  font-style: italic;
+}
+
 /* ── Mobile ── */
 @media (max-width: 768px) {
   .gridContainer {
@@ -60,8 +135,8 @@
     align-items: start;
   }
 
-  .position1  { grid-area: 2 / 2 / 3 / 3; z-index: 1; }
-  .position2  { grid-area: 2 / 2 / 3 / 3; transform: rotate(90deg); z-index: 2; }
+  .centerWrapper { grid-area: 2 / 2 / 3 / 3; }
+
   .position3  { grid-area: 3 / 2 / 4 / 3; }
   .position4  { grid-area: 2 / 1 / 3 / 2; }
   .position5  { grid-area: 1 / 2 / 2 / 3; }
@@ -70,4 +145,8 @@
   .position8  { grid-area: 3 / 4 / 4 / 5; }
   .position9  { grid-area: 2 / 4 / 3 / 5; }
   .position10 { grid-area: 1 / 4 / 2 / 5; }
+
+  .crossedCardImg { width: 65px; }
+  .crossedPositionName { font-size: 0.72rem; }
+  .crossedCardName { font-size: 0.65rem; }
 }
