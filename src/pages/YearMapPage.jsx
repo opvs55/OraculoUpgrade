@@ -4,6 +4,8 @@ import { useAuth } from '../context/AuthContext';
 import { oraclesApi } from '../services/api/oraclesApi';
 import { usePageTitle } from '../hooks/usePageTitle';
 import { Link } from 'react-router-dom';
+import DecorativeDivider from '../components/common/DecorativeDivider/DecorativeDivider';
+import { getArcanaImageUrl } from '../utils/arcanaMap';
 import styles from './YearMapPage.module.css';
 
 const MONTH_NAMES = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
@@ -26,17 +28,61 @@ export default function YearMapPage() {
   const overview = data?.final_reading;
   const selectedCard = cards.find(c => c.month === selectedMonth);
 
-  return (
-    <div className={`content_wrapper ${styles.pageContainer}`}>
-      <div className={styles.content}>
-        <header className={styles.header}>
-          <p className={styles.eyebrow}>Tarot · Arcanos Maiores</p>
-          <h1 className={styles.title}>Mapa do Ano {CURRENT_YEAR}</h1>
-          <p className={styles.subtitle}>12 cartas — uma para cada mês da sua jornada anual.</p>
-        </header>
+  const selectedCardImgUrl = selectedCard?.img_path
+    ? getArcanaImageUrl(selectedCard.img_path)
+    : selectedCard?.name
+    ? (() => {
+        const CARD_NAME_TO_IMG = {
+          'O Louco': 'assets/cartas/RWS1909_-_00_Fool.jpeg',
+          'O Mago': 'assets/cartas/RWS1909_-_01_Magician.jpeg',
+          'A Sacerdotisa': 'assets/cartas/RWS1909_-_02_High_Priestess.jpeg',
+          'A Imperatriz': 'assets/cartas/RWS1909_-_03_Empress.jpeg',
+          'O Imperador': 'assets/cartas/RWS1909_-_04_Emperor.jpeg',
+          'O Hierofante': 'assets/cartas/RWS1909_-_05_Hierophant.jpeg',
+          'Os Amantes': 'assets/cartas/RWS1909_-_06_Lovers.jpeg',
+          'O Carro': 'assets/cartas/RWS1909_-_07_Chariot.jpeg',
+          'A Força': 'assets/cartas/RWS1909_-_08_Strength.jpeg',
+          'O Eremita': 'assets/cartas/RWS1909_-_09_Hermit.jpeg',
+          'A Roda da Fortuna': 'assets/cartas/RWS1909_-_10_Wheel_of_Fortune.jpeg',
+          'A Justiça': 'assets/cartas/RWS1909_-_11_Justice.jpeg',
+          'O Enforcado': 'assets/cartas/RWS1909_-_12_Hanged_Man.jpeg',
+          'A Morte': 'assets/cartas/RWS1909_-_13_Death.jpeg',
+          'A Temperança': 'assets/cartas/RWS1909_-_14_Temperance.jpeg',
+          'O Diabo': 'assets/cartas/RWS1909_-_15_Devil.jpeg',
+          'A Torre': 'assets/cartas/RWS1909_-_16_Tower.jpeg',
+          'A Estrela': 'assets/cartas/RWS1909_-_17_Star.jpeg',
+          'A Lua': 'assets/cartas/RWS1909_-_18_Moon.jpeg',
+          'O Sol': 'assets/cartas/RWS1909_-_19_Sun.jpeg',
+          'O Julgamento': 'assets/cartas/RWS1909_-_20_Judgement.jpeg',
+          'O Mundo': 'assets/cartas/RWS1909_-_21_World.jpeg',
+        };
+        const path = CARD_NAME_TO_IMG[selectedCard.name];
+        return path ? getArcanaImageUrl(path) : null;
+      })()
+    : null;
 
-        {isLoading && <p className={styles.loading}>Sorteando os arcanos do ano...</p>}
-        {error && <p className={styles.error}>Não foi possível carregar o Mapa do Ano.</p>}
+  return (
+    <div className={`content_wrapper ${styles.page}`}>
+      <header className={styles.header}>
+        <p className={styles.eyebrow}>Tarot · Arcanos Maiores</p>
+        <h1>Mapa do Ano {CURRENT_YEAR}</h1>
+        <p className={styles.subtitle}>12 cartas — uma para cada mês da sua jornada anual.</p>
+      </header>
+
+      <DecorativeDivider />
+
+      <section className={styles.card}>
+        {isLoading && (
+          <div className={styles.loadingBlock}>
+            <p className={styles.loadingHint}>Sorteando os arcanos do ano…</p>
+          </div>
+        )}
+        {error && (
+          <div className={styles.errorCard}>
+            <h2>Erro ao carregar</h2>
+            <p>Não foi possível carregar o Mapa do Ano.</p>
+          </div>
+        )}
 
         {data && (
           <>
@@ -66,9 +112,20 @@ export default function YearMapPage() {
             {selectedCard && (
               <div className={styles.cardDetail}>
                 <div className={styles.cardDetailHeader}>
-                  <div className={styles.cardDetailFrame}>
-                    <span className={styles.cardDetailMonth}>{selectedCard.month_name}</span>
-                    <span className={styles.cardDetailName}>{selectedCard.name}</span>
+                  <div className={styles.cardDetailArt}>
+                    {selectedCardImgUrl ? (
+                      <img
+                        key={selectedCard.month}
+                        src={selectedCardImgUrl}
+                        alt={selectedCard.name}
+                        className={styles.cardDetailImage}
+                      />
+                    ) : (
+                      <div className={styles.cardDetailFrame}>
+                        <span className={styles.cardDetailMonth}>{selectedCard.month_name}</span>
+                        <span className={styles.cardDetailName}>{selectedCard.name}</span>
+                      </div>
+                    )}
                   </div>
                   <div className={styles.cardDetailInfo}>
                     <p className={styles.sectionLabel}>Carta do mês</p>
@@ -80,7 +137,7 @@ export default function YearMapPage() {
                         ? 'Este é o seu mês atual. Trabalhe com essa energia conscientemente.'
                         : 'Mês futuro — prepare-se para essa vibração com antecedência.'}
                     </p>
-                    <Link to="/tarot" className={styles.ctaButton}>
+                    <Link to="/tarot" className={styles.primaryButton}>
                       Fazer uma tiragem sobre este mês →
                     </Link>
                   </div>
@@ -113,10 +170,10 @@ export default function YearMapPage() {
           <div className={styles.guestBox}>
             <p className={styles.guestTitle}>Conheça seu Mapa Anual</p>
             <p className={styles.guestDesc}>Crie uma conta para revelar as 12 cartas do seu ano e receber orientação mês a mês.</p>
-            <Link to="/cadastro" className={styles.ctaButton}>Criar conta gratuitamente</Link>
+            <Link to="/cadastro" className={styles.primaryButton}>Criar conta gratuitamente</Link>
           </div>
         )}
-      </div>
+      </section>
     </div>
   );
 }

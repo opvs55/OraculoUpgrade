@@ -4,6 +4,7 @@ import { useAuth } from '../context/AuthContext';
 import { oraclesApi } from '../services/api/oraclesApi';
 import { usePageTitle } from '../hooks/usePageTitle';
 import { Link } from 'react-router-dom';
+import DecorativeDivider from '../components/common/DecorativeDivider/DecorativeDivider';
 import styles from './IChingActivePage.module.css';
 
 export default function IChingActivePage() {
@@ -40,17 +41,21 @@ export default function IChingActivePage() {
   const result = activeResult?.result_payload;
 
   return (
-    <div className={`content_wrapper ${styles.pageContainer}`}>
-      <div className={styles.content}>
-        <header className={styles.header}>
-          <p className={styles.eyebrow}>I Ching · Consulta Ativa</p>
-          <h1 className={styles.title}>Consulte o Livro das Mutações</h1>
-          <p className={styles.subtitle}>Formule uma pergunta clara e receba a sabedoria do hexagrama.</p>
-        </header>
+    <div className={`content_wrapper ${styles.page}`}>
+      <header className={styles.header}>
+        <p className={styles.eyebrow}>I Ching · Consulta Ativa</p>
+        <h1>Consulte o Livro das Mutações</h1>
+        <p className={styles.subtitle}>Formule uma pergunta clara e receba a sabedoria do hexagrama.</p>
+      </header>
+
+      <DecorativeDivider />
+
+      <section className={styles.card}>
 
         {!user && (
           <div className={styles.guestBox}>
-            <p>Esta feature requer uma conta. <Link to="/cadastro" className={styles.inlineLink}>Criar conta gratuitamente</Link></p>
+            <p className={styles.guestTitle}>Consulta Ativa</p>
+            <p className={styles.guestDesc}>Esta feature requer uma conta. <Link to="/cadastro" className={styles.inlineLink}>Criar conta gratuitamente</Link></p>
           </div>
         )}
 
@@ -135,7 +140,7 @@ export default function IChingActivePage() {
             ))}
           </div>
         )}
-      </div>
+      </section>
     </div>
   );
 }

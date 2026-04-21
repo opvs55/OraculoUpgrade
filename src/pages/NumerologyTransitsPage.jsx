@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
-import { useMutation } from '@tanstack/react-query';
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import { useAuth } from '../context/AuthContext';
 import { oraclesApi } from '../services/api/oraclesApi';
 import { usePageTitle } from '../hooks/usePageTitle';
 import { supabase } from '../supabaseClient';
 import { Link } from 'react-router-dom';
+import DecorativeDivider from '../components/common/DecorativeDivider/DecorativeDivider';
 import styles from './NumerologyTransitsPage.module.css';
 
 const todayStr = () => new Date().toISOString().slice(0, 10);
@@ -46,14 +46,17 @@ export default function NumerologyTransitsPage() {
   const today = new Date().toLocaleDateString('pt-BR', { weekday: 'long', day: 'numeric', month: 'long' });
 
   return (
-    <div className={`content_wrapper ${styles.pageContainer}`}>
-      <div className={styles.content}>
-        <header className={styles.header}>
-          <p className={styles.eyebrow}>Numerologia</p>
-          <h1 className={styles.title}>Trânsitos do Dia</h1>
-          <p className={styles.dateLabel}>{today}</p>
-          <p className={styles.subtitle}>Seu Ano, Mês e Dia pessoal — a vibração numérica que você está vivendo agora.</p>
-        </header>
+    <div className={`content_wrapper ${styles.page}`}>
+      <header className={styles.header}>
+        <p className={styles.eyebrow}>Numerologia</p>
+        <h1>Trânsitos do Dia</h1>
+        <p className={styles.dateLabel}>{today}</p>
+        <p className={styles.subtitle}>Seu Ano, Mês e Dia pessoal — a vibração numérica que você está vivendo agora.</p>
+      </header>
+
+      <DecorativeDivider />
+
+      <section className={styles.card}>
 
         {!user && (
           <div className={styles.guestBox}>
@@ -118,7 +121,7 @@ export default function NumerologyTransitsPage() {
             </button>
           </div>
         )}
-      </div>
+      </section>
     </div>
   );
 }

@@ -4,6 +4,7 @@ import { useAuth } from '../context/AuthContext';
 import { oraclesApi } from '../services/api/oraclesApi';
 import { usePageTitle } from '../hooks/usePageTitle';
 import { Link } from 'react-router-dom';
+import DecorativeDivider from '../components/common/DecorativeDivider/DecorativeDivider';
 import styles from './NumerologyCompatibilityPage.module.css';
 
 export default function NumerologyCompatibilityPage() {
@@ -29,17 +30,20 @@ export default function NumerologyCompatibilityPage() {
   const result = mutation.data?.result_payload;
 
   return (
-    <div className={`content_wrapper ${styles.pageContainer}`}>
-      <div className={styles.content}>
-        <header className={styles.header}>
-          <p className={styles.eyebrow}>Numerologia</p>
-          <h1 className={styles.title}>Compatibilidade</h1>
-          <p className={styles.subtitle}>Descubra a dinâmica numerológica entre duas pessoas.</p>
-        </header>
+    <div className={`content_wrapper ${styles.page}`}>
+      <header className={styles.header}>
+        <p className={styles.eyebrow}>Numerologia</p>
+        <h1>Compatibilidade</h1>
+        <p className={styles.subtitle}>Descubra a dinâmica numerológica entre duas pessoas.</p>
+      </header>
 
+      <DecorativeDivider />
+
+      <section className={styles.card}>
         {!user && (
           <div className={styles.guestBox}>
-            <p>Esta feature requer uma conta. <Link to="/cadastro" className={styles.inlineLink}>Criar conta gratuitamente</Link></p>
+            <p className={styles.guestTitle}>Compatibilidade Numerológica</p>
+            <p className={styles.guestDesc}>Esta feature requer uma conta. <Link to="/cadastro" className={styles.inlineLink}>Criar conta gratuitamente</Link></p>
           </div>
         )}
 
@@ -105,7 +109,7 @@ export default function NumerologyCompatibilityPage() {
             </button>
           </div>
         )}
-      </div>
+      </section>
     </div>
   );
 }

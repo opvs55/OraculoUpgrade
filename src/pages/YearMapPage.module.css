@@ -1,65 +1,73 @@
-.pageContainer {
-  min-height: calc(100vh - 80px);
-  padding: 4.5rem 1rem 3rem;
-  display: flex;
-  justify-content: center;
-  align-items: flex-start;
-  color: #f4efe6;
+/* ── Layout base ── */
+.page { padding-bottom: 4rem; }
+
+.header {
+  text-align: center;
+  padding: 3.5rem 1rem 1rem;
 }
 
-.content {
-  width: 100%;
-  max-width: 940px;
+.eyebrow {
+  margin: 0 0 0.4rem;
+  font-size: 0.74rem;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: rgba(225, 179, 130, 0.7);
+  font-family: 'Cinzel', serif;
+}
+
+.header h1 {
+  font-family: 'Cinzel', serif;
+  font-size: clamp(1.8rem, 3.5vw, 2.6rem);
+  color: #f0d8b8;
+  margin: 0 0 0.5rem;
+}
+
+.subtitle {
+  font-size: 0.9rem;
+  color: #8a8caa;
+  margin: 0;
+}
+
+/* ── Card container ── */
+.card {
   background: linear-gradient(160deg, rgba(24, 20, 44, 0.92), rgba(11, 10, 27, 0.94));
-  border: 1px solid rgba(225, 179, 130, 0.2);
-  border-radius: 16px;
-  box-shadow: 0 18px 48px rgba(0, 0, 0, 0.45);
+  border: 1px solid rgba(225, 179, 130, 0.18);
+  border-radius: 18px;
   padding: 2rem;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
   display: flex;
   flex-direction: column;
   gap: 1.75rem;
 }
 
-.header {
-  text-align: center;
+/* ── Loading / Error ── */
+.loadingBlock {
+  display: flex;
+  justify-content: center;
+  padding: 3rem 0;
 }
 
-.eyebrow {
-  margin: 0;
-  font-size: 0.74rem;
-  text-transform: uppercase;
-  letter-spacing: 0.12em;
-  color: rgba(225, 179, 130, 0.7);
-  font-family: 'Cinzel', serif;
-}
-
-.title {
-  margin: 0.4rem 0 0.3rem;
-  font-family: 'Cinzel', serif;
-  font-size: clamp(1.6rem, 3vw, 2.2rem);
-  color: #eac89e;
-}
-
-.subtitle {
-  margin: 0;
-  font-size: 0.88rem;
-  color: #8a8caa;
-}
-
-.loading, .error {
-  text-align: center;
-  padding: 2rem;
+.loadingHint {
   color: #7a7c9a;
   font-style: italic;
+  font-size: 0.9rem;
+  margin: 0;
 }
 
-.error { color: #ffb5b5; }
+.errorCard {
+  text-align: center;
+  padding: 2rem;
+  color: #ffb5b5;
+}
+.errorCard h2 { color: #ffb5b5; font-size: 1.1rem; margin: 0 0 0.4rem; }
+.errorCard p  { color: #9a8caa; font-size: 0.9rem; margin: 0; }
 
+/* ── Overview ── */
 .overviewCard {
   background: rgba(22, 18, 44, 0.8);
   border: 1px solid rgba(225, 179, 130, 0.22);
   border-radius: 14px;
-  padding: 1.2rem 1.4rem;
+  padding: 1.25rem 1.5rem;
   display: flex;
   flex-direction: column;
   gap: 0.6rem;
@@ -77,7 +85,7 @@
 .overviewHeadline {
   margin: 0;
   font-family: 'Cinzel', serif;
-  font-size: 1.1rem;
+  font-size: 1.15rem;
   color: #f0d8b8;
 }
 
@@ -98,6 +106,7 @@
   margin: 0;
 }
 
+/* ── Month grid ── */
 .monthGrid {
   display: grid;
   grid-template-columns: repeat(6, 1fr);
@@ -119,18 +128,18 @@
 }
 
 .monthCell:hover {
-  border-color: rgba(225, 179, 130, 0.4);
+  border-color: rgba(225, 179, 130, 0.45);
   background: rgba(225, 179, 130, 0.07);
+  transform: translateY(-2px);
 }
 
 .monthCellActive {
-  border-color: rgba(225, 179, 130, 0.6);
-  background: rgba(225, 179, 130, 0.12);
+  border-color: rgba(225, 179, 130, 0.65);
+  background: rgba(225, 179, 130, 0.13);
+  box-shadow: 0 4px 14px rgba(225, 179, 130, 0.15);
 }
 
-.monthCellCurrent {
-  border-color: rgba(201, 166, 255, 0.5);
-}
+.monthCellCurrent { border-color: rgba(201, 166, 255, 0.5); }
 
 .monthAbbr {
   font-size: 0.72rem;
@@ -140,41 +149,70 @@
   letter-spacing: 0.06em;
 }
 
-.monthCellCurrent .monthAbbr {
-  color: #c9a6ff;
-}
+.monthCellCurrent .monthAbbr { color: #c9a6ff; }
 
 .monthCardName {
-  font-size: 0.7rem;
+  font-size: 0.68rem;
   color: #e0d8c8;
   line-height: 1.2;
 }
 
+/* ── Selected card detail ── */
+@keyframes revealDetail {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
 .cardDetail {
   background: rgba(22, 18, 44, 0.8);
-  border: 1px solid rgba(201, 166, 255, 0.25);
+  border: 1px solid rgba(201, 166, 255, 0.22);
   border-radius: 14px;
-  padding: 1.25rem 1.4rem;
+  padding: 1.4rem;
+  animation: revealDetail 0.35s ease both;
 }
 
 .cardDetailHeader {
   display: grid;
-  grid-template-columns: 120px 1fr;
-  gap: 1.25rem;
+  grid-template-columns: 140px 1fr;
+  gap: 1.5rem;
   align-items: start;
 }
 
+.cardDetailArt {
+  display: flex;
+  justify-content: center;
+}
+
+@keyframes revealImg {
+  from { opacity: 0; transform: scale(0.93); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+.cardDetailImage {
+  width: 130px;
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(120, 80, 220, 0.3), 0 0 0 1px rgba(201, 166, 255, 0.2);
+  animation: revealImg 0.4s ease both;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.cardDetailImage:hover {
+  transform: scale(1.05) translateY(-4px);
+  box-shadow: 0 16px 48px rgba(120, 80, 220, 0.45);
+}
+
 .cardDetailFrame {
+  width: 130px;
+  min-height: 120px;
   background: linear-gradient(160deg, rgba(30, 20, 55, 0.98), rgba(16, 12, 36, 0.98));
   border: 1px solid rgba(201, 166, 255, 0.35);
-  border-radius: 10px;
-  padding: 0.8rem 0.5rem;
+  border-radius: 12px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0.5rem;
-  min-height: 110px;
   justify-content: center;
+  gap: 0.5rem;
+  padding: 0.75rem;
 }
 
 .cardDetailMonth {
@@ -186,7 +224,7 @@
 
 .cardDetailName {
   font-family: 'Cinzel', serif;
-  font-size: 0.78rem;
+  font-size: 0.8rem;
   color: #c9a6ff;
   text-align: center;
   line-height: 1.3;
@@ -195,38 +233,46 @@
 .cardDetailInfo {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  gap: 0.6rem;
 }
 
 .cardDetailTitle {
   margin: 0;
   font-family: 'Cinzel', serif;
-  font-size: 1.1rem;
+  font-size: 1.15rem;
   color: #f0d8b8;
 }
 
 .cardDetailHint {
-  font-size: 0.86rem;
+  font-size: 0.87rem;
   color: #9a8caa;
   line-height: 1.55;
   margin: 0;
 }
 
-.ctaButton {
+/* ── Buttons ── */
+.primaryButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   text-decoration: none;
-  display: inline-block;
+  font-family: 'Cinzel', serif;
   font-weight: 700;
-  font-size: 0.88rem;
+  font-size: 0.85rem;
+  letter-spacing: 0.04em;
   color: #0d0c1d;
-  background: linear-gradient(120deg, #e1b382, #d8a675);
+  background: linear-gradient(120deg, #e1b382, #c9894a);
+  border: none;
   border-radius: 999px;
-  padding: 0.55rem 1.1rem;
+  padding: 0.7rem 1.4rem;
+  cursor: pointer;
   margin-top: 0.25rem;
-  transition: opacity 0.2s;
+  transition: opacity 0.2s, transform 0.2s;
 }
 
-.ctaButton:hover { opacity: 0.85; }
+.primaryButton:hover { opacity: 0.88; transform: translateY(-1px); }
 
+/* ── Highlights ── */
 .highlights {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -237,7 +283,7 @@
   background: rgba(17, 15, 38, 0.7);
   border: 1px solid rgba(225, 179, 130, 0.18);
   border-radius: 12px;
-  padding: 0.85rem 1rem;
+  padding: 0.9rem 1rem;
   display: flex;
   flex-direction: column;
   gap: 0.4rem;
@@ -250,6 +296,7 @@
   color: #e8d4b8;
 }
 
+/* ── Guest box ── */
 .guestBox {
   text-align: center;
   padding: 2rem;
@@ -277,8 +324,10 @@
   line-height: 1.55;
 }
 
+/* ── Responsive ── */
 @media (max-width: 640px) {
   .monthGrid { grid-template-columns: repeat(4, 1fr); }
   .cardDetailHeader { grid-template-columns: 1fr; }
+  .cardDetailArt { justify-content: center; }
   .highlights { grid-template-columns: 1fr; }
 }
