@@ -65,7 +65,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 2rem;
+  gap: 1.4rem;
 }
 
 .navLink {
@@ -314,6 +314,17 @@
   height: 1px;
   background: rgba(201, 169, 110, 0.15);
   margin: 0.4rem 0;
+}
+
+/* ─── MOBILE SECTION LABEL ───────────────────────────── */
+.mobileSectionLabel {
+  margin: 0.5rem 0 0.15rem;
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: rgba(201, 169, 110, 0.55);
+  font-family: 'Cinzel', serif;
+  padding: 0 0.25rem;
 }
 
 /* ─── RESPONSIVE ─────────────────────────────────────── */

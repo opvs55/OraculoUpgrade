@@ -15,14 +15,18 @@ function Header() {
   
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isAccountOpen, setIsAccountOpen] = useState(false);
-  const [isLeftDropdownOpen, setIsLeftDropdownOpen] = useState(false);
-  const [isMoreOpen, setIsMoreOpen] = useState(false);
-  
+  const [isTarotOpen, setIsTarotOpen] = useState(false);
+  const [isNumerologyOpen, setIsNumerologyOpen] = useState(false);
+  const [isIChingOpen, setIsIChingOpen] = useState(false);
+
   const accountRef = useRef(null);
-  const leftDropdownRef = useRef(null);
-  const moreRef = useRef(null);
+  const tarotRef = useRef(null);
+  const numerologyRef = useRef(null);
+  const ichingRef = useRef(null);
   const accountAnimationTimeout = useRef(null);
   const [isAccountAnimating, setIsAccountAnimating] = useState(false);
+  const [isLeftDropdownOpen, setIsLeftDropdownOpen] = useState(false);
+  const leftDropdownRef = useRef(null);
   
   const { isHidden, reveal } = useAutoHideHeader(false);
 
@@ -34,35 +38,34 @@ function Header() {
     setIsMenuOpen(false);
     setIsAccountOpen(false);
     setIsLeftDropdownOpen(false);
+    setIsTarotOpen(false);
+    setIsNumerologyOpen(false);
+    setIsIChingOpen(false);
   }, [location.pathname]);
 
   // Fecha menus ao clicar fora
   useEffect(() => {
     const handleClickOutside = (event) => {
-      if (accountRef.current && !accountRef.current.contains(event.target)) {
-        setIsAccountOpen(false);
-      }
-      if (leftDropdownRef.current && !leftDropdownRef.current.contains(event.target)) {
-        setIsLeftDropdownOpen(false);
-      }
-      if (moreRef.current && !moreRef.current.contains(event.target)) {
-        setIsMoreOpen(false);
-      }
+      if (accountRef.current && !accountRef.current.contains(event.target)) setIsAccountOpen(false);
+      if (leftDropdownRef.current && !leftDropdownRef.current.contains(event.target)) setIsLeftDropdownOpen(false);
+      if (tarotRef.current && !tarotRef.current.contains(event.target)) setIsTarotOpen(false);
+      if (numerologyRef.current && !numerologyRef.current.contains(event.target)) setIsNumerologyOpen(false);
+      if (ichingRef.current && !ichingRef.current.contains(event.target)) setIsIChingOpen(false);
     };
 
-    if (isAccountOpen || isLeftDropdownOpen || isMoreOpen) {
+    if (isAccountOpen || isLeftDropdownOpen || isTarotOpen || isNumerologyOpen || isIChingOpen) {
       document.addEventListener('mousedown', handleClickOutside);
     }
 
     return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, [isAccountOpen, isLeftDropdownOpen, isMoreOpen]);
+  }, [isAccountOpen, isLeftDropdownOpen, isTarotOpen, isNumerologyOpen, isIChingOpen]);
 
   // Revela o header se algum menu estiver aberto
   useEffect(() => {
-    if (isMenuOpen || isAccountOpen || isLeftDropdownOpen || isMoreOpen) {
+    if (isMenuOpen || isAccountOpen || isLeftDropdownOpen || isTarotOpen || isNumerologyOpen || isIChingOpen) {
       reveal();
     }
-  }, [isMenuOpen, isAccountOpen, isLeftDropdownOpen, isMoreOpen, reveal]);
+  }, [isMenuOpen, isAccountOpen, isLeftDropdownOpen, isTarotOpen, isNumerologyOpen, isIChingOpen, reveal]);
 
   // Cleanup da animação
   useEffect(() => {
@@ -83,6 +86,8 @@ function Header() {
       setIsAccountAnimating(false);
     }, 220);
   };
+
+  const closeAllDropdowns = () => { setIsTarotOpen(false); setIsNumerologyOpen(false); setIsIChingOpen(false); };
 
   const canShowQuickBack = isInternal && !['/perfil', '/meu-grimorio'].includes(location.pathname);
   const handleQuickBack = () => {
@@ -115,33 +120,69 @@ function Header() {
         {!loading && (
           user ? (
             <>
-              <NavLink to="/tarot" className={({ isActive }) => isActive ? `${styles.navLink} ${styles.activeLink}` : styles.navLink}>Tarot</NavLink>
-              <NavLink to="/numerologia" className={({ isActive }) => isActive ? `${styles.navLink} ${styles.activeLink}` : styles.navLink}>Numerologia</NavLink>
-              <NavLink to="/runas" className={({ isActive }) => isActive ? `${styles.navLink} ${styles.activeLink}` : styles.navLink}>Runas</NavLink>
-              <NavLink to="/iching" className={({ isActive }) => isActive ? `${styles.navLink} ${styles.activeLink}` : styles.navLink}>I Ching</NavLink>
-              <NavLink to="/oraculo/geral" className={({ isActive }) => isActive ? `${styles.navLink} ${styles.activeLink}` : styles.navLink}>Síntese Semanal</NavLink>
-
-              {/* Dropdown Mais */}
-              <div className={styles.moreWrapper} ref={moreRef}>
+              {/* Dropdown Tarot */}
+              <div className={styles.moreWrapper} ref={tarotRef}>
                 <button
                   type="button"
                   className={`${styles.navLink} ${styles.moreToggle}`}
-                  onClick={() => setIsMoreOpen(p => !p)}
+                  onClick={() => { closeAllDropdowns(); setIsTarotOpen(p => !p); }}
                   aria-haspopup="menu"
-                  aria-expanded={isMoreOpen}
+                  aria-expanded={isTarotOpen}
                 >
-                  Mais ▾
+                  Tarot ▾
                 </button>
-                {isMoreOpen && (
+                {isTarotOpen && (
                   <div className={styles.moreMenu} role="menu">
-                    <Link to="/oraculo/dia" className={styles.moreLink} role="menuitem">Oráculo do Dia</Link>
+                    <Link to="/tarot" className={styles.moreLink} role="menuitem">Leitura de Tarot</Link>
+                    <Link to="/oraculo/dia" className={styles.moreLink} role="menuitem">Carta do Dia</Link>
                     <Link to="/tarot/mapa-do-ano" className={styles.moreLink} role="menuitem">Mapa do Ano</Link>
-                    <Link to="/numerologia/compatibilidade" className={styles.moreLink} role="menuitem">Compatibilidade</Link>
-                    <Link to="/numerologia/transitos" className={styles.moreLink} role="menuitem">Trânsitos</Link>
-                    <Link to="/iching/consulta" className={styles.moreLink} role="menuitem">I Ching — Consulta</Link>
+                    <Link to="/historico" className={styles.moreLink} role="menuitem">Leituras Passadas</Link>
                   </div>
                 )}
               </div>
+
+              {/* Dropdown Numerologia */}
+              <div className={styles.moreWrapper} ref={numerologyRef}>
+                <button
+                  type="button"
+                  className={`${styles.navLink} ${styles.moreToggle}`}
+                  onClick={() => { closeAllDropdowns(); setIsNumerologyOpen(p => !p); }}
+                  aria-haspopup="menu"
+                  aria-expanded={isNumerologyOpen}
+                >
+                  Numerologia ▾
+                </button>
+                {isNumerologyOpen && (
+                  <div className={styles.moreMenu} role="menu">
+                    <Link to="/numerologia" className={styles.moreLink} role="menuitem">Pessoal</Link>
+                    <Link to="/numerologia/compatibilidade" className={styles.moreLink} role="menuitem">Compatibilidade</Link>
+                    <Link to="/numerologia/transitos" className={styles.moreLink} role="menuitem">Trânsitos</Link>
+                  </div>
+                )}
+              </div>
+
+              <NavLink to="/runas" className={({ isActive }) => isActive ? `${styles.navLink} ${styles.activeLink}` : styles.navLink}>Runas</NavLink>
+
+              {/* Dropdown I Ching */}
+              <div className={styles.moreWrapper} ref={ichingRef}>
+                <button
+                  type="button"
+                  className={`${styles.navLink} ${styles.moreToggle}`}
+                  onClick={() => { closeAllDropdowns(); setIsIChingOpen(p => !p); }}
+                  aria-haspopup="menu"
+                  aria-expanded={isIChingOpen}
+                >
+                  I Ching ▾
+                </button>
+                {isIChingOpen && (
+                  <div className={styles.moreMenu} role="menu">
+                    <Link to="/iching" className={styles.moreLink} role="menuitem">Semanal</Link>
+                    <Link to="/iching/consulta" className={styles.moreLink} role="menuitem">Consulta Ativa</Link>
+                  </div>
+                )}
+              </div>
+
+              <NavLink to="/oraculo/geral" className={({ isActive }) => isActive ? `${styles.navLink} ${styles.activeLink}` : styles.navLink}>Síntese Semanal</NavLink>
             </>
           ) : (
             <>
@@ -231,21 +272,28 @@ function Header() {
       {user && (
         <div id="menu-interno" className={`${styles.mobileMenu} ${isMenuOpen ? styles.mobileMenuOpen : ''}`}>
           <div className={styles.mobileMenuContent}>
-            <NavLink to="/tarot" className={styles.mobileLink} onClick={handleCloseMenu}>Tarot</NavLink>
-            <NavLink to="/numerologia" className={styles.mobileLink} onClick={handleCloseMenu}>Numerologia</NavLink>
-            <NavLink to="/runas" className={styles.mobileLink} onClick={handleCloseMenu}>Runas</NavLink>
-            <NavLink to="/iching" className={styles.mobileLink} onClick={handleCloseMenu}>I Ching</NavLink>
+            <p className={styles.mobileSectionLabel}>Tarot</p>
+            <NavLink to="/tarot" className={styles.mobileLink} onClick={handleCloseMenu}>Leitura de Tarot</NavLink>
+            <NavLink to="/oraculo/dia" className={styles.mobileLink} onClick={handleCloseMenu}>Carta do Dia</NavLink>
+            <NavLink to="/tarot/mapa-do-ano" className={styles.mobileLink} onClick={handleCloseMenu}>Mapa do Ano</NavLink>
+            <NavLink to="/historico" className={styles.mobileLink} onClick={handleCloseMenu}>Leituras Passadas</NavLink>
+            <div className={styles.mobileDivider} />
+            <p className={styles.mobileSectionLabel}>Numerologia</p>
+            <NavLink to="/numerologia" className={styles.mobileLink} onClick={handleCloseMenu}>Pessoal</NavLink>
+            <NavLink to="/numerologia/compatibilidade" className={styles.mobileLink} onClick={handleCloseMenu}>Compatibilidade</NavLink>
+            <NavLink to="/numerologia/transitos" className={styles.mobileLink} onClick={handleCloseMenu}>Trânsitos</NavLink>
+            <div className={styles.mobileDivider} />
+            <p className={styles.mobileSectionLabel}>Runas</p>
+            <NavLink to="/runas" className={styles.mobileLink} onClick={handleCloseMenu}>Semanal</NavLink>
+            <div className={styles.mobileDivider} />
+            <p className={styles.mobileSectionLabel}>I Ching</p>
+            <NavLink to="/iching" className={styles.mobileLink} onClick={handleCloseMenu}>Semanal</NavLink>
+            <NavLink to="/iching/consulta" className={styles.mobileLink} onClick={handleCloseMenu}>Consulta Ativa</NavLink>
+            <div className={styles.mobileDivider} />
             <NavLink to="/oraculo/geral" className={styles.mobileLink} onClick={handleCloseMenu}>Síntese Semanal</NavLink>
             <NavLink to="/perfil" className={styles.mobileLink} onClick={handleCloseMenu}>Meu Espaço</NavLink>
-            <NavLink to="/historico" className={styles.mobileLink} onClick={handleCloseMenu}>Histórico</NavLink>
             <NavLink to="/biblioteca" className={styles.mobileLink} onClick={handleCloseMenu}>Biblioteca</NavLink>
             <NavLink to="/perfil/editar" className={styles.mobileLink} onClick={handleCloseMenu}>Configurações</NavLink>
-            <div className={styles.mobileDivider} />
-            <NavLink to="/oraculo/dia" className={styles.mobileLink} onClick={handleCloseMenu}>Oráculo do Dia</NavLink>
-            <NavLink to="/tarot/mapa-do-ano" className={styles.mobileLink} onClick={handleCloseMenu}>Mapa do Ano</NavLink>
-            <NavLink to="/numerologia/compatibilidade" className={styles.mobileLink} onClick={handleCloseMenu}>Compatibilidade Num.</NavLink>
-            <NavLink to="/numerologia/transitos" className={styles.mobileLink} onClick={handleCloseMenu}>Trânsitos Num.</NavLink>
-            <NavLink to="/iching/consulta" className={styles.mobileLink} onClick={handleCloseMenu}>I Ching — Consulta</NavLink>
             <button type="button" className={styles.mobileGhostButton} onClick={signOut}>Sair</button>
           </div>
         </div>
