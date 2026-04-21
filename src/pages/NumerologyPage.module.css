@@ -64,6 +64,107 @@
   line-height: 1.6;
 }
 
+/* ── Novo layout heroSplit (padrão Tarot) ── */
+.heroSplit {
+  display: grid;
+  grid-template-columns: 200px 1fr;
+  gap: 1.5rem;
+  margin-bottom: 1.75rem;
+  align-items: start;
+}
+
+.numberVisual {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  background: linear-gradient(160deg, rgba(30, 20, 55, 0.95), rgba(16, 12, 36, 0.98));
+  border: 1px solid rgba(171, 145, 255, 0.35);
+  border-radius: 14px;
+  padding: 1.5rem 1rem;
+  text-align: center;
+  box-shadow: 0 8px 28px rgba(120, 80, 220, 0.18);
+}
+
+.numberGlyph {
+  font-family: 'Cinzel', serif;
+  font-size: 4.5rem;
+  font-weight: 700;
+  color: #c9a6ff;
+  line-height: 1;
+  text-shadow: 0 0 24px rgba(171, 145, 255, 0.5);
+}
+
+.numberLabel {
+  margin: 0;
+  font-family: 'Cinzel', serif;
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: #cdb2ff;
+}
+
+.numberSub {
+  margin: 0;
+  font-size: 0.82rem;
+  color: #a9acc6;
+}
+
+.numberDate {
+  margin: 0;
+  font-size: 0.74rem;
+  color: #6e7090;
+  font-style: italic;
+}
+
+.weeklyPanel {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+.weeklyPanelHeader {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.weeklyPanelTitle {
+  margin: 0;
+  font-family: 'Cinzel', serif;
+  font-size: 1.2rem;
+  color: #efd2b3;
+}
+
+.weeklyPanelSub {
+  margin: 0;
+  font-size: 0.88rem;
+  color: #a9acc6;
+}
+
+.weeklyEmpty {
+  font-size: 0.88rem;
+  color: #7a7c9a;
+  font-style: italic;
+  margin: 0;
+}
+
+@media (max-width: 640px) {
+  .heroSplit {
+    grid-template-columns: 1fr;
+  }
+  .numberVisual {
+    flex-direction: row;
+    justify-content: center;
+    gap: 1.2rem;
+    padding: 1rem;
+  }
+  .numberGlyph {
+    font-size: 3rem;
+  }
+}
+
+/* ── Legado (mantido para compatibilidade) ── */
 .dynamicSplitSection {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));

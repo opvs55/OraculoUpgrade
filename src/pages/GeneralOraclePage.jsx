@@ -2,14 +2,9 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import GeneralReadingView from '../components/oracle/GeneralReadingView';
-import RequirementsCard from '../components/oracle/RequirementsCard';
-import GeneratingState from '../components/oracle/GeneratingState';
-import ErrorState from '../components/oracle/ErrorState';
 import { useUnifiedReading } from '../features/unified/useUnifiedReading';
-import { useReadingState } from '../hooks/useReadingState';
 import { useAuth } from '../context/AuthContext';
 import { supabase } from '../supabaseClient';
-import logger from '../utils/logger.js';
 import styles from './GeneralOraclePage.module.css';
 
 const requirementMeta = {
@@ -125,7 +120,7 @@ export default function GeneralOraclePage() {
   const navigate = useNavigate();
   const { user } = useAuth();
   const [generatedReading, setGeneratedReading] = useState(null);
-  const [fallbackReading, setFallbackReading] = useState(null);
+  const [localFallback, setLocalFallback] = useState(null);
   const [uiError, setUiError] = useState('');
   const currentWeekRef = getWeekRefFromDate(new Date());
   const storageKey = `${LOCAL_STORAGE_KEY_PREFIX}:${user?.id || 'guest'}:${currentWeekRef}`;
@@ -138,7 +133,6 @@ export default function GeneralOraclePage() {
     unifiedReadings,
     isLoadingUnifiedReadings,
     unifiedReading,
-    isLoadingUnifiedReading,
   } = useUnifiedReading({ readingId: id, listParams: { limit: 10 } });
 
   const modulesQuery = useQuery({
@@ -181,60 +175,14 @@ export default function GeneralOraclePage() {
         ichingOutput: ichingModule?.output_payload || null,
         tarotCard: weeklyCardRes.data?.card_name || null,
         numerologyOutput: numerologyRes.data?.result_payload || null,
-        weekRef: getWeekRefFromDate(runesModule?.week_start || ichingModule?.week_start || weeklyCardRes.data?.week_start),
       };
     },
   });
 
-  // Estado unificado usando hook customizado
-  const readingState = useReadingState({
-    requirements,
-    currentReading,
-    isGenerating: isGeneratingCentralReading,
-    isLoading: isLoadingUnifiedReadings,
-    error: uiError,
-    canGenerate
-  });
-
-  
-  const loadCentralReading = useCallback(async () => {
-    setUiError('');
-    setFallbackReading(null);
-    logger.auth.log('Iniciando geração da Síntese Integrada');
-
-    try {
-      const response = await generateCentralReading({});
-      const normalized = unwrapApiPayload(response);
-      setGeneratedReading(normalized || null);
-      logger.auth.log('Síntese gerada com sucesso');
-      
-      if (!normalized?.final_reading && !normalized?.finalReading) {
-        const fallbackBuilt = buildAndSetFallback();
-        if (!fallbackBuilt) {
-          setUiError('A leitura central respondeu sem conteúdo final e não havia dados suficientes para modo estável.');
-        }
-      }
-    } catch (err) {
-      logger.auth.error('Erro ao gerar Síntese Integrada:', err);
-      setGeneratedReading(null);
-      const fallbackBuilt = buildAndSetFallback();
-      if (!fallbackBuilt) {
-        setUiError(err?.message || 'Não foi possível gerar a Síntese Integrada agora. Tente novamente.');
-      } else {
-        setUiError('Serviço central indisponível. Exibindo leitura em modo estável com dados locais.');
-      }
-    }
-  }, [generateCentralReading, buildAndSetFallback]);
-
-  const latestReadings = useMemo(() => {
-    return normalizeUnifiedReadingsList(unifiedReadings);
-  }, [unifiedReadings]);
+  const latestReadings = useMemo(() => normalizeUnifiedReadingsList(unifiedReadings), [unifiedReadings]);
 
   const currentWeekReadingFromList = useMemo(() => (
-    latestReadings.find((reading) => {
-      const readingWeekRef = reading?.week_ref || reading?.weekRef;
-      return readingWeekRef === currentWeekRef;
-    }) || null
+    latestReadings.find((r) => (r?.week_ref || r?.weekRef) === currentWeekRef) || null
   ), [latestReadings, currentWeekRef]);
 
   const persistedWeeklyReading = useMemo(() => {
@@ -248,81 +196,119 @@ export default function GeneralOraclePage() {
   }, [user?.id, id, storageKey, currentWeekRef]);
 
   const detailReading = id ? unwrapApiPayload(unifiedReading) : null;
-  const currentWeeklyReading = detailReading
+  const currentReading = detailReading
     || generatedReading
-    || fallbackReading
+    || localFallback
     || currentWeekReadingFromList
     || persistedWeeklyReading
     || latestReadings?.[0]
     || null;
-  const currentReading = currentWeeklyReading;
-  const finalReading = currentReading?.final_reading || currentReading?.finalReading || null;
 
+  const finalReading = currentReading?.final_reading || currentReading?.finalReading || null;
   const weekRef = currentReading?.week_ref || currentReading?.weekRef;
   const cached = currentReading?.cached === true;
-  const aiFailed = currentReading?.ai_failed === true;
   const hasCurrentWeekReading = !id && weekRef === currentWeekRef && !!finalReading;
-
   const canGenerateByServer = currentReading?.can_generate ?? requirements?.can_generate_general_reading ?? true;
   const canGenerate = canGenerateByServer && !hasCurrentWeekReading;
+
+  const missingChecklist = useMemo(() => {
+    if (!requirements?.requirements_status) return [];
+    return Object.entries(requirementMeta)
+      .filter(([key]) => requirements.requirements_status[key] === false)
+      .map(([, meta]) => meta);
+  }, [requirements]);
+
+  const buildAndSetFallback = useCallback(() => {
+    const modules = modulesQuery.data;
+    if (!modules) return false;
+    const built = buildFallbackGeneralReading(modules);
+    setLocalFallback({ final_reading: built, week_ref: currentWeekRef, cached: false, ai_failed: true });
+    return true;
+  }, [modulesQuery.data, currentWeekRef]);
+
+  const loadCentralReading = useCallback(async () => {
+    setUiError('');
+    setLocalFallback(null);
+
+    try {
+      const response = await generateCentralReading({ week_ref: currentWeekRef });
+      const normalized = unwrapApiPayload(response);
+      setGeneratedReading(normalized || null);
+
+      if (!normalized?.final_reading && !normalized?.finalReading) {
+        const built = buildAndSetFallback();
+        if (!built) setUiError('Leitura central sem conteúdo e sem dados suficientes para modo estável.');
+      }
+    } catch (err) {
+      setGeneratedReading(null);
+      const built = buildAndSetFallback();
+      if (!built) {
+        setUiError(err?.message || 'Não foi possível gerar a Síntese Integrada agora. Tente novamente.');
+      } else {
+        setUiError('Serviço central indisponível. Exibindo leitura em modo estável com dados locais.');
+      }
+    }
+  }, [generateCentralReading, buildAndSetFallback, currentWeekRef]);
 
   useEffect(() => {
     if (id || !user?.id || !hasCurrentWeekReading) return;
     window.localStorage.setItem(storageKey, JSON.stringify(currentReading));
   }, [id, user?.id, hasCurrentWeekReading, storageKey, currentReading]);
 
-  
+  const isLoading = isLoadingRequirements || isLoadingUnifiedReadings;
+
   return (
     <div className={`content_wrapper ${styles.page}`}>
       <header className={styles.header}>
         <h1>Síntese Integrada Semanal</h1>
         <p>Síntese central da semana com Tarot + Numerologia + Runas + I Ching.</p>
         <div className={styles.statusRow}>
-          <span className={styles.statusBadge}>Semanal • {weekRef || '—'}</span>
+          <span className={styles.statusBadge}>Semanal • {weekRef || currentWeekRef}</span>
           {cached && <span className={styles.cachedBadge}>Já gerado nesta semana</span>}
-          {hasCurrentWeekReading && <span className={styles.cachedBadge}>Disponível novamente na próxima semana</span>}
+          {hasCurrentWeekReading && <span className={styles.cachedBadge}>Próxima disponível na virada da semana</span>}
         </div>
       </header>
 
-      {/* Estado de Requisitos */}
-      {readingState.hasRequirementsMissing && (
-        <RequirementsCard 
-          requirements={requirements} 
-          missingChecklist={missingChecklist}
-        />
+      {isLoading && <p className={styles.stableModeHint}>Carregando...</p>}
+
+      {!isLoading && missingChecklist.length > 0 && (
+        <section className={styles.card}>
+          <h2>Complete seus oráculos semanais</h2>
+          <p className={styles.stableModeHint}>Para uma síntese completa, gere os oráculos abaixo primeiro:</p>
+          <ul className={styles.checklist}>
+            {missingChecklist.map((item) => (
+              <li key={item.action}>
+                <span>{item.label}</span>
+                <Link to={item.action}>{item.cta}</Link>
+              </li>
+            ))}
+          </ul>
+        </section>
       )}
 
-      {/* Estado de Geração */}
-      {readingState.isGenerating && (
-        <GeneratingState message={readingState.stateMessage} />
+      {isGeneratingCentralReading && (
+        <section className={styles.card}>
+          <p className={styles.stableModeHint}>✦ Consultando os oráculos... isto pode levar alguns instantes.</p>
+        </section>
       )}
 
-      {/* Estado de Erro */}
-      {readingState.isError && (
-        <ErrorState 
-          error={uiError}
-          onRetry={loadCentralReading}
-          onCheckRequirements={() => logger.auth.log('Redirecionando para requisitos')}
-          onGoToReading={() => navigate('/tarot')}
-          context={{ 
-            hasRequirementsMissing: readingState.hasRequirementsMissing,
-            isGenerationError: isGeneratingCentralReading 
-          }}
-        />
+      {uiError && (
+        <section className={`${styles.card} ${styles.errorCard}`}>
+          <h3>Aviso</h3>
+          <p>{uiError}</p>
+          <button type="button" onClick={loadCentralReading} className={styles.retryButton}>
+            Tentar novamente
+          </button>
+        </section>
       )}
 
-      {/* Resultado da Leitura */}
-      {readingState.isSuccess && finalReading && (
+      {finalReading && (
         <section className={styles.card}>
           <div className={styles.resultHeader}>
-            <h2>Resultado da Semana</h2>
-            {!id && readingState.canProceed && (
-              <button 
-                type="button" 
-                onClick={loadCentralReading} 
-                className={styles.retryButton}
-              >
-                Gerar Nova Síntese
+            <h2>{finalReading.title || 'Síntese da Semana'}</h2>
+            {canGenerate && !isGeneratingCentralReading && (
+              <button type="button" onClick={loadCentralReading} className={styles.retryButton}>
+                Gerar nova síntese
               </button>
             )}
           </div>
@@ -330,20 +316,37 @@ export default function GeneralOraclePage() {
         </section>
       )}
 
-      <section className={styles.card}>
-        <h2>Histórico de sínteses</h2>
-        {isLoadingUnifiedReadings && <p>Carregando histórico...</p>}
-        {!isLoadingUnifiedReadings && latestReadings.length === 0 && <p>Nenhuma síntese integrada encontrada.</p>}
-        <ul className={styles.historyList}>
-          {latestReadings.map((reading) => (
-            <li key={reading.id}>
-              <button type="button" onClick={() => navigate(`/oraculo/geral/${reading.id}`)}>
-                {reading?.final_reading?.title || reading?.finalReading?.title || `Leitura ${reading.id}`}
-              </button>
-            </li>
-          ))}
-        </ul>
-      </section>
+      {!finalReading && !isLoading && !isGeneratingCentralReading && (
+        <section className={styles.card}>
+          <h2>Gerar Síntese Integrada</h2>
+          <p className={styles.stableModeHint}>
+            Integra todos os seus oráculos da semana em uma leitura unificada e personalizada.
+          </p>
+          <button
+            type="button"
+            onClick={loadCentralReading}
+            className={styles.retryButton}
+            disabled={!canGenerate}
+          >
+            {isGeneratingCentralReading ? '✦ Gerando...' : 'Gerar síntese desta semana'}
+          </button>
+        </section>
+      )}
+
+      {latestReadings.length > 0 && (
+        <section className={styles.card}>
+          <h2>Histórico de sínteses</h2>
+          <ul className={styles.historyList}>
+            {latestReadings.map((reading) => (
+              <li key={reading.id}>
+                <button type="button" onClick={() => navigate(`/oraculo/geral/${reading.id}`)}>
+                  {reading?.final_reading?.title || reading?.finalReading?.title || `Síntese ${reading.week_ref || reading.id}`}
+                </button>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
     </div>
   );
 }

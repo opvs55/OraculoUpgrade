@@ -210,31 +210,41 @@ function NumerologyPage() {
             elegante e prática para sua rotina.
           </p>
         </header>
-        <section className={styles.dynamicSplitSection}>
-          <article className={`${styles.dynamicCard} ${styles.personalCard}`}>
-            <p className={styles.dynamicLabel}>Canal Pessoal</p>
-            <h3>Número de Vida + Arquétipo Natal</h3>
-            <p>
-              Leitura profunda baseada na sua data de nascimento. É sua base permanente
-              e íntima de autoconhecimento.
-            </p>
-            <span className={styles.dynamicMeta}>
-              {numerologyData?.created_at
-                ? `Atualizado em ${new Date(numerologyData.created_at).toLocaleDateString('pt-BR')}`
-                : 'Ainda não calculado'}
-            </span>
-          </article>
-          <article className={`${styles.dynamicCard} ${styles.weeklyCard}`}>
-            <p className={styles.dynamicLabel}>Canal Semanal</p>
-            <h3>Numerologia da Semana</h3>
-            <p>
-              Direção de curto prazo para seu ciclo atual. Complementa sua base pessoal
-              com foco prático para agora.
-            </p>
+        <section className={styles.heroSplit}>
+          {/* Visual: número grande como "carta" */}
+          <div className={styles.numberVisual}>
+            <div className={styles.numberGlyph}>
+              {numerologyData?.life_path_number
+                ? numerologyData.life_path_number
+                : '?'}
+            </div>
+            <p className={styles.numberLabel}>Caminho de Vida</p>
+            {numerologyData?.birthday_number && (
+              <p className={styles.numberSub}>Nascimento · {numerologyData.birthday_number}</p>
+            )}
+            {numerologyData?.created_at && (
+              <p className={styles.numberDate}>
+                Base desde {new Date(numerologyData.created_at).toLocaleDateString('pt-BR')}
+              </p>
+            )}
+          </div>
+
+          {/* Conteúdo semanal */}
+          <div className={styles.weeklyPanel}>
+            <div className={styles.weeklyPanelHeader}>
+              <p className={styles.dynamicLabel}>Canal Semanal</p>
+              <h2 className={styles.weeklyPanelTitle}>Numerologia da Semana</h2>
+              <p className={styles.weeklyPanelSub}>
+                Direção de curto prazo para seu ciclo atual.
+              </p>
+            </div>
+
             {weeklySummary ? (
               <div className={styles.weeklySummary}>
                 {weeklySummary.personalWeekVibe && (
-                  <span className={styles.weeklyVibe}>Vibração {weeklySummary.personalWeekVibe} · {weeklySummary.weekRef}</span>
+                  <span className={styles.weeklyVibe}>
+                    Vibração {weeklySummary.personalWeekVibe} · {weeklySummary.weekRef}
+                  </span>
                 )}
                 {weeklySummary.narrative && (
                   <p className={styles.weeklyNarrative}>{weeklySummary.narrative}</p>
@@ -246,17 +256,20 @@ function NumerologyPage() {
                 )}
               </div>
             ) : (
-              <span className={styles.dynamicMeta}>Ainda não gerado nesta semana.</span>
+              <p className={styles.weeklyEmpty}>
+                Nenhuma leitura semanal gerada ainda.
+              </p>
             )}
+
             <button
               type="button"
               className={styles.secondaryButton}
               onClick={handleGenerateWeekly}
               disabled={weeklyMutation.isPending || isLoadingReading || isCalculating || isResetting}
             >
-              {weeklyMutation.isPending ? 'Gerando semanal...' : 'Gerar leitura semanal'}
+              {weeklyMutation.isPending ? '✦ Gerando...' : 'Gerar leitura semanal'}
             </button>
-          </article>
+          </div>
         </section>
         {renderContent()}
       </div>

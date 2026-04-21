@@ -24,6 +24,7 @@ const GeneralOraclePage = lazy(() => import('../pages/GeneralOraclePage'));
 const RunesWeeklyPage = lazy(() => import('../pages/RunesWeeklyPage'));
 const IChingWeeklyPage = lazy(() => import('../pages/IChingWeeklyPage'));
 const MyProfilePage = lazy(() => import('../pages/profile/MyProfilePage'));
+const ReadingHistoryPage = lazy(() => import('../pages/history/ReadingHistoryPage'));
 const ReelsLabPage = lazy(() => import('../pages/reels/ReelsLabPage'));
 const OracleLibraryPage = lazy(() => import('../pages/learning/OracleLibraryPage'));
 const InteractiveReadingHubPage = lazy(() => import('../pages/interactive/InteractiveReadingHubPage'));
@@ -78,6 +79,7 @@ function AppRoutes() {
           <Route path="/meu-grimorio" element={<MyProfilePage />} />
           <Route path="/perfil" element={<MyProfilePage />} />
           <Route path="/perfil/editar" element={<EditarPerfilPage />} />
+          <Route path="/historico" element={<ReadingHistoryPage />} />
           <Route path="/reels" element={<ReelsLabPage />} />
           <Route path="/biblioteca" element={<CardLibraryPage />} />
           <Route path="/biblioteca/oraculos" element={<OracleLibraryPage />} />

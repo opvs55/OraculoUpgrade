@@ -353,7 +353,7 @@ export default function MyProfilePage() {
             <div className={styles.timelineCard}>
               <div className={styles.sectionTitleRow}>
                 <h3>Timeline Tarot</h3>
-                <span>{readings.length} registros</span>
+                <Link to="/historico" className={styles.emptyStateCta}>Ver histórico completo →</Link>
               </div>
               {readings.length > 0 ? (
                 <ul className={styles.timelineList}>
