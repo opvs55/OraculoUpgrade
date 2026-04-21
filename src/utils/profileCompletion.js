@@ -1,9 +1,6 @@
 export const REQUIRED_PROFILE_FIELDS = [
   'username',
   'full_name',
-  'bio',
-  'minha_historia',
-  'entidade_cultuada',
   'avatar_url',
 ];
 
