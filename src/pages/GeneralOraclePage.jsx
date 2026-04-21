@@ -5,8 +5,49 @@ import GeneralReadingView from '../components/oracle/GeneralReadingView';
 import { useUnifiedReading } from '../features/unified/useUnifiedReading';
 import { useAuth } from '../context/AuthContext';
 import { supabase } from '../supabaseClient';
+import DecorativeDivider from '../components/common/DecorativeDivider/DecorativeDivider';
 import styles from './GeneralOraclePage.module.css';
 import { usePageTitle } from '../hooks/usePageTitle';
+import { getArcana, getYearArcana, getArcanaImageUrl } from '../utils/arcanaMap';
+
+const ORACLE_MODULES = [
+  {
+    key: 'has_weekly_card',
+    label: 'Carta da Semana',
+    oracle: 'Tarot',
+    description: 'A carta-foco que define a energia e o tema central desta semana.',
+    action: '/tarot',
+    cta: 'Fazer tiragem',
+    icon: '✦',
+  },
+  {
+    key: 'has_numerology_weekly',
+    label: 'Numerologia Semanal',
+    oracle: 'Numerologia',
+    description: 'A vibração numérica da semana cruzada com seu caminho de vida.',
+    action: '/numerologia',
+    cta: 'Gerar vibração',
+    icon: '◎',
+  },
+  {
+    key: 'has_runes_weekly',
+    label: 'Runas Semanais',
+    oracle: 'Runas',
+    description: 'O lançamento de runas revela forças, desafios e conselho para os dias.',
+    action: '/runas',
+    cta: 'Lançar runas',
+    icon: '᛫',
+  },
+  {
+    key: 'has_iching_weekly',
+    label: 'I Ching Semanal',
+    oracle: 'I Ching',
+    description: 'O hexagrama da semana aponta o fluxo natural dos acontecimentos.',
+    action: '/iching',
+    cta: 'Consultar I Ching',
+    icon: '☯',
+  },
+];
 
 const requirementMeta = {
   has_weekly_card: { label: 'Tarot', action: '/tarot', cta: 'Ir para Tarot' },
@@ -14,6 +55,33 @@ const requirementMeta = {
   has_runes_weekly: { label: 'Runas', action: '/runas', cta: 'Ir para Runas' },
   has_iching_weekly: { label: 'I Ching', action: '/iching', cta: 'Ir para I Ching' },
 };
+
+const HOW_IT_WORKS = [
+  {
+    q: 'O que é a Síntese Integrada?',
+    a: 'É uma leitura gerada por IA que cruza os resultados de Tarot, Numerologia, Runas e I Ching da semana. Em vez de ler cada oráculo isoladamente, a síntese identifica padrões comuns, tensões e convergências entre as quatro tradições — gerando uma orientação unificada e mais profunda.',
+  },
+  {
+    q: 'Por que preciso completar os 4 oráculos?',
+    a: 'Cada oráculo contribui com uma linguagem simbólica diferente: o Tarot fala em arquétipos visuais, a Numerologia em vibrações numéricas, as Runas em forças primordiais e o I Ching em fluxos e mudanças. Sem os 4, a síntese perde dimensões importantes. É como ler um mapa com partes faltando.',
+  },
+  {
+    q: 'O que o Tarot traz para a síntese?',
+    a: 'A carta semanal define o arquétipo central da semana — a energia dominante que colorirá suas decisões, relações e desafios. Ela funciona como o "tema" que os outros oráculos vão aprofundar ou contrastar.',
+  },
+  {
+    q: 'O que a Numerologia contribui?',
+    a: 'Além da vibração semanal, a síntese usa seu número do Caminho de Vida, o Arcano Pessoal e o Arcano do Ano para personalizar a leitura ao seu perfil energético único. A IA cruzará a vibração da semana com quem você é numerologicamente.',
+  },
+  {
+    q: 'Como as Runas e o I Ching se integram?',
+    a: 'As Runas trazem a perspectiva das forças em jogo — o que está ativo, o que resiste e o que precisa de atenção. O I Ching complementa com o fluxo temporal: o que está chegando, o que está passando e qual a postura ideal diante do momento. Juntos criam um conselho de ação concreto.',
+  },
+  {
+    q: 'A síntese muda toda semana?',
+    a: 'Sim. Cada semana você faz novas tiragens e a síntese reflete o momento atual. Leituras anteriores ficam salvas no histórico. O ciclo recomendado é: segunda-feira fazer as tiragens, gerar a síntese e usá-la como bússola até o domingo.',
+  },
+];
 
 const fallbackActionOrder = ['/tarot', '/numerologia', '/runas', '/iching'];
 const LOCAL_STORAGE_KEY_PREFIX = 'general-oracle-weekly';
@@ -259,110 +327,173 @@ export default function GeneralOraclePage() {
 
   const isLoading = isLoadingRequirements || isLoadingUnifiedReadings;
 
+  const completedCount = ORACLE_MODULES.filter(m => requirements?.requirements_status?.[m.key] === true || requirements?.[m.key] === true).length;
+  const totalModules = ORACLE_MODULES.length;
+  const allComplete = completedCount === totalModules;
+
+  const numerologyData = modulesQuery.data;
+  const lifePathNumber = null; // enriquecimento futuro via numerology_readings join
+  const yearArcana = getYearArcana(user?.created_at); // placeholder — idealmente virá do perfil
+
   return (
     <div className={`content_wrapper ${styles.page}`}>
+
+      {/* ── Header ── */}
       <header className={styles.header}>
+        <p className={styles.eyebrow}>Oráculos</p>
         <h1>Síntese Integrada Semanal</h1>
-        <p>Síntese central da semana com Tarot + Numerologia + Runas + I Ching.</p>
-        <div className={styles.statusRow}>
-          <span className={styles.statusBadge}>Semanal • {weekRef || currentWeekRef}</span>
-          {cached && <span className={styles.cachedBadge}>Já gerado nesta semana</span>}
-          {hasCurrentWeekReading && <span className={styles.cachedBadge}>Próxima disponível na virada da semana</span>}
-        </div>
+        <p className={styles.subtitle}>
+          A IA cruza Tarot, Numerologia, Runas e I Ching e entrega uma orientação unificada para sua semana.
+        </p>
       </header>
 
-      {isLoading && <p className={styles.stableModeHint}>Carregando...</p>}
+      <DecorativeDivider />
 
-      {!isLoading && missingChecklist.length > 0 && (
-        <section className={styles.card}>
-          <div className={styles.pendingHeader}>
-            <span className={styles.pendingIcon}>◎</span>
-            <div>
-              <h2>Quase lá — {4 - missingChecklist.length} de 4 oráculos prontos</h2>
-              <p className={styles.stableModeHint}>
-                Complete os oráculos abaixo para desbloquear sua síntese personalizada da semana.
-                Cada um leva menos de um minuto.
-              </p>
+      <section className={styles.card}>
+        {/* ── Status badges ── */}
+        <div className={styles.statusRow}>
+          <span className={styles.badge}>Semana {weekRef || currentWeekRef}</span>
+          {hasCurrentWeekReading && (
+            <span className={styles.cachedBadge}>✓ Síntese gerada esta semana</span>
+          )}
+          <span className={styles.progressBadge}>
+            {completedCount}/{totalModules} oráculos prontos
+          </span>
+        </div>
+
+        {/* ── Loading ── */}
+        {isLoading && (
+          <div className={styles.loadingBlock}>
+            <p className={styles.loadingHint}>Carregando seus oráculos…</p>
+          </div>
+        )}
+
+        {/* ── Checklist de módulos ── */}
+        {!isLoading && (
+          <div className={styles.modulesSection}>
+            <div className={styles.modulesSectionHeader}>
+              <div>
+                <h2>{allComplete ? 'Todos os oráculos prontos' : `${completedCount} de ${totalModules} oráculos completos`}</h2>
+                {!allComplete && (
+                  <p className={styles.modulesHint}>
+                    Complete os {totalModules} oráculos semanais para desbloquear sua síntese personalizada.
+                  </p>
+                )}
+              </div>
+              {/* Barra de progresso */}
+              <div className={styles.progressTrack} aria-label={`${completedCount} de ${totalModules} completos`}>
+                <div
+                  className={styles.progressFill}
+                  style={{ width: `${(completedCount / totalModules) * 100}%` }}
+                />
+              </div>
+            </div>
+
+            <div className={styles.modulesGrid}>
+              {ORACLE_MODULES.map((mod) => {
+                const done = requirements?.requirements_status?.[mod.key] === true || requirements?.[mod.key] === true;
+                return (
+                  <div key={mod.key} className={`${styles.moduleCard} ${done ? styles.moduleCardDone : ''}`}>
+                    <div className={styles.moduleIcon}>{mod.icon}</div>
+                    <div className={styles.moduleInfo}>
+                      <p className={styles.moduleOracle}>{mod.oracle}</p>
+                      <p className={styles.moduleLabel}>{mod.label}</p>
+                      <p className={styles.moduleDesc}>{mod.description}</p>
+                    </div>
+                    <div className={styles.moduleStatus}>
+                      {done
+                        ? <span className={styles.moduleDone}>✓ Pronto</span>
+                        : <Link to={mod.action} className={styles.moduleCta}>{mod.cta} →</Link>
+                      }
+                    </div>
+                  </div>
+                );
+              })}
             </div>
           </div>
-          <ul className={styles.checklist}>
-            {missingChecklist.map((item) => (
-              <li key={item.action}>
-                <span className={styles.checklistLabel}>⊕ {item.label}</span>
-                <Link to={item.action} className={styles.checklistCta}>{item.cta} →</Link>
-              </li>
-            ))}
-          </ul>
-        </section>
-      )}
+        )}
 
-      {isGeneratingCentralReading && (
-        <section className={`${styles.card} ${styles.generatingCard}`}>
-          <div className={styles.generatingSpinner} aria-hidden="true">
-            <span>✦</span>
+        {/* ── Gerando ── */}
+        {isGeneratingCentralReading && (
+          <div className={styles.generatingCard}>
+            <div className={styles.generatingSpinner} aria-hidden="true"><span>✦</span></div>
+            <div className={styles.generatingText}>
+              <p>Consultando os oráculos…</p>
+              <small>A síntese integra Tarot, Runas, I Ching e Numerologia. Pode levar até 30 segundos.</small>
+            </div>
           </div>
-          <div className={styles.generatingText}>
-            <p>Consultando os oráculos…</p>
-            <small>A síntese integra Tarot, Runas, I Ching e Numerologia. Pode levar até 30 segundos.</small>
+        )}
+
+        {/* ── Erro ── */}
+        {uiError && (
+          <div className={styles.errorCard}>
+            <h3>Aviso</h3>
+            <p>{uiError}</p>
+            <button type="button" onClick={loadCentralReading} className={styles.secondaryButton}>
+              Tentar novamente
+            </button>
           </div>
-        </section>
-      )}
+        )}
 
-      {uiError && (
-        <section className={`${styles.card} ${styles.errorCard}`}>
-          <h3>Aviso</h3>
-          <p>{uiError}</p>
-          <button type="button" onClick={loadCentralReading} className={styles.retryButton}>
-            Tentar novamente
-          </button>
-        </section>
-      )}
-
-      {finalReading && (
-        <section className={styles.card}>
-          <div className={styles.resultHeader}>
-            <h2>{finalReading.title || 'Síntese da Semana'}</h2>
-            {canGenerate && !isGeneratingCentralReading && (
-              <button type="button" onClick={loadCentralReading} className={styles.retryButton}>
-                Gerar nova síntese
-              </button>
-            )}
+        {/* ── Síntese gerada ── */}
+        {finalReading && (
+          <div className={styles.resultBlock}>
+            <div className={styles.resultHeader}>
+              <h2>{finalReading.title || 'Síntese da Semana'}</h2>
+              {canGenerate && !isGeneratingCentralReading && (
+                <button type="button" onClick={loadCentralReading} className={styles.secondaryButton}>
+                  Gerar nova síntese
+                </button>
+              )}
+            </div>
+            <GeneralReadingView finalReading={finalReading} />
           </div>
-          <GeneralReadingView finalReading={finalReading} />
-        </section>
-      )}
+        )}
 
-      {!finalReading && !isLoading && !isGeneratingCentralReading && (
-        <section className={styles.card}>
-          <h2>Gerar Síntese Integrada</h2>
-          <p className={styles.stableModeHint}>
-            Integra todos os seus oráculos da semana em uma leitura unificada e personalizada.
-          </p>
-          <button
-            type="button"
-            onClick={loadCentralReading}
-            className={styles.retryButton}
-            disabled={!canGenerate}
-          >
-            {isGeneratingCentralReading ? '✦ Gerando...' : 'Gerar síntese desta semana'}
-          </button>
-        </section>
-      )}
+        {/* ── CTA para gerar ── */}
+        {!finalReading && !isLoading && !isGeneratingCentralReading && allComplete && (
+          <div className={styles.generateCta}>
+            <p className={styles.loadingHint}>Todos os oráculos estão prontos. Gere sua síntese agora.</p>
+            <button type="button" onClick={loadCentralReading} className={styles.primaryButton}>
+              ✦ Gerar Síntese Integrada
+            </button>
+          </div>
+        )}
+      </section>
 
+      {/* ── Histórico ── */}
       {latestReadings.length > 0 && (
         <section className={styles.card}>
-          <h2>Histórico de sínteses</h2>
+          <h2>Histórico de Sínteses</h2>
           <ul className={styles.historyList}>
             {latestReadings.map((reading) => (
               <li key={reading.id}>
                 <button type="button" onClick={() => navigate(`/oraculo/geral/${reading.id}`)}>
-                  {reading?.final_reading?.title || reading?.finalReading?.title || `Síntese ${reading.week_ref || reading.id}`}
+                  <span>{reading?.final_reading?.title || reading?.finalReading?.title || `Síntese ${reading.week_ref || reading.id}`}</span>
+                  <span className={styles.historyWeek}>{reading.week_ref}</span>
                 </button>
               </li>
             ))}
           </ul>
         </section>
       )}
+
+      {/* ── Como Funciona ── */}
+      <section className={styles.card}>
+        <h2 className={styles.howTitle}>Como funciona a Síntese Integrada</h2>
+        <p className={styles.howSubtitle}>
+          Cada oráculo fala uma linguagem simbólica diferente. A síntese é o momento em que todas conversam.
+        </p>
+        <div className={styles.faqList}>
+          {HOW_IT_WORKS.map((item, i) => (
+            <details key={i} className={styles.faqItem}>
+              <summary className={styles.faqQuestion}>{item.q}</summary>
+              <p className={styles.faqAnswer}>{item.a}</p>
+            </details>
+          ))}
+        </div>
+      </section>
+
     </div>
   );
 }
