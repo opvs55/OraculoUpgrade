@@ -17,7 +17,7 @@ import ProfilePage from '../pages/profile/ProfilePage';
 // --- Páginas Carregadas de forma "Lazy" ---
 
 // Páginas Públicas
-const WelcomePage = lazy(() => import('../pages/WelcomePage'));
+const WelcomePage = lazy(() => import('../pages/WelcomePageNew'));
 const TarotPage = lazy(() => import('../pages/TarotPage'));
 const NumerologyPage = lazy(() => import('../pages/NumerologyPage.jsx'));
 const GeneralOraclePage = lazy(() => import('../pages/GeneralOraclePage'));
