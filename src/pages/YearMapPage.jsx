@@ -5,7 +5,7 @@ import { oraclesApi } from '../services/api/oraclesApi';
 import { usePageTitle } from '../hooks/usePageTitle';
 import { Link } from 'react-router-dom';
 import DecorativeDivider from '../components/common/DecorativeDivider/DecorativeDivider';
-import { getArcanaImageUrl } from '../utils/arcanaMap';
+import { getArcanaImageUrl, MAJOR_ARCANA } from '../utils/arcanaMap';
 import styles from './YearMapPage.module.css';
 
 const MONTH_NAMES = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
@@ -17,49 +17,30 @@ export default function YearMapPage() {
   const { user } = useAuth();
   const [selectedMonth, setSelectedMonth] = useState(CURRENT_MONTH);
 
-  const { data, isLoading, error } = useQuery({
+  const { data, isLoading, error, refetch } = useQuery({
     queryKey: ['year-map', user?.id, CURRENT_YEAR],
     enabled: !!user?.id,
     queryFn: () => oraclesApi.getYearMap(CURRENT_YEAR),
     staleTime: 1000 * 60 * 60 * 24,
   });
 
+  const getCardKeyword = (cardName) => {
+    const arcana = MAJOR_ARCANA.find(a => a.name === cardName);
+    return arcana?.keyword || null;
+  };
+
   const cards = data?.cards_data || [];
   const overview = data?.final_reading;
   const selectedCard = cards.find(c => c.month === selectedMonth);
 
-  const selectedCardImgUrl = selectedCard?.img_path
-    ? getArcanaImageUrl(selectedCard.img_path)
-    : selectedCard?.name
-    ? (() => {
-        const CARD_NAME_TO_IMG = {
-          'O Louco': 'assets/cartas/RWS1909_-_00_Fool.jpeg',
-          'O Mago': 'assets/cartas/RWS1909_-_01_Magician.jpeg',
-          'A Sacerdotisa': 'assets/cartas/RWS1909_-_02_High_Priestess.jpeg',
-          'A Imperatriz': 'assets/cartas/RWS1909_-_03_Empress.jpeg',
-          'O Imperador': 'assets/cartas/RWS1909_-_04_Emperor.jpeg',
-          'O Hierofante': 'assets/cartas/RWS1909_-_05_Hierophant.jpeg',
-          'Os Amantes': 'assets/cartas/RWS1909_-_06_Lovers.jpeg',
-          'O Carro': 'assets/cartas/RWS1909_-_07_Chariot.jpeg',
-          'A Força': 'assets/cartas/RWS1909_-_08_Strength.jpeg',
-          'O Eremita': 'assets/cartas/RWS1909_-_09_Hermit.jpeg',
-          'A Roda da Fortuna': 'assets/cartas/RWS1909_-_10_Wheel_of_Fortune.jpeg',
-          'A Justiça': 'assets/cartas/RWS1909_-_11_Justice.jpeg',
-          'O Enforcado': 'assets/cartas/RWS1909_-_12_Hanged_Man.jpeg',
-          'A Morte': 'assets/cartas/RWS1909_-_13_Death.jpeg',
-          'A Temperança': 'assets/cartas/RWS1909_-_14_Temperance.jpeg',
-          'O Diabo': 'assets/cartas/RWS1909_-_15_Devil.jpeg',
-          'A Torre': 'assets/cartas/RWS1909_-_16_Tower.jpeg',
-          'A Estrela': 'assets/cartas/RWS1909_-_17_Star.jpeg',
-          'A Lua': 'assets/cartas/RWS1909_-_18_Moon.jpeg',
-          'O Sol': 'assets/cartas/RWS1909_-_19_Sun.jpeg',
-          'O Julgamento': 'assets/cartas/RWS1909_-_20_Judgement.jpeg',
-          'O Mundo': 'assets/cartas/RWS1909_-_21_World.jpeg',
-        };
-        const path = CARD_NAME_TO_IMG[selectedCard.name];
-        return path ? getArcanaImageUrl(path) : null;
-      })()
-    : null;
+  const resolveCardImg = (card) => {
+    if (!card) return null;
+    if (card.img_path) return getArcanaImageUrl(card.img_path);
+    const arcana = MAJOR_ARCANA.find(a => a.name === card.name);
+    return arcana ? getArcanaImageUrl(arcana.img) : null;
+  };
+
+  const selectedCardImgUrl = resolveCardImg(selectedCard);
 
   return (
     <div className={`content_wrapper ${styles.page}`}>
@@ -81,6 +62,7 @@ export default function YearMapPage() {
           <div className={styles.errorCard}>
             <h2>Erro ao carregar</h2>
             <p>Não foi possível carregar o Mapa do Ano.</p>
+            <button type="button" className={styles.primaryButton} onClick={() => refetch()}>Tentar novamente</button>
           </div>
         )}
 
@@ -130,6 +112,9 @@ export default function YearMapPage() {
                   <div className={styles.cardDetailInfo}>
                     <p className={styles.sectionLabel}>Carta do mês</p>
                     <h3 className={styles.cardDetailTitle}>{selectedCard.name}</h3>
+                    {getCardKeyword(selectedCard.name) && (
+                      <span className={styles.cardKeyword}>{getCardKeyword(selectedCard.name)}</span>
+                    )}
                     <p className={styles.cardDetailHint}>
                       {selectedCard.month < CURRENT_MONTH
                         ? 'Mês passado — reflita sobre como essa energia se manifestou.'

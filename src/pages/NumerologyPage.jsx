@@ -213,7 +213,7 @@ function NumerologyPage() {
       )}
 
       <header className={styles.header}>
-        <p className={styles.eyebrow}>Oráculos</p>
+        <p className={styles.eyebrow}>Numerologia · Pessoal</p>
         <h1>Numerologia Pessoal</h1>
         <p className={styles.subtitle}>
           Descubra seu Caminho de Vida, os Arcanos que regem seu nascimento e a vibração da sua semana.

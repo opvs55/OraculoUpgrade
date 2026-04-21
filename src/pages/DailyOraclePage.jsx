@@ -11,9 +11,18 @@ import styles from './DailyOraclePage.module.css';
 const CARD_ID_TO_NUMBER = {
   fool: 0, magician: 1, high_priestess: 2, empress: 3, emperor: 4,
   hierophant: 5, lovers: 6, chariot: 7, strength: 8, hermit: 9,
-  wheel: 10, justice: 11, hanged_man: 12, death: 13, temperance: 14,
+  wheel: 10, wheel_of_fortune: 10, justice: 11, hanged_man: 12, death: 13, temperance: 14,
   devil: 15, tower: 16, star: 17, moon: 18, sun: 19,
   judgement: 20, world: 21,
+};
+
+const normalizeCardId = (raw) => {
+  if (!raw) return null;
+  return String(raw)
+    .toLowerCase()
+    .replace(/^the\s+/, '')
+    .replace(/\s+/g, '_')
+    .trim();
 };
 
 const CARD_IMG_MAP = {
@@ -54,7 +63,8 @@ export default function DailyOraclePage() {
     staleTime: 1000 * 60 * 60,
   });
 
-  const cardNumber = data?.card_id != null ? CARD_ID_TO_NUMBER[data.card_id] : undefined;
+  const normalizedId = normalizeCardId(data?.card_id);
+  const cardNumber = normalizedId != null ? CARD_ID_TO_NUMBER[normalizedId] : undefined;
   const imgPath = cardNumber != null ? CARD_IMG_MAP[cardNumber] : null;
   const imgUrl = imgPath ? getArcanaImageUrl(imgPath) : null;
 

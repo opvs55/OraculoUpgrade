@@ -5,6 +5,7 @@ import Loader from '../components/common/Loader/Loader';
 import { useAuth } from '../hooks/useAuth';
 import { oraclesApi } from '../services/api/oraclesApi';
 import RunesCast from '../components/runes/RunesCast';
+import { Link } from 'react-router-dom';
 import styles from './RunesWeeklyPage.module.css';
 import { usePageTitle } from '../hooks/usePageTitle';
 
@@ -114,7 +115,15 @@ export default function RunesWeeklyPage() {
       <DecorativeDivider />
 
       <section className={styles.card}>
-        {weeklyQuery.isLoading && (
+        {!user && (
+          <div className={styles.guestBox}>
+            <p className={styles.guestTitle}>Runas Semanais</p>
+            <p className={styles.guestDesc}>Crie uma conta para receber seu lançamento de runas semanal e acompanhar sua evolução.</p>
+            <Link to="/cadastro" className={styles.primaryButton}>Criar conta gratuitamente</Link>
+          </div>
+        )}
+
+        {user && weeklyQuery.isLoading && (
           <div className={styles.loadingBlock}>
             <Loader />
             <p className={styles.loadingHint}>Conectando ao oráculo… pode levar alguns segundos.</p>

@@ -4,8 +4,21 @@ import ProtectedRoute from '../components/common/ProtectedRoute/ProtectedRoute.j
 
 // 1. O PageLoader continua definido aqui
 const PageLoader = () => (
-  <div style={{ textAlign: 'center', padding: '50px' }}>
-    Carregando...
+  <div style={{
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
+    minHeight: '60vh',
+    gap: '1rem',
+    color: 'rgba(225, 179, 130, 0.6)',
+    fontFamily: "'Cinzel', serif",
+    fontSize: '0.8rem',
+    letterSpacing: '0.14em',
+    textTransform: 'uppercase',
+  }}>
+    <span style={{ fontSize: '1.4rem', animation: 'none', opacity: 0.7 }}>✦</span>
+    Carregando…
   </div>
 );
 

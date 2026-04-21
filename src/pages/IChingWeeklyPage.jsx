@@ -5,6 +5,7 @@ import Loader from '../components/common/Loader/Loader';
 import { useAuth } from '../hooks/useAuth';
 import { oraclesApi } from '../services/api/oraclesApi';
 import HexagramDisplay from '../components/iching/HexagramDisplay';
+import { Link } from 'react-router-dom';
 import styles from './IChingWeeklyPage.module.css';
 import { usePageTitle } from '../hooks/usePageTitle';
 
@@ -108,7 +109,15 @@ export default function IChingWeeklyPage() {
       <DecorativeDivider />
 
       <section className={styles.card}>
-        {weeklyQuery.isLoading && (
+        {!user && (
+          <div className={styles.guestBox}>
+            <p className={styles.guestTitle}>I Ching Semanal</p>
+            <p className={styles.guestDesc}>Crie uma conta para receber seu hexagrama semanal e consultar o Livro das Mutações.</p>
+            <Link to="/cadastro" className={styles.primaryButton}>Criar conta gratuitamente</Link>
+          </div>
+        )}
+
+        {user && weeklyQuery.isLoading && (
           <div className={styles.loadingBlock}>
             <Loader />
             <p className={styles.loadingHint}>Conectando ao oráculo… pode levar alguns segundos.</p>

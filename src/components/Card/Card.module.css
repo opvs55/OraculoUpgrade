@@ -22,30 +22,30 @@
   
   /* Aplica a animação de entrada que definimos acima */
   animation: fadeInUp 0.6s ease-out forwards;
+  isolation: isolate;
+  will-change: transform;
 }
 
 /* --- A Imagem da Carta --- */
 .card {
-  width: 130px; /* Um pouco maior para ter mais impacto */
-  height: auto;   /* Mantém a proporção da imagem */
-  border-radius: 8px; /* Bordas levemente arredondadas */
-  
-  /* Sombra sutil para dar profundidade e destacar do fundo */
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
-  
-  /* Efeito de transição suave para todas as animações (hover, rotação) */
-  transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+  width: 130px;
+  height: auto;
+  border-radius: 10px;
+  box-shadow:
+    0 6px 24px rgba(0, 0, 0, 0.55),
+    0 0 0 1px rgba(225, 179, 130, 0.18);
+  transition: transform 0.35s cubic-bezier(0.25, 0.8, 0.25, 1),
+              box-shadow 0.35s cubic-bezier(0.25, 0.8, 0.25, 1);
 }
 
 /* Efeito ao passar o mouse por cima da carta */
 .cardContainer:hover .card {
   /* A carta "levita" e aumenta um pouco */
-  transform: translateY(-10px) scale(1.05);
-
-  /* O EFEITO DE BRILHO MÁGICO ACONTECE AQUI */
-  /* A sombra fica mais forte e adicionamos um brilho com a cor dourada do tema */
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), 
-              0 0 20px rgba(225, 179, 130, 0.4); 
+  transform: translateY(-10px) scale(1.04);
+  box-shadow:
+    0 16px 40px rgba(0, 0, 0, 0.6),
+    0 0 28px rgba(225, 179, 130, 0.45),
+    0 0 0 1px rgba(225, 179, 130, 0.35);
 }
 
 /* Estilo para a carta quando está invertida */

@@ -55,11 +55,15 @@
 }
 
 .errorCard {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
   text-align: center;
   padding: 2rem;
   color: #ffb5b5;
 }
-.errorCard h2 { color: #ffb5b5; font-size: 1.1rem; margin: 0 0 0.4rem; }
+.errorCard h2 { color: #ffb5b5; font-size: 1.1rem; margin: 0; }
 .errorCard p  { color: #9a8caa; font-size: 0.9rem; margin: 0; }
 
 /* ── Overview ── */
@@ -241,6 +245,16 @@
   font-family: 'Cinzel', serif;
   font-size: 1.15rem;
   color: #f0d8b8;
+}
+
+.cardKeyword {
+  display: inline-block;
+  margin: 0.2rem 0 0.6rem;
+  font-size: 0.75rem;
+  font-family: 'Cinzel', serif;
+  letter-spacing: 0.1em;
+  color: rgba(225, 179, 130, 0.7);
+  text-transform: uppercase;
 }
 
 .cardDetailHint {

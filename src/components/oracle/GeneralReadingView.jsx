@@ -1,5 +1,43 @@
 import React from 'react';
 import styles from './GeneralReadingView.module.css';
+import { MAJOR_ARCANA, getArcanaImageUrl } from '../../utils/arcanaMap';
+
+const POSITIVE_KEYWORDS = /colheit|crescimento|expans|alegr|clareza|vitória|sucesso|harmonia|abundânci|cura|renascimento|oportunidade|força|criação|realização|proteção|gratidão|fluxo|florescer/i;
+const NEGATIVE_KEYWORDS = /cuidado|tensão|desafio|obstáculo|dificuldade|evit|pausa|ruptura|sombra|apego|ilusão|conflito|perda|estagnação|resistência|medo|bloqueio/i;
+
+function getTextTone(text) {
+  if (!text) return 'neutral';
+  const posScore = (text.match(POSITIVE_KEYWORDS) || []).length;
+  const negScore = (text.match(NEGATIVE_KEYWORDS) || []).length;
+  if (posScore > negScore) return 'positive';
+  if (negScore > posScore) return 'negative';
+  return 'neutral';
+}
+
+function StyledText({ text, className = '' }) {
+  if (!text) return null;
+  const parts = text.split(/\*\*([^*]+)\*\*/g);
+  return (
+    <p className={`${styles.styledParagraph} ${className}`.trim()}>
+      {parts.map((part, i) =>
+        i % 2 === 1
+          ? <span key={i} className={styles.highlight}>{part}</span>
+          : part
+      )}
+    </p>
+  );
+}
+
+function resolveCardImg(cardName) {
+  if (!cardName) return null;
+  const normalized = cardName.toLowerCase();
+  const arcana = MAJOR_ARCANA.find(
+    a => a.name.toLowerCase() === normalized ||
+         a.name.toLowerCase().includes(normalized) ||
+         normalized.includes(a.name.toLowerCase())
+  );
+  return arcana ? getArcanaImageUrl(arcana.img) : null;
+}
 
 const toArray = (value) => {
   if (Array.isArray(value)) return value.filter(Boolean);
@@ -57,8 +95,12 @@ export default function GeneralReadingView({ finalReading }) {
     reflection_question: practicalRaw?.reflection_question || practicalRaw?.question || '',
   };
 
+  const tarotCardName = finalReading?.tarot_card_name ||
+    (signals?.tarot ? signals.tarot.replace(/^Carta da semana:\s*/i, '').trim() : null);
+  const tarotCardImg = resolveCardImg(tarotCardName);
+
   const signalCards = [
-    { key: 'tarot', title: 'Tarot', value: signals?.tarot },
+    { key: 'tarot', title: 'Tarot', value: signals?.tarot, img: tarotCardImg, cardName: tarotCardName },
     { key: 'runes', title: 'Runas', value: signals?.runes },
     { key: 'i_ching', title: 'I Ching', value: signals?.i_ching },
     { key: 'numerology', title: 'Numerologia', value: signals?.numerology },
@@ -82,52 +124,97 @@ export default function GeneralReadingView({ finalReading }) {
       {signalCards.length > 0 && (
         <Section title="Sinais da Semana" delay="130ms">
           <div className={styles.signalsGrid}>
-            {signalCards.map((signal, index) => (
-              <article
-                key={signal.key}
-                className={`${styles.signalCard} ${styles.appear}`}
-                style={{ '--d': `${180 + index * 70}ms` }}
-              >
-                <h4>{signal.title}</h4>
-                <p>{signal.value}</p>
-              </article>
-            ))}
+            {signalCards.map((signal, index) => {
+              const tone = getTextTone(signal.value);
+              return (
+                <article
+                  key={signal.key}
+                  className={`${styles.signalCard} ${styles.appear} ${styles[`tone_${tone}`]}`}
+                  style={{ '--d': `${180 + index * 70}ms` }}
+                >
+                  {signal.img && (
+                    <div className={styles.signalCardImg}>
+                      <img src={signal.img} alt={signal.cardName} />
+                    </div>
+                  )}
+                  <div className={styles.signalCardBody}>
+                    <h4 className={styles[`signalTitle_${tone}`]}>{signal.title}</h4>
+                    <StyledText text={signal.value} />
+                  </div>
+                </article>
+              );
+            })}
           </div>
         </Section>
       )}
 
       <Section title="Síntese" delay="200ms">
         <div className={styles.doubleColumn}>
-          <ListBlock title="Convergências" items={synthesis?.convergences} />
-          <ListBlock title="Tensões" items={synthesis?.tensions} />
+          <div className={`${styles.listBlock} ${styles.listBlockPositive}`}>
+            {synthesis?.convergences?.length > 0 && (
+              <><h4 className={styles.listTitlePositive}>✦ Convergências</h4>
+              <ul>{synthesis.convergences.map(item => <li key={item}>{item}</li>)}</ul></>
+            )}
+          </div>
+          <div className={`${styles.listBlock} ${styles.listBlockNegative}`}>
+            {synthesis?.tensions?.length > 0 && (
+              <><h4 className={styles.listTitleNegative}>⚡ Tensões</h4>
+              <ul>{synthesis.tensions.map(item => <li key={item}>{item}</li>)}</ul></>
+            )}
+          </div>
         </div>
         {!synthesis?.convergences?.length && !synthesis?.tensions?.length && (
           <p className={styles.fallbackText}>
             Síntese em processamento. Use os sinais da semana para orientar suas escolhas com calma e consistência.
           </p>
         )}
-        {synthesis?.theme_of_week && <p><strong>Tema da semana:</strong> {synthesis.theme_of_week}</p>}
-        {synthesis?.hidden_lesson && <p><strong>Lição oculta:</strong> {synthesis.hidden_lesson}</p>}
+        {synthesis?.theme_of_week && (
+          <p className={styles.keyLine}>
+            <span className={styles.keyLabel}>Tema da semana</span> {synthesis.theme_of_week}
+          </p>
+        )}
+        {synthesis?.hidden_lesson && (
+          <p className={styles.keyLine}>
+            <span className={styles.keyLabel}>Lição oculta</span> {synthesis.hidden_lesson}
+          </p>
+        )}
       </Section>
 
       <Section title="Guia Prático" delay="240ms">
         <div className={styles.doubleColumn}>
-          <ListBlock title="Faça" items={practicalGuidance?.do} />
-          <ListBlock title="Evite" items={practicalGuidance?.avoid} />
+          <div className={`${styles.listBlock} ${styles.listBlockPositive}`}>
+            {practicalGuidance?.do?.length > 0 && (
+              <><h4 className={styles.listTitlePositive}>✓ Faça</h4>
+              <ul>{practicalGuidance.do.map(item => <li key={item}>{item}</li>)}</ul></>
+            )}
+          </div>
+          <div className={`${styles.listBlock} ${styles.listBlockNegative}`}>
+            {practicalGuidance?.avoid?.length > 0 && (
+              <><h4 className={styles.listTitleNegative}>✕ Evite</h4>
+              <ul>{practicalGuidance.avoid.map(item => <li key={item}>{item}</li>)}</ul></>
+            )}
+          </div>
         </div>
         {!practicalGuidance?.do?.length && !practicalGuidance?.avoid?.length && (
           <p className={styles.fallbackText}>
             Guia prático em construção. Foque em ações pequenas, revisão diária e uma decisão consciente por vez.
           </p>
         )}
-        {practicalGuidance?.ritual && <p><strong>Ritual:</strong> {practicalGuidance.ritual}</p>}
+        {practicalGuidance?.ritual && (
+          <p className={styles.ritualLine}>
+            <span className={styles.ritualIcon}>☽</span>
+            <span><strong>Ritual:</strong> {practicalGuidance.ritual}</span>
+          </p>
+        )}
         {practicalGuidance?.reflection_question && (
-          <p><strong>Pergunta de reflexão:</strong> {practicalGuidance.reflection_question}</p>
+          <blockquote className={styles.reflectionQuote}>
+            {practicalGuidance.reflection_question}
+          </blockquote>
         )}
       </Section>
 
       <Section title="Encerramento" delay="290ms">
-        <p>{finalReading?.closing}</p>
+        <StyledText text={finalReading?.closing} className={styles.closingText} />
       </Section>
 
       <Section delay="320ms" className={styles.footerBlock}>

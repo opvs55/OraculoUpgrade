@@ -255,6 +255,35 @@
   color: #ffb4b4;
 }
 
+/* ── Guest box ── */
+.guestBox {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  text-align: center;
+  padding: 2.5rem 1.5rem;
+  border: 1px dashed rgba(225, 179, 130, 0.25);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.guestTitle {
+  margin: 0;
+  font-family: 'Cinzel', serif;
+  font-size: 1rem;
+  color: #f0d8b8;
+  font-weight: 700;
+}
+
+.guestDesc {
+  margin: 0;
+  font-size: 0.88rem;
+  color: #8a8caa;
+  line-height: 1.55;
+  max-width: 380px;
+}
+
 
 .soonNote {
   margin: 0;
