@@ -1,0 +1,196 @@
+.pageContainer {
+  min-height: calc(100vh - 80px);
+  padding: 4.5rem 1rem 3rem;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  color: #f4efe6;
+}
+
+.content {
+  width: 100%;
+  max-width: 640px;
+  background: linear-gradient(160deg, rgba(24, 20, 44, 0.92), rgba(11, 10, 27, 0.94));
+  border: 1px solid rgba(225, 179, 130, 0.2);
+  border-radius: 16px;
+  box-shadow: 0 18px 48px rgba(0, 0, 0, 0.45);
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.header { text-align: center; }
+
+.eyebrow {
+  margin: 0;
+  font-size: 0.74rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: rgba(225, 179, 130, 0.7);
+  font-family: 'Cinzel', serif;
+}
+
+.title {
+  margin: 0.4rem 0 0.2rem;
+  font-family: 'Cinzel', serif;
+  font-size: clamp(1.5rem, 3vw, 2rem);
+  color: #eac89e;
+}
+
+.dateLabel {
+  margin: 0 0 0.3rem;
+  font-size: 0.82rem;
+  color: #8a8caa;
+  text-transform: capitalize;
+}
+
+.subtitle {
+  margin: 0;
+  font-size: 0.86rem;
+  color: #7a7c9a;
+  line-height: 1.5;
+}
+
+.loading { text-align: center; color: #7a7c9a; font-style: italic; padding: 1rem; }
+
+.noBaseBox, .calculateBox, .guestBox {
+  text-align: center;
+  padding: 1.5rem;
+  background: rgba(201, 166, 255, 0.06);
+  border: 1px solid rgba(201, 166, 255, 0.2);
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  color: #9a8caa;
+  font-size: 0.9rem;
+}
+
+.calculateDesc { margin: 0; line-height: 1.5; }
+.calculateDesc strong { color: #e8d4b8; }
+
+.error {
+  font-size: 0.85rem;
+  color: #ffb5b5;
+  background: rgba(255, 129, 129, 0.08);
+  border: 1px solid rgba(255, 129, 129, 0.2);
+  border-radius: 8px;
+  padding: 0.5rem 0.75rem;
+  margin: 0;
+}
+
+.ctaButton, .submitButton {
+  text-decoration: none;
+  display: inline-block;
+  font-weight: 700;
+  font-size: 0.9rem;
+  color: #0d0c1d;
+  background: linear-gradient(120deg, #e1b382, #d8a675);
+  border: none;
+  border-radius: 999px;
+  padding: 0.65rem 1.3rem;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.submitButton:hover, .ctaButton:hover { opacity: 0.85; }
+.submitButton:disabled { opacity: 0.6; cursor: not-allowed; }
+
+.results {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.tripleGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.75rem;
+}
+
+.transitCard {
+  background: linear-gradient(160deg, rgba(26, 20, 48, 0.95), rgba(13, 10, 30, 0.95));
+  border: 1px solid rgba(225, 179, 130, 0.3);
+  border-radius: 14px;
+  padding: 1.2rem 0.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.4rem;
+  text-align: center;
+}
+
+.transitCardDay {
+  border-color: rgba(201, 166, 255, 0.45);
+  box-shadow: 0 0 0 3px rgba(201, 166, 255, 0.08);
+}
+
+.transitNumber {
+  font-family: 'Cinzel', serif;
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #c9a6ff;
+  line-height: 1;
+}
+
+.transitCardDay .transitNumber { color: #d8c0ff; }
+
+.transitLabel {
+  margin: 0;
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #9a8caa;
+}
+
+.themeCard, .narrativeCard {
+  background: rgba(22, 18, 44, 0.8);
+  border: 1px solid rgba(225, 179, 130, 0.18);
+  border-radius: 12px;
+  padding: 1rem 1.1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.cardLabel {
+  margin: 0;
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: rgba(225, 179, 130, 0.65);
+  font-family: 'Cinzel', serif;
+}
+
+.themeText {
+  margin: 0;
+  font-size: 0.9rem;
+  color: #ccc8e0;
+  font-style: italic;
+}
+
+.narrativeText {
+  margin: 0;
+  font-size: 0.9rem;
+  line-height: 1.65;
+  color: #ccc8e0;
+}
+
+.resetButton {
+  background: transparent;
+  border: 1px solid rgba(225, 179, 130, 0.4);
+  color: #e1b382;
+  border-radius: 999px;
+  padding: 0.55rem 1.1rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  align-self: center;
+  transition: background 0.2s;
+}
+
+.resetButton:hover { background: rgba(225, 179, 130, 0.08); }
+
+.inlineLink { color: #e1b382; text-decoration: none; font-weight: 700; }

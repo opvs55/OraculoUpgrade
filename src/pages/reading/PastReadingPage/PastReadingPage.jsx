@@ -10,6 +10,7 @@ import { useAuth } from '../../../context/AuthContext';
 import GuestPrompt from '../../../components/GuestPrompt/GuestPrompt';
 import ReadingInteractionBar from '../../../components/ReadingInteractionBar/ReadingInteractionBar';
 import CommentsSection from '../../../components/CommentsSection/CommentsSection';
+import ReadingJournal from '../../../components/journal/ReadingJournal';
 
 // Layouts das cartas
 import CelticCrossLayout from '../../../components/CelticCrossLayout/CelticCrossLayout';
@@ -157,6 +158,13 @@ function PastReadingPage() {
           {user && <Link to="/historico" className={styles.postReadingSecondary}>Ver histórico</Link>}
           <Link to="/perfil" className={styles.postReadingSecondary}>Meu perfil</Link>
         </div>
+
+        {/* --- Journaling --- */}
+        {user && !isTemporary && (
+          <div className={styles.journalSection}>
+            <ReadingJournal sourceType="tarot" sourceId={currentReading.id} />
+          </div>
+        )}
 
         {/* --- 2. SEÇÃO DE COMUNIDADE (Pública) --- */}
         {!isTemporary && (

@@ -1,0 +1,229 @@
+.pageContainer {
+  min-height: calc(100vh - 80px);
+  padding: 4.5rem 1rem 3rem;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  color: #f4efe6;
+}
+
+.content {
+  width: 100%;
+  max-width: 820px;
+  background: linear-gradient(160deg, rgba(24, 20, 44, 0.92), rgba(11, 10, 27, 0.94));
+  border: 1px solid rgba(225, 179, 130, 0.2);
+  border-radius: 16px;
+  box-shadow: 0 18px 48px rgba(0, 0, 0, 0.45);
+  padding: 2rem;
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.eyebrow {
+  margin: 0;
+  font-size: 0.74rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: #c9a6ff;
+  font-family: 'Cinzel', serif;
+}
+
+.title {
+  margin: 0.4rem 0 0.3rem;
+  font-family: 'Cinzel', serif;
+  font-size: clamp(1.6rem, 3vw, 2.2rem);
+  color: #eac89e;
+}
+
+.dateLabel {
+  margin: 0;
+  font-size: 0.88rem;
+  color: #8a8caa;
+  text-transform: capitalize;
+}
+
+.loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  padding: 3rem 0;
+  color: #7a7c9a;
+  font-style: italic;
+}
+
+.cardGhost {
+  width: 160px;
+  height: 260px;
+  border-radius: 12px;
+  background: rgba(201, 166, 255, 0.08);
+  border: 1px solid rgba(201, 166, 255, 0.15);
+  animation: pulse 1.8s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 0.5; }
+  50% { opacity: 1; }
+}
+
+.oracleLayout {
+  display: grid;
+  grid-template-columns: 200px 1fr;
+  gap: 2rem;
+  align-items: start;
+}
+
+.cardArt {
+  display: flex;
+  justify-content: center;
+}
+
+.cardFrame {
+  width: 160px;
+  height: 260px;
+  background: linear-gradient(160deg, rgba(30, 20, 55, 0.98), rgba(16, 12, 36, 0.98));
+  border: 1px solid rgba(201, 166, 255, 0.4);
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  box-shadow: 0 12px 36px rgba(120, 80, 220, 0.25);
+}
+
+.cardRoman {
+  font-family: 'Cinzel', serif;
+  font-size: 2rem;
+  color: #c9a6ff;
+  letter-spacing: 0.1em;
+}
+
+.cardName {
+  margin: 0;
+  font-family: 'Cinzel', serif;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: #b8a0d8;
+  text-align: center;
+  padding: 0 0.5rem;
+}
+
+.cardContent {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.sectionLabel {
+  margin: 0;
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: rgba(225, 179, 130, 0.7);
+  font-family: 'Cinzel', serif;
+}
+
+.interpretation {
+  font-size: 1rem;
+  line-height: 1.7;
+  color: #ddd8ee;
+  margin: 0;
+}
+
+.interpretationEmpty {
+  font-size: 0.9rem;
+  color: #7a7c9a;
+  font-style: italic;
+  margin: 0;
+}
+
+.actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+  margin-top: 0.5rem;
+}
+
+.ctaButton {
+  text-decoration: none;
+  font-weight: 700;
+  font-size: 0.9rem;
+  color: #0d0c1d;
+  background: linear-gradient(120deg, #e1b382, #d8a675);
+  border-radius: 999px;
+  padding: 0.65rem 1.3rem;
+  text-align: center;
+  transition: opacity 0.2s;
+}
+
+.ctaButton:hover {
+  opacity: 0.85;
+}
+
+.secondaryButton {
+  text-decoration: none;
+  font-size: 0.88rem;
+  color: #e1b382;
+  border: 1px solid rgba(225, 179, 130, 0.4);
+  border-radius: 999px;
+  padding: 0.6rem 1.2rem;
+  text-align: center;
+  transition: background 0.2s;
+}
+
+.secondaryButton:hover {
+  background: rgba(225, 179, 130, 0.08);
+}
+
+.guestBox {
+  text-align: center;
+  padding: 2rem;
+  background: rgba(201, 166, 255, 0.06);
+  border: 1px solid rgba(201, 166, 255, 0.2);
+  border-radius: 14px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.guestTitle {
+  font-family: 'Cinzel', serif;
+  font-size: 1.1rem;
+  color: #eac89e;
+  margin: 0;
+}
+
+.guestDesc {
+  font-size: 0.88rem;
+  color: #9a8caa;
+  max-width: 400px;
+  margin: 0;
+  line-height: 1.55;
+}
+
+.errorBox {
+  text-align: center;
+  padding: 2rem;
+  color: #ffb5b5;
+}
+
+.backLink {
+  color: #e1b382;
+  text-decoration: none;
+  font-size: 0.9rem;
+}
+
+@media (max-width: 640px) {
+  .oracleLayout {
+    grid-template-columns: 1fr;
+  }
+  .cardArt {
+    justify-content: center;
+  }
+}

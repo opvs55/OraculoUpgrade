@@ -1,0 +1,145 @@
+.journal {
+  background: rgba(201, 166, 255, 0.05);
+  border: 1px solid rgba(201, 166, 255, 0.2);
+  border-radius: 14px;
+  padding: 1.2rem 1.3rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-top: 0.5rem;
+}
+
+.journalTitle {
+  margin: 0;
+  font-family: 'Cinzel', serif;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: rgba(201, 166, 255, 0.7);
+}
+
+.journalHint {
+  margin: 0;
+  font-size: 0.84rem;
+  color: #8a8caa;
+  line-height: 1.45;
+}
+
+.moods {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.moodBtn {
+  font-size: 0.78rem;
+  color: #9a8caa;
+  background: transparent;
+  border: 1px solid rgba(201, 166, 255, 0.2);
+  border-radius: 999px;
+  padding: 0.22rem 0.65rem;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.moodBtn:hover {
+  border-color: rgba(201, 166, 255, 0.4);
+  color: #c8b4e8;
+}
+
+.moodBtnActive {
+  background: rgba(201, 166, 255, 0.15);
+  border-color: rgba(201, 166, 255, 0.5);
+  color: #d8c0ff;
+}
+
+.textarea {
+  background: rgba(12, 12, 29, 0.6);
+  border: 1px solid rgba(201, 166, 255, 0.25);
+  border-radius: 8px;
+  padding: 0.75rem 0.9rem;
+  color: #e8e4f4;
+  font-size: 0.88rem;
+  line-height: 1.55;
+  resize: vertical;
+  font-family: inherit;
+  min-height: 90px;
+}
+
+.textarea::placeholder { color: #6e7090; }
+
+.footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.charCount {
+  font-size: 0.74rem;
+  color: #6e7090;
+}
+
+.saveButton {
+  background: rgba(201, 166, 255, 0.15);
+  border: 1px solid rgba(201, 166, 255, 0.35);
+  color: #c9a6ff;
+  border-radius: 999px;
+  padding: 0.45rem 1rem;
+  font-size: 0.84rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.saveButton:hover { background: rgba(201, 166, 255, 0.25); }
+.saveButton:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.success {
+  background: rgba(102, 212, 154, 0.08);
+  border: 1px solid rgba(102, 212, 154, 0.25);
+  border-radius: 10px;
+  padding: 0.75rem 1rem;
+  color: #9ee7c1;
+  font-size: 0.88rem;
+  text-align: center;
+}
+
+.existing {
+  background: rgba(201, 166, 255, 0.05);
+  border: 1px solid rgba(201, 166, 255, 0.18);
+  border-radius: 12px;
+  padding: 1rem 1.1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.existingLabel {
+  margin: 0;
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: rgba(201, 166, 255, 0.55);
+  font-family: 'Cinzel', serif;
+}
+
+.existingText {
+  margin: 0;
+  font-size: 0.88rem;
+  color: #ccc8e0;
+  font-style: italic;
+  line-height: 1.55;
+}
+
+.moodBadge {
+  font-size: 0.76rem;
+  color: #9a8caa;
+  width: fit-content;
+}
+
+.error {
+  font-size: 0.82rem;
+  color: #ffb5b5;
+  margin: 0;
+}

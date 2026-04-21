@@ -118,4 +118,39 @@ export const oraclesApi = {
       headers: await getAuthHeaders(),
     });
   },
+
+  async getDailyOracle(date) {
+    const query = date ? `?oracleDate=${date}` : '';
+    return requestApi(`${API_V1_ENDPOINTS.dailyOracle}${query}`, {
+      method: 'GET',
+      headers: await getAuthHeaders(),
+    });
+  },
+
+  async getYearMap(year) {
+    const query = year ? `?year=${year}` : '';
+    return requestApi(`${API_V1_ENDPOINTS.yearMap}${query}`, {
+      method: 'GET',
+      headers: await getAuthHeaders(),
+    });
+  },
+
+  getNumerologyCompatibility(payload) {
+    return postJson('numerologyCompatibility', payload, { withAuth: true });
+  },
+
+  getNumerologyTransits(payload) {
+    return postJson('numerologyTransits', payload, { withAuth: true });
+  },
+
+  postIchingActive(payload) {
+    return postJson('ichingActive', payload, { withAuth: true });
+  },
+
+  async getIchingActiveHistory(limit = 10) {
+    return requestApi(`${API_V1_ENDPOINTS.ichingActive}?limit=${limit}`, {
+      method: 'GET',
+      headers: await getAuthHeaders(),
+    });
+  },
 };

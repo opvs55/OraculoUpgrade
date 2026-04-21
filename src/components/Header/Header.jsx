@@ -16,9 +16,11 @@ function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isAccountOpen, setIsAccountOpen] = useState(false);
   const [isLeftDropdownOpen, setIsLeftDropdownOpen] = useState(false);
+  const [isMoreOpen, setIsMoreOpen] = useState(false);
   
   const accountRef = useRef(null);
   const leftDropdownRef = useRef(null);
+  const moreRef = useRef(null);
   const accountAnimationTimeout = useRef(null);
   const [isAccountAnimating, setIsAccountAnimating] = useState(false);
   
@@ -43,21 +45,24 @@ function Header() {
       if (leftDropdownRef.current && !leftDropdownRef.current.contains(event.target)) {
         setIsLeftDropdownOpen(false);
       }
+      if (moreRef.current && !moreRef.current.contains(event.target)) {
+        setIsMoreOpen(false);
+      }
     };
 
-    if (isAccountOpen || isLeftDropdownOpen) {
+    if (isAccountOpen || isLeftDropdownOpen || isMoreOpen) {
       document.addEventListener('mousedown', handleClickOutside);
     }
 
     return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, [isAccountOpen, isLeftDropdownOpen]);
+  }, [isAccountOpen, isLeftDropdownOpen, isMoreOpen]);
 
   // Revela o header se algum menu estiver aberto
   useEffect(() => {
-    if (isMenuOpen || isAccountOpen || isLeftDropdownOpen) {
+    if (isMenuOpen || isAccountOpen || isLeftDropdownOpen || isMoreOpen) {
       reveal();
     }
-  }, [isMenuOpen, isAccountOpen, isLeftDropdownOpen, reveal]);
+  }, [isMenuOpen, isAccountOpen, isLeftDropdownOpen, isMoreOpen, reveal]);
 
   // Cleanup da animação
   useEffect(() => {
@@ -115,6 +120,28 @@ function Header() {
               <NavLink to="/runas" className={({ isActive }) => isActive ? `${styles.navLink} ${styles.activeLink}` : styles.navLink}>Runas</NavLink>
               <NavLink to="/iching" className={({ isActive }) => isActive ? `${styles.navLink} ${styles.activeLink}` : styles.navLink}>I Ching</NavLink>
               <NavLink to="/oraculo/geral" className={({ isActive }) => isActive ? `${styles.navLink} ${styles.activeLink}` : styles.navLink}>Síntese Semanal</NavLink>
+
+              {/* Dropdown Mais */}
+              <div className={styles.moreWrapper} ref={moreRef}>
+                <button
+                  type="button"
+                  className={`${styles.navLink} ${styles.moreToggle}`}
+                  onClick={() => setIsMoreOpen(p => !p)}
+                  aria-haspopup="menu"
+                  aria-expanded={isMoreOpen}
+                >
+                  Mais ▾
+                </button>
+                {isMoreOpen && (
+                  <div className={styles.moreMenu} role="menu">
+                    <Link to="/oraculo/dia" className={styles.moreLink} role="menuitem">Oráculo do Dia</Link>
+                    <Link to="/tarot/mapa-do-ano" className={styles.moreLink} role="menuitem">Mapa do Ano</Link>
+                    <Link to="/numerologia/compatibilidade" className={styles.moreLink} role="menuitem">Compatibilidade</Link>
+                    <Link to="/numerologia/transitos" className={styles.moreLink} role="menuitem">Trânsitos</Link>
+                    <Link to="/iching/consulta" className={styles.moreLink} role="menuitem">I Ching — Consulta</Link>
+                  </div>
+                )}
+              </div>
             </>
           ) : (
             <>
@@ -213,6 +240,12 @@ function Header() {
             <NavLink to="/historico" className={styles.mobileLink} onClick={handleCloseMenu}>Histórico</NavLink>
             <NavLink to="/biblioteca" className={styles.mobileLink} onClick={handleCloseMenu}>Biblioteca</NavLink>
             <NavLink to="/perfil/editar" className={styles.mobileLink} onClick={handleCloseMenu}>Configurações</NavLink>
+            <div className={styles.mobileDivider} />
+            <NavLink to="/oraculo/dia" className={styles.mobileLink} onClick={handleCloseMenu}>Oráculo do Dia</NavLink>
+            <NavLink to="/tarot/mapa-do-ano" className={styles.mobileLink} onClick={handleCloseMenu}>Mapa do Ano</NavLink>
+            <NavLink to="/numerologia/compatibilidade" className={styles.mobileLink} onClick={handleCloseMenu}>Compatibilidade Num.</NavLink>
+            <NavLink to="/numerologia/transitos" className={styles.mobileLink} onClick={handleCloseMenu}>Trânsitos Num.</NavLink>
+            <NavLink to="/iching/consulta" className={styles.mobileLink} onClick={handleCloseMenu}>I Ching — Consulta</NavLink>
             <button type="button" className={styles.mobileGhostButton} onClick={signOut}>Sair</button>
           </div>
         </div>

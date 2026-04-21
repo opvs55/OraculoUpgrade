@@ -79,6 +79,21 @@ const endpointConfig = {
   publicReadingBase: {
     v1: '/api/public/readings',
   },
+  dailyOracle: {
+    v1: '/api/v1/features/daily-oracle',
+  },
+  yearMap: {
+    v1: '/api/v1/features/year-map',
+  },
+  numerologyCompatibility: {
+    v1: '/api/v1/features/numerology/compatibility',
+  },
+  numerologyTransits: {
+    v1: '/api/v1/features/numerology/transits',
+  },
+  ichingActive: {
+    v1: '/api/v1/features/iching/active',
+  },
 };
 
 export const API_V1_ENDPOINTS = Object.fromEntries(

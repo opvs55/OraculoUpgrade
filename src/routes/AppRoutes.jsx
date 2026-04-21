@@ -26,6 +26,11 @@ const RunesWeeklyPage = lazy(() => import('../pages/RunesWeeklyPage'));
 const IChingWeeklyPage = lazy(() => import('../pages/IChingWeeklyPage'));
 const MyProfilePage = lazy(() => import('../pages/profile/MyProfilePage'));
 const ReadingHistoryPage = lazy(() => import('../pages/history/ReadingHistoryPage'));
+const DailyOraclePage = lazy(() => import('../pages/DailyOraclePage'));
+const YearMapPage = lazy(() => import('../pages/YearMapPage'));
+const NumerologyCompatibilityPage = lazy(() => import('../pages/NumerologyCompatibilityPage'));
+const NumerologyTransitsPage = lazy(() => import('../pages/NumerologyTransitsPage'));
+const IChingActivePage = lazy(() => import('../pages/IChingActivePage'));
 const InteractiveReadingHubPage = lazy(() => import('../pages/interactive/InteractiveReadingHubPage'));
 const InteractiveReadingQueuePage = lazy(() => import('../pages/interactive/InteractiveReadingQueuePage'));
 const InteractiveReadingSessionPage = lazy(() => import('../pages/interactive/InteractiveReadingSessionPage'));
@@ -87,6 +92,11 @@ function AppRoutes() {
           <Route path="/oraculo/geral/:id" element={<GeneralOraclePage />} />
           <Route path="/runas" element={<RunesWeeklyPage />} />
           <Route path="/iching" element={<IChingWeeklyPage />} />
+          <Route path="/iching/consulta" element={<IChingActivePage />} />
+          <Route path="/oraculo/dia" element={<DailyOraclePage />} />
+          <Route path="/tarot/mapa-do-ano" element={<YearMapPage />} />
+          <Route path="/numerologia/compatibilidade" element={<NumerologyCompatibilityPage />} />
+          <Route path="/numerologia/transitos" element={<NumerologyTransitsPage />} />
           <Route path="/leituras-interativas" element={<Navigate to="/perfil" replace />} />
           <Route path="/leituras-interativas/fila" element={<Navigate to="/perfil" replace />} />
           <Route path="/leituras-interativas/s/:sessionId" element={<Navigate to="/perfil" replace />} />
