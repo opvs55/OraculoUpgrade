@@ -29,6 +29,14 @@ function CadastroPage() {
     setError('');
     setMsgSucesso('');
 
+    if (username.length < 3 || username.length > 20) {
+      setError('O nome de usuário deve ter entre 3 e 20 caracteres.');
+      return;
+    }
+    if (!/^[a-zA-Z0-9_]+$/.test(username)) {
+      setError('O nome de usuário só pode conter letras, números e _ (underscore).');
+      return;
+    }
     if (password !== confirmPassword) {
       setError('As senhas não correspondem.');
       return;
@@ -105,8 +113,15 @@ function CadastroPage() {
       <div className={styles.authContainer}>
         <div className={styles.header}>
           <h1 className={styles.title}>Criar Conta</h1>
-          <p className={styles.subtitle}>Crie seu acesso e desbloqueie leituras ilimitadas.</p>
+          <p className={styles.subtitle}>Salve suas leituras e acesse todos os oráculos.</p>
         </div>
+
+        <ul className={styles.benefitsList}>
+          <li>✦ Histórico completo de todas as suas leituras</li>
+          <li>◎ Runas e I Ching semanais desbloqueados</li>
+          <li>♦ Numerologia pessoal e semanal integrada</li>
+          <li>⊕ Síntese Integrada semanal com IA</li>
+        </ul>
 
         <form onSubmit={handleSubmit} className={styles.form}>
           <div className={styles.inputGroup}>
@@ -116,7 +131,7 @@ function CadastroPage() {
               type="text"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
-              placeholder="Escolha um nome único"
+              placeholder="letras, números e _ (3–20 chars)"
               autoComplete="username"
               required
             />

@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import styles from '../../pages/NumerologyPage.module.css';
 
 const renderFormattedText = (text) => {
@@ -47,7 +48,6 @@ function NumerologyResults({ resultData, onReset, isResetting, errorResetting })
           weaknesses: [],
         };
       }
-      console.warn('Falha ao interpretar o arquétipo secreto:', error);
     }
   }
 
@@ -80,6 +80,11 @@ function NumerologyResults({ resultData, onReset, isResetting, errorResetting })
             <p className={styles.warningMessage}>
               Ainda não foi possível montar o seu card de arquétipo. Tente recalcular em instantes.
             </p>
+            <div className={styles.resultActions}>
+              <button onClick={onReset} className={styles.resetButton} disabled={isResetting}>
+                Recalcular
+              </button>
+            </div>
           </div>
         )}
 
@@ -152,6 +157,7 @@ function NumerologyResults({ resultData, onReset, isResetting, errorResetting })
       </div>
 
       <div className={styles.resultActions}>
+        <Link to="/oraculo/geral" className={styles.ctaButton}>Ver Síntese Integrada →</Link>
         <button onClick={onReset} className={styles.resetButton} disabled={isResetting}>
           {isResetting ? 'Apagando...' : 'Refazer minha leitura'}
         </button>

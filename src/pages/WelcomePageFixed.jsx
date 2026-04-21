@@ -5,28 +5,28 @@ import styles from './WelcomePageFixed.module.css';
 
 const features = [
   {
-    id: 'leituras',
+    id: 'tarot',
     icon: '✦',
-    title: 'Leituras Precisas',
-    description: 'Tiragens completas com interpretações profundas e intuitivas.',
+    title: 'Tarot com IA',
+    description: 'Cruz Celta, Três Cartas e outras tiragens com interpretações geradas por inteligência artificial.',
   },
   {
-    id: 'conteudo',
+    id: 'oraculos',
     icon: '◎',
-    title: 'Conteúdo Esotérico',
-    description: 'Artigos, guias e ensinamentos para expandir sua consciência e intuição.',
+    title: 'Runas & I Ching',
+    description: 'Leituras semanais de Runas do Futhark Antigo e hexagramas do I Ching, integradas à sua semana.',
   },
   {
-    id: 'jornada',
+    id: 'sintese',
     icon: '◉',
-    title: 'Jornada Interna',
-    description: 'Autoconhecimento, clareza e direção para cada fase da sua vida.',
+    title: 'Síntese Integrada',
+    description: 'IA que cruza Tarot, Runas, I Ching e Numerologia numa leitura unificada da sua semana.',
   },
   {
     id: 'privado',
     icon: '⊕',
     title: 'Seguro e Privado',
-    description: 'Seus dados protegidos e sua jornada respeitada com total sigilo.',
+    description: 'Histórico completo das suas leituras salvo com segurança. Sua jornada, só sua.',
   },
 ];
 

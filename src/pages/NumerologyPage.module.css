@@ -149,7 +149,7 @@
   margin: 0;
 }
 
-@media (max-width: 640px) {
+@media (max-width: 768px) {
   .heroSplit {
     grid-template-columns: 1fr;
   }
@@ -234,6 +234,27 @@
   font-size: 0.85rem;
 }
 
+.weeklyStale {
+  display: inline-block;
+  font-size: 0.75rem;
+  color: #b8914a;
+  background: rgba(225, 179, 130, 0.1);
+  border: 1px solid rgba(225, 179, 130, 0.25);
+  border-radius: 999px;
+  padding: 0.2rem 0.65rem;
+  margin-bottom: 0.4rem;
+}
+
+.weeklyError {
+  font-size: 0.83rem;
+  color: #ffb5b5;
+  background: rgba(255, 129, 129, 0.08);
+  border: 1px solid rgba(255, 129, 129, 0.25);
+  border-radius: 8px;
+  padding: 0.5rem 0.75rem;
+  margin: 0;
+}
+
 .weeklyVibe {
   display: inline-block;
   font-size: 0.78rem;
@@ -276,12 +297,52 @@
   color: #c9a96e;
 }
 
+.formWrapper {
+  display: grid;
+  gap: 1.25rem;
+}
+
+.formContext {
+  background: rgba(201, 166, 255, 0.06);
+  border: 1px solid rgba(201, 166, 255, 0.18);
+  border-radius: 12px;
+  padding: 1rem 1.2rem;
+}
+
+.formContextTitle {
+  margin: 0 0 0.6rem;
+  font-family: 'Cinzel', serif;
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: rgba(201, 166, 255, 0.7);
+}
+
+.formContextList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.formContextList li {
+  font-size: 0.86rem;
+  color: #c8bfdf;
+  line-height: 1.4;
+}
+
+.formContextList strong {
+  color: #e8d8ff;
+}
+
 .numerologyForm {
   display: grid;
   gap: 1rem;
   justify-items: center;
   text-align: center;
-  padding: 1.2rem 0 0.5rem;
+  padding: 0.25rem 0 0.5rem;
 }
 
 .dateLabel {
@@ -526,7 +587,25 @@
 .resultActions {
   display: flex;
   justify-content: center;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
   padding-top: 0.25rem;
+}
+
+.ctaButton {
+  text-decoration: none;
+  font-weight: 700;
+  font-size: 0.9rem;
+  color: #0d0c1d;
+  background: linear-gradient(120deg, #e1b382, #d8a675);
+  border-radius: 999px;
+  padding: 0.6rem 1.3rem;
+  transition: opacity 0.2s;
+}
+
+.ctaButton:hover {
+  opacity: 0.85;
 }
 
 .resetButton {
@@ -589,4 +668,83 @@
     width: 100%;
     text-align: center;
   }
+}
+
+.modalOverlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: rgba(5, 4, 18, 0.75);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+}
+
+.modalBox {
+  background: linear-gradient(160deg, rgba(26, 20, 48, 0.98), rgba(13, 10, 30, 0.98));
+  border: 1px solid rgba(225, 179, 130, 0.35);
+  border-radius: 16px;
+  padding: 2rem 2.2rem;
+  max-width: 400px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.6);
+}
+
+.modalTitle {
+  font-family: 'Cinzel', serif;
+  font-size: 1.1rem;
+  color: #f1d6b5;
+  margin: 0;
+  font-weight: 700;
+}
+
+.modalDesc {
+  font-size: 0.87rem;
+  color: #9a8caa;
+  line-height: 1.55;
+  margin: 0;
+}
+
+.modalActions {
+  display: flex;
+  gap: 0.75rem;
+  margin-top: 0.5rem;
+}
+
+.modalConfirm {
+  flex: 1;
+  background: rgba(220, 80, 80, 0.15);
+  border: 1px solid rgba(220, 80, 80, 0.4);
+  color: #f08080;
+  border-radius: 999px;
+  padding: 0.55rem 1rem;
+  font-size: 0.88rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.modalConfirm:hover {
+  background: rgba(220, 80, 80, 0.28);
+}
+
+.modalCancel {
+  flex: 1;
+  background: transparent;
+  border: 1px solid rgba(225, 179, 130, 0.3);
+  color: #c9bfa8;
+  border-radius: 999px;
+  padding: 0.55rem 1rem;
+  font-size: 0.88rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.modalCancel:hover {
+  background: rgba(225, 179, 130, 0.08);
 }

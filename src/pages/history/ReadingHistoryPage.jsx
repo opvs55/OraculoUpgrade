@@ -14,10 +14,21 @@ const TABS = [
 ];
 
 const spreadTypeLabels = {
-  three_card: 'Tarot (3 cartas)',
+  threeCards: 'Três Cartas',
+  celticCross: 'Cruz Celta',
+  templeOfAphrodite: 'Templo de Afrodite',
+  pathChoice: 'Escolha de Caminho',
+  three_card: 'Três Cartas',
   celtic_cross: 'Cruz Celta',
   single: 'Carta única',
   five_card: 'Tarot (5 cartas)',
+};
+
+const formatWeekRef = (ref) => {
+  if (!ref) return '—';
+  const match = ref.match(/^(\d{4})-W(\d{2})$/);
+  if (!match) return ref;
+  return `Semana ${parseInt(match[2], 10)} · ${match[1]}`;
 };
 
 const formatDate = (iso) => {
@@ -180,21 +191,23 @@ export default function ReadingHistoryPage() {
               <ul className={styles.list}>
                 {runesList.map((item) => (
                   <li key={item.id} className={styles.item}>
-                    <div className={styles.itemMain}>
-                      <strong>Runas Semanais</strong>
-                      {item.output_payload?.theme && (
-                        <p className={styles.itemQuestion}>{item.output_payload.theme}</p>
-                      )}
-                      {item.output_payload?.runes && (
-                        <p className={styles.itemRunes}>
-                          {(Array.isArray(item.output_payload.runes) ? item.output_payload.runes : [])
-                            .slice(0, 3)
-                            .map((r) => r?.symbol || r?.key || r?.name || '?')
-                            .join('  ·  ')}
-                        </p>
-                      )}
-                    </div>
-                    <time className={styles.itemDate}>{formatDate(item.week_start)}</time>
+                    <Link to="/runas" className={styles.itemLink}>
+                      <div className={styles.itemMain}>
+                        <strong>Runas Semanais</strong>
+                        {item.output_payload?.theme && (
+                          <p className={styles.itemQuestion}>{item.output_payload.theme}</p>
+                        )}
+                        {item.output_payload?.runes && (
+                          <p className={styles.itemRunes}>
+                            {(Array.isArray(item.output_payload.runes) ? item.output_payload.runes : [])
+                              .slice(0, 3)
+                              .map((r) => r?.symbol || r?.key || r?.name || '?')
+                              .join('  ·  ')}
+                          </p>
+                        )}
+                      </div>
+                      <time className={styles.itemDate}>{formatDate(item.week_start)}</time>
+                    </Link>
                   </li>
                 ))}
               </ul>
@@ -214,17 +227,19 @@ export default function ReadingHistoryPage() {
               <ul className={styles.list}>
                 {ichingList.map((item) => (
                   <li key={item.id} className={styles.item}>
-                    <div className={styles.itemMain}>
-                      <strong>
-                        {item.output_payload?.hexagram_name
-                          ? `Hexagrama ${item.output_payload.hexagram_number} — ${item.output_payload.hexagram_name}`
-                          : 'I Ching Semanal'}
-                      </strong>
-                      {item.output_payload?.theme && (
-                        <p className={styles.itemQuestion}>{item.output_payload.theme}</p>
-                      )}
-                    </div>
-                    <time className={styles.itemDate}>{formatDate(item.week_start)}</time>
+                    <Link to="/iching" className={styles.itemLink}>
+                      <div className={styles.itemMain}>
+                        <strong>
+                          {item.output_payload?.hexagram_name
+                            ? `Hexagrama ${item.output_payload.hexagram_number} — ${item.output_payload.hexagram_name}`
+                            : 'I Ching Semanal'}
+                        </strong>
+                        {item.output_payload?.theme && (
+                          <p className={styles.itemQuestion}>{item.output_payload.theme}</p>
+                        )}
+                      </div>
+                      <time className={styles.itemDate}>{formatDate(item.week_start)}</time>
+                    </Link>
                   </li>
                 ))}
               </ul>
@@ -247,7 +262,7 @@ export default function ReadingHistoryPage() {
                   return (
                     <li key={item.id} className={styles.item}>
                       <div className={styles.itemMain}>
-                        <strong>Numerologia Semanal — {item.week_ref || item.week_start}</strong>
+                        <strong>Numerologia Semanal — {formatWeekRef(item.week_ref) || formatDate(item.week_start)}</strong>
                         {payload?.personal_week_vibe && (
                           <p className={styles.itemQuestion}>Vibração {payload.personal_week_vibe} · Caminho {payload.life_path_number}</p>
                         )}
@@ -278,7 +293,7 @@ export default function ReadingHistoryPage() {
                   <li key={item.id} className={styles.item}>
                     <Link to={`/oraculo/geral/${item.id}`} className={styles.itemLink}>
                       <div className={styles.itemMain}>
-                        <strong>{item.final_reading?.title || `Síntese ${item.week_ref}`}</strong>
+                        <strong>{item.final_reading?.title || `Síntese ${formatWeekRef(item.week_ref)}`}</strong>
                         {item.final_reading?.one_liner && (
                           <p className={styles.itemQuestion}>{item.final_reading.one_liner}</p>
                         )}

@@ -34,7 +34,6 @@ const getQuestionText = (question, spreadType) => {
       }
     } catch (error) {
       // Se o parse falhar, loga um aviso e retorna a string original
-      console.warn("Não foi possível fazer parse da string 'question' como JSON:", question, error);
       return question;
     }
   }

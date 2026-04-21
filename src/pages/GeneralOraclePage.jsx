@@ -297,8 +297,14 @@ export default function GeneralOraclePage() {
       )}
 
       {isGeneratingCentralReading && (
-        <section className={styles.card}>
-          <p className={styles.stableModeHint}>✦ Consultando os oráculos... isto pode levar alguns instantes.</p>
+        <section className={`${styles.card} ${styles.generatingCard}`}>
+          <div className={styles.generatingSpinner} aria-hidden="true">
+            <span>✦</span>
+          </div>
+          <div className={styles.generatingText}>
+            <p>Consultando os oráculos…</p>
+            <small>A síntese integra Tarot, Runas, I Ching e Numerologia. Pode levar até 30 segundos.</small>
+          </div>
         </section>
       )}
 

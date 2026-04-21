@@ -318,3 +318,68 @@
     font-size: 0.9rem;
   }
 }
+
+.limitBanner {
+  margin-top: 1.5rem;
+  padding: 1.4rem 1.6rem;
+  background: rgba(201, 166, 255, 0.08);
+  border: 1px solid rgba(201, 166, 255, 0.3);
+  border-radius: 14px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+  align-items: center;
+  max-width: 420px;
+  width: 100%;
+}
+
+.limitBannerTitle {
+  font-family: 'Cinzel', serif;
+  font-size: 0.95rem;
+  color: #e8d4ff;
+  margin: 0;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+
+.limitBannerDesc {
+  font-size: 0.83rem;
+  color: #9a8ccc;
+  margin: 0;
+  line-height: 1.5;
+}
+
+.limitBannerActions {
+  display: flex;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-top: 0.25rem;
+}
+
+.limitBannerPrimary {
+  text-decoration: none;
+  font-weight: 700;
+  font-size: 0.85rem;
+  color: #0d0c1d;
+  background: linear-gradient(120deg, #c9a6ff, #a87de8);
+  border-radius: 999px;
+  padding: 0.5rem 1.2rem;
+  transition: opacity 0.2s;
+}
+
+.limitBannerPrimary:hover { opacity: 0.85; }
+
+.limitBannerSecondary {
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 0.85rem;
+  color: #c9a6ff;
+  border: 1px solid rgba(201, 166, 255, 0.35);
+  border-radius: 999px;
+  padding: 0.5rem 1.2rem;
+  transition: all 0.2s;
+}
+
+.limitBannerSecondary:hover { background: rgba(201, 166, 255, 0.1); }

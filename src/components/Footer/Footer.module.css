@@ -9,7 +9,7 @@
   max-width: 1100px;
   margin: 0 auto;
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: 2fr 1fr 1fr 1fr;
   gap: 2rem;
   align-items: start;
 }
@@ -37,6 +37,16 @@
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
+}
+
+.linksLabel {
+  font-family: 'Cinzel', serif;
+  font-size: 0.72rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(225, 179, 130, 0.55);
+  margin-bottom: 0.25rem;
+  display: block;
 }
 
 .links a {

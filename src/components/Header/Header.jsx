@@ -107,24 +107,21 @@ function Header() {
 
       {/* ── NAV CENTRAL ── */}
       <nav className={styles.navCenter} aria-label="Navegação principal">
-        {!loading && user && (
-          <>
-            <NavLink to="/tarot" className={({ isActive }) => isActive ? `${styles.navLink} ${styles.activeLink}` : styles.navLink}>
-              Tarot
-            </NavLink>
-            <NavLink to="/numerologia" className={({ isActive }) => isActive ? `${styles.navLink} ${styles.activeLink}` : styles.navLink}>
-              Numerologia
-            </NavLink>
-            <NavLink to="/runas" className={({ isActive }) => isActive ? `${styles.navLink} ${styles.activeLink}` : styles.navLink}>
-              Runas
-            </NavLink>
-            <NavLink to="/iching" className={({ isActive }) => isActive ? `${styles.navLink} ${styles.activeLink}` : styles.navLink}>
-              I Ching
-            </NavLink>
-            <NavLink to="/oraculo/geral" className={({ isActive }) => isActive ? `${styles.navLink} ${styles.activeLink}` : styles.navLink}>
-              Síntese Semanal
-            </NavLink>
-          </>
+        {!loading && (
+          user ? (
+            <>
+              <NavLink to="/tarot" className={({ isActive }) => isActive ? `${styles.navLink} ${styles.activeLink}` : styles.navLink}>Tarot</NavLink>
+              <NavLink to="/numerologia" className={({ isActive }) => isActive ? `${styles.navLink} ${styles.activeLink}` : styles.navLink}>Numerologia</NavLink>
+              <NavLink to="/runas" className={({ isActive }) => isActive ? `${styles.navLink} ${styles.activeLink}` : styles.navLink}>Runas</NavLink>
+              <NavLink to="/iching" className={({ isActive }) => isActive ? `${styles.navLink} ${styles.activeLink}` : styles.navLink}>I Ching</NavLink>
+              <NavLink to="/oraculo/geral" className={({ isActive }) => isActive ? `${styles.navLink} ${styles.activeLink}` : styles.navLink}>Síntese Semanal</NavLink>
+            </>
+          ) : (
+            <>
+              <NavLink to="/tarot" className={({ isActive }) => isActive ? `${styles.navLink} ${styles.activeLink}` : styles.navLink}>Tarot</NavLink>
+              <NavLink to="/biblioteca" className={({ isActive }) => isActive ? `${styles.navLink} ${styles.activeLink}` : styles.navLink}>Biblioteca</NavLink>
+            </>
+          )
         )}
       </nav>
 
@@ -194,7 +191,7 @@ function Header() {
                 <NavLink to="/login" className={({ isActive }) => isActive ? `${styles.navLink} ${styles.activeLink}` : styles.navLink}>
                   Entrar
                 </NavLink>
-                <NavLink to="/cadastro" className={styles.ctaButton}>
+                <NavLink to="/tarot" className={styles.ctaButton}>
                   Fazer leitura ✦
                 </NavLink>
               </>

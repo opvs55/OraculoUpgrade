@@ -251,8 +251,15 @@ function TarotPage() {
         {formError && <p className={styles.errorMessage}>{formError}</p>}
         {mutationError && <p className={styles.errorMessage}>Falha ao iniciar leitura: {mutationError.message}</p>}
 
-        {!user && visitorHasRead && formType !== 'pathChoice' && !selectedSpread && (
-          <p className={styles.limitMessage}>Você já utilizou sua leitura de teste gratuita. <Link to="/cadastro">Cadastre-se</Link> ou <Link to="/login">faça login</Link> para leituras ilimitadas.</p>
+        {!user && visitorHasRead && (
+          <div className={styles.limitBanner}>
+            <p className={styles.limitBannerTitle}>❆ Leitura gratuita utilizada</p>
+            <p className={styles.limitBannerDesc}>Crie uma conta gratuita para leituras ilimitadas, histórico completo e acesso a Runas, I Ching e Numerologia.</p>
+            <div className={styles.limitBannerActions}>
+              <Link to="/cadastro" className={styles.limitBannerPrimary}>Criar conta gratuitamente</Link>
+              <Link to="/login" className={styles.limitBannerSecondary}>Já tenho conta</Link>
+            </div>
+          </div>
         )}
       </div>
     </div>

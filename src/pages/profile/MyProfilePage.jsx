@@ -242,7 +242,7 @@ export default function MyProfilePage() {
               <h2>{reelOfDay.title}</h2>
               <p>{reelOfDay.hook || 'Resumo rápido dos sinais mais vivos do seu momento.'}</p>
             </div>
-            <Link to={reelOfDay.ctaTo || '/reels'} className={styles.inlineLink}>Abrir reel</Link>
+            <Link to={reelOfDay.ctaTo || '/perfil'} className={styles.inlineLink}>Abrir reel</Link>
           </section>
         )}
 
@@ -339,14 +339,14 @@ export default function MyProfilePage() {
             className={focusMode === 'tarot' ? styles.focusTabActive : styles.focusTab}
             onClick={() => setFocusMode('tarot')}
           >
-            Foco Tarot
+            Tarot
           </button>
           <button
             type="button"
             className={focusMode === 'oracles' ? styles.focusTabActive : styles.focusTab}
             onClick={() => setFocusMode('oracles')}
           >
-            Foco Outros Oráculos
+            Oráculos
           </button>
         </section>
 

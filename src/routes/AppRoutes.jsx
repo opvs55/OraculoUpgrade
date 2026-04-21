@@ -5,7 +5,7 @@ import ProtectedRoute from '../components/common/ProtectedRoute/ProtectedRoute.j
 // 1. O PageLoader continua definido aqui
 const PageLoader = () => (
   <div style={{ textAlign: 'center', padding: '50px' }}>
-    A carregar...
+    Carregando...
   </div>
 );
 
@@ -13,6 +13,7 @@ const PageLoader = () => (
 import ProfilePage from '../pages/profile/ProfilePage';
 // --- FIM DA MUDANÇA ---
 
+import NotFoundPage from '../pages/NotFoundPage';
 
 // --- Páginas Carregadas de forma "Lazy" ---
 
@@ -93,6 +94,7 @@ function AppRoutes() {
           <Route path="/leituras-interativas/historico" element={<Navigate to="/perfil" replace />} />
         </Route>
 
+        <Route path="*" element={<NotFoundPage />} />
       </Routes>
     </Suspense>
   );
