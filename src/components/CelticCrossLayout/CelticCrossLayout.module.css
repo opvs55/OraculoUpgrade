@@ -7,15 +7,20 @@
 
 .gridContainer {
   display: grid;
-  grid-template-columns: repeat(4, 110px);
-  grid-template-rows: repeat(4, 210px);
-  gap: 8px 16px;
+  grid-template-columns: repeat(4, 140px);
+  grid-template-rows: repeat(4, auto);
+  gap: 12px 16px;
   justify-content: center;
   margin: 1.5rem auto;
+  align-items: start;
 }
 
-/* ── Posições da Cruz Celta ── */
-.position1  { grid-area: 2 / 2 / 3 / 3; }
+/* ── Posições da Cruz Celta ──
+   Padrão Rider-Waite:
+   5=topo(coroação), 4=esquerda(passado), 1=centro, 2=cruzado(sobre1), 6=direita(futuro), 3=base(inconsciente)
+   Bastão direito: 10(top)→9→8→7(bottom)
+*/
+.position1  { grid-area: 2 / 2 / 3 / 3; z-index: 1; }
 .position2  { grid-area: 2 / 2 / 3 / 3; transform: rotate(90deg); z-index: 2; }
 .position3  { grid-area: 3 / 2 / 4 / 3; }
 .position4  { grid-area: 2 / 1 / 3 / 2; }
@@ -43,26 +48,26 @@
 }
 
 .cardPosition img {
-  width: 90px !important;
   height: auto;
 }
 
 /* ── Mobile ── */
 @media (max-width: 768px) {
   .gridContainer {
-    grid-template-columns: repeat(3, 80px);
-    grid-template-rows: repeat(5, 175px);
-    gap: 6px 10px;
+    grid-template-columns: repeat(4, 82px);
+    grid-template-rows: repeat(4, auto);
+    gap: 8px 6px;
+    align-items: start;
   }
 
-  .position1  { grid-area: 2 / 2 / 3 / 3; }
-  .position2  { grid-area: 2 / 2 / 3 / 3; transform: rotate(90deg); }
+  .position1  { grid-area: 2 / 2 / 3 / 3; z-index: 1; }
+  .position2  { grid-area: 2 / 2 / 3 / 3; transform: rotate(90deg); z-index: 2; }
   .position3  { grid-area: 3 / 2 / 4 / 3; }
   .position4  { grid-area: 2 / 1 / 3 / 2; }
   .position5  { grid-area: 1 / 2 / 2 / 3; }
   .position6  { grid-area: 2 / 3 / 3 / 4; }
-  .position7  { grid-area: 4 / 1 / 5 / 2; }
-  .position8  { grid-area: 4 / 2 / 5 / 3; }
-  .position9  { grid-area: 4 / 3 / 5 / 4; }
-  .position10 { grid-area: 5 / 2 / 6 / 3; }
+  .position7  { grid-area: 4 / 4 / 5 / 5; }
+  .position8  { grid-area: 3 / 4 / 4 / 5; }
+  .position9  { grid-area: 2 / 4 / 3 / 5; }
+  .position10 { grid-area: 1 / 4 / 2 / 5; }
 }
