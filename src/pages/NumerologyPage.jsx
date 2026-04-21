@@ -103,6 +103,13 @@ function NumerologyPage() {
     };
   }, [weeklyNumerologyQuery.data, currentWeekRef]);
 
+  // Pré-preencher data salva quando disponível e campo vazio
+  useEffect(() => {
+    if (numerologyData?.input_birth_date && !birthDate) {
+      setBirthDate(numerologyData.input_birth_date);
+    }
+  }, [numerologyData]);
+
   // Efeito para limpar o formulário (sem alterações)
   useEffect(() => {
     if (isSuccessResetting) {

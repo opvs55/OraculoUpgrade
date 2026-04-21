@@ -20,7 +20,7 @@ function CadastroPage() {
 
   useEffect(() => {
     if (user) {
-      navigate('/perfil');
+      navigate('/tarot');
     }
   }, [user, navigate]);
 
@@ -73,7 +73,7 @@ function CadastroPage() {
             username: username 
           },
           // IMPORTANTE: Define para onde o usuário volta após clicar no link do email
-          emailRedirectTo: `${window.location.origin}/perfil`, 
+          emailRedirectTo: `${window.location.origin}/tarot`, 
         }
       });
 
@@ -95,7 +95,7 @@ function CadastroPage() {
       } 
       // Cenário B: Caso a confirmação esteja desligada (fallback)
       else if (data.session) {
-         navigate('/perfil');
+         navigate('/tarot');
       }
 
     } catch (err) {
