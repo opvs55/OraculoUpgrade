@@ -78,17 +78,25 @@ export default function YearMapPage() {
             )}
 
             <div className={styles.monthGrid}>
-              {cards.map(card => (
-                <button
-                  key={card.month}
-                  className={`${styles.monthCell} ${selectedMonth === card.month ? styles.monthCellActive : ''} ${card.month === CURRENT_MONTH ? styles.monthCellCurrent : ''}`}
-                  onClick={() => setSelectedMonth(card.month)}
-                  type="button"
-                >
-                  <span className={styles.monthAbbr}>{MONTH_NAMES[card.month - 1]}</span>
-                  <span className={styles.monthCardName}>{card.name}</span>
-                </button>
-              ))}
+              {cards.map(card => {
+                const cardImg = resolveCardImg(card);
+                return (
+                  <button
+                    key={card.month}
+                    className={`${styles.monthCell} ${selectedMonth === card.month ? styles.monthCellActive : ''} ${card.month === CURRENT_MONTH ? styles.monthCellCurrent : ''}`}
+                    onClick={() => setSelectedMonth(card.month)}
+                    type="button"
+                  >
+                    {cardImg ? (
+                      <img src={cardImg} alt={card.name} className={styles.monthCellImg} />
+                    ) : (
+                      <span className={styles.monthCellPlaceholder}>✦</span>
+                    )}
+                    <span className={styles.monthAbbr}>{MONTH_NAMES[card.month - 1]}</span>
+                    <span className={styles.monthCardName}>{card.name}</span>
+                  </button>
+                );
+              })}
             </div>
 
             {selectedCard && (

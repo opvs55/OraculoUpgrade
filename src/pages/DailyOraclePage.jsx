@@ -5,7 +5,8 @@ import { oraclesApi } from '../services/api/oraclesApi';
 import { usePageTitle } from '../hooks/usePageTitle';
 import { Link } from 'react-router-dom';
 import DecorativeDivider from '../components/common/DecorativeDivider/DecorativeDivider';
-import { getArcanaImageUrl } from '../utils/arcanaMap';
+import { getArcanaImageUrl, MAJOR_ARCANA } from '../utils/arcanaMap';
+import { supabase } from '../supabaseClient';
 import styles from './DailyOraclePage.module.css';
 
 const CARD_ID_TO_NUMBER = {
@@ -52,9 +53,42 @@ const CARD_IMG_MAP = {
 
 const todayStr = () => new Date().toLocaleDateString('pt-BR', { weekday: 'long', day: 'numeric', month: 'long' });
 
+function resolveWeeklyCardImg(cardName) {
+  if (!cardName) return null;
+  const norm = cardName.toLowerCase();
+  const arcana = MAJOR_ARCANA.find(a =>
+    a.name.toLowerCase() === norm ||
+    norm.includes(a.name.toLowerCase()) ||
+    a.name.toLowerCase().includes(norm)
+  );
+  if (arcana) return getArcanaImageUrl(arcana.img);
+  const byDeck = Object.values(CARD_IMG_MAP).find((_, i) => {
+    const key = Object.keys(CARD_IMG_MAP)[i];
+    return CARD_IMG_MAP[key]?.toLowerCase().includes(norm.replace(/\s+/g, '_'));
+  });
+  return byDeck ? getArcanaImageUrl(byDeck) : null;
+}
+
 export default function DailyOraclePage() {
   usePageTitle('Carta do Dia');
   const { user } = useAuth();
+
+  const { data: weeklyCard } = useQuery({
+    queryKey: ['weekly-card-daily', user?.id],
+    enabled: !!user?.id,
+    staleTime: 1000 * 60 * 60,
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('weekly_cards')
+        .select('card_name, week_start')
+        .eq('user_id', user.id)
+        .order('week_start', { ascending: false })
+        .limit(1)
+        .maybeSingle();
+      if (error) return null;
+      return data;
+    },
+  });
 
   const { data, isLoading, error, refetch } = useQuery({
     queryKey: ['daily-oracle', user?.id],
@@ -115,6 +149,7 @@ export default function DailyOraclePage() {
             <div className={styles.cardContent}>
               <div className={styles.statusRow}>
                 <span className={styles.badge}>{data.card_name}</span>
+                {data.is_reversed && <span className={styles.reversedBadge}>Invertida</span>}
               </div>
               <p className={styles.sectionLabel}>Mensagem de Hoje</p>
               {data.interpretation ? (
@@ -132,6 +167,44 @@ export default function DailyOraclePage() {
               </div>
             </div>
           </div>
+        )}
+
+        {weeklyCard && (
+          <>
+            <div className={styles.sectionDivider}>
+              <span>Carta da Semana</span>
+            </div>
+            <div className={styles.oracleLayout}>
+              <div className={styles.cardArt}>
+                {resolveWeeklyCardImg(weeklyCard.card_name) ? (
+                  <img
+                    src={resolveWeeklyCardImg(weeklyCard.card_name)}
+                    alt={weeklyCard.card_name}
+                    className={`${styles.cardImage} ${styles.weeklyCardImage}`}
+                  />
+                ) : (
+                  <div className={styles.cardFrame}>
+                    <p className={styles.cardName}>{weeklyCard.card_name}</p>
+                  </div>
+                )}
+              </div>
+              <div className={styles.cardContent}>
+                <div className={styles.statusRow}>
+                  <span className={`${styles.badge} ${styles.weeklyBadge}`}>Semana atual</span>
+                </div>
+                <p className={styles.sectionLabel}>Arquétipo Semanal</p>
+                <p className={styles.weeklyCardName}>{weeklyCard.card_name}</p>
+                <p className={styles.weeklyCardHint}>
+                  Esta carta define a energia dominante da sua semana. Ela orienta suas tiragens e aparece na Síntese Integrada.
+                </p>
+                <div className={styles.actions}>
+                  <Link to="/tarot" className={styles.secondaryButton}>
+                    Fazer tiragem desta semana →
+                  </Link>
+                </div>
+              </div>
+            </div>
+          </>
         )}
 
         {!user && (

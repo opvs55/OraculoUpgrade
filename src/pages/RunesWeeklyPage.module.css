@@ -83,55 +83,94 @@
 }
 
 .messageCard {
-  border: 1px solid rgba(225, 179, 130, 0.28);
+  border: 1px solid rgba(225, 179, 130, 0.32);
+  border-top: 3px solid rgba(225, 179, 130, 0.55);
   border-radius: 14px;
-  padding: 16px;
-  background: linear-gradient(145deg, rgba(40, 28, 54, 0.65), rgba(24, 18, 37, 0.7));
+  padding: 1.25rem 1.4rem;
+  background: linear-gradient(145deg, rgba(40, 28, 54, 0.75), rgba(24, 18, 37, 0.8));
+  position: relative;
+  overflow: hidden;
+}
+
+.messageCard::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 60px;
+  background: radial-gradient(ellipse at 50% 0%, rgba(225, 179, 130, 0.08) 0%, transparent 70%);
+  pointer-events: none;
 }
 
 .messageCard h2 {
-  margin: 0 0 8px;
-  color: #f0ce9f;
-  font-size: clamp(1.35rem, 2.2vw, 1.8rem);
-  font-family: 'Cormorant Garamond', Georgia, serif;
-  font-weight: 600;
+  margin: 0 0 0.75rem;
+  color: #f5ddb0;
+  font-size: clamp(1.3rem, 2.2vw, 1.75rem);
+  font-family: 'Cinzel', serif;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  line-height: 1.3;
 }
 
 .messageCard p {
   margin: 0;
-  line-height: 1.65;
-  color: rgba(244, 239, 230, 0.92);
+  line-height: 1.78;
+  color: rgba(244, 239, 230, 0.88);
+  font-size: 0.97rem;
 }
 
 .sectionBlock {
   display: grid;
-  gap: 8px;
+  gap: 10px;
+  border: 1px solid rgba(225, 179, 130, 0.14);
+  border-radius: 12px;
+  padding: 1rem 1.1rem;
+  background: rgba(16, 12, 28, 0.55);
 }
 
 .sectionBlock h3 {
-  margin: 0;
+  margin: 0 0 0.1rem;
   color: #e1b382;
-  font-size: 1rem;
+  font-family: 'Cinzel', serif;
+  font-size: 0.82rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid rgba(225, 179, 130, 0.12);
 }
 
 .nestedTitle {
-  margin: 0.4rem 0 0.2rem;
+  margin: 0.35rem 0 0.15rem;
+  color: #c9b1fb;
+  font-family: 'Cinzel', serif;
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.sectionBlock p {
+  margin: 0;
+  line-height: 1.7;
+  color: rgba(244, 239, 230, 0.88);
+  font-size: 0.93rem;
+}
+
+.sectionBlock li {
+  margin: 0;
+  line-height: 1.62;
   color: rgba(244, 239, 230, 0.88);
   font-size: 0.92rem;
 }
 
-.sectionBlock p,
-.sectionBlock li {
-  margin: 0;
-  line-height: 1.58;
-  color: rgba(244, 239, 230, 0.92);
-}
-
 .sectionBlock ul {
   margin: 0;
-  padding-left: 20px;
+  padding-left: 1.2rem;
   display: grid;
-  gap: 8px;
+  gap: 6px;
+}
+
+.sectionBlock strong {
+  color: #f0ce9f;
+  font-weight: 600;
 }
 
 .deepDiveGrid {
@@ -141,24 +180,32 @@
 }
 
 .deepDiveCard {
-  border: 1px solid rgba(225, 179, 130, 0.22);
-  border-radius: 10px;
-  background: rgba(16, 13, 26, 0.7);
-  padding: 10px;
+  border: 1px solid rgba(225, 179, 130, 0.2);
+  border-top: 2px solid rgba(225, 179, 130, 0.4);
+  border-radius: 12px;
+  background: linear-gradient(160deg, rgba(28, 20, 42, 0.8), rgba(16, 12, 28, 0.85));
+  padding: 0.85rem;
   display: grid;
-  gap: 6px;
+  gap: 0.45rem;
 }
 
 .deepDiveCard p {
   margin: 0;
+  font-size: 0.88rem;
+  line-height: 1.6;
+  color: rgba(240, 235, 225, 0.85);
 }
 
 .deepDiveTitle {
-  color: #f0ce9f !important;
+  color: #f5ddb0 !important;
+  font-family: 'Cinzel', serif !important;
   font-weight: 700;
-  font-size: 0.84rem;
+  font-size: 0.8rem !important;
   text-transform: uppercase;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.06em;
+  padding-bottom: 0.35rem;
+  border-bottom: 1px solid rgba(225, 179, 130, 0.15);
+  margin-bottom: 0.1rem !important;
 }
 
 .radarGrid {
@@ -168,23 +215,32 @@
 }
 
 .radarCard {
-  border: 1px solid rgba(225, 179, 130, 0.2);
+  border: 1px solid rgba(225, 179, 130, 0.18);
   border-radius: 10px;
   background: rgba(16, 13, 26, 0.65);
-  padding: 10px;
+  padding: 0.85rem;
 }
 
 .radarCard h4 {
   margin: 0 0 0.5rem;
-  color: #f0ce9f;
-  font-size: 0.9rem;
+  color: #e1b382;
+  font-family: 'Cinzel', serif;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
 }
 
 .radarCard ul {
   margin: 0;
-  padding-left: 18px;
+  padding-left: 1.1rem;
   display: grid;
   gap: 6px;
+}
+
+.radarCard li {
+  font-size: 0.88rem;
+  color: rgba(240, 235, 225, 0.85);
+  line-height: 1.55;
 }
 
 .chipsRow {

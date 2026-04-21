@@ -79,6 +79,12 @@
 .signalTitle_negative { color: #e07070; }
 .signalTitle_neutral  { color: #a89ccc; }
 
+.overviewPara {
+  font-size: 0.95rem !important;
+  line-height: 1.78 !important;
+  color: rgba(228, 222, 245, 0.9) !important;
+}
+
 /* ── Card image inside signal ── */
 .signalCardImg {
   flex-shrink: 0;
@@ -89,6 +95,33 @@
   border-radius: 7px;
   box-shadow: 0 4px 16px rgba(0,0,0,0.55), 0 0 0 1px rgba(225,179,130,0.2);
   display: block;
+}
+
+.signalCardOrb {
+  flex-shrink: 0;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, rgba(225, 179, 130, 0.2), rgba(20, 15, 34, 0.9) 70%);
+  border: 1px solid rgba(225, 179, 130, 0.3);
+  display: grid;
+  place-items: center;
+  align-self: flex-start;
+}
+
+.signalCardOrbIcon {
+  font-size: 1.1rem;
+  color: rgba(225, 179, 130, 0.8);
+  line-height: 1;
+}
+
+.cardNameLabel {
+  margin: 0 0 0.3rem !important;
+  font-family: 'Cinzel', serif;
+  font-size: 0.78rem !important;
+  color: rgba(225, 179, 130, 0.7) !important;
+  letter-spacing: 0.06em;
+  font-style: italic;
 }
 
 .signalCardBody {

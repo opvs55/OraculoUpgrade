@@ -30,7 +30,7 @@ export const arcanosMaioresContinuacao = [
     id: 10,
     slug: "a-roda-da-fortuna",
     nome: "A Roda da Fortuna",
-    img: "/assets/cartas/RWS1909_-_10_Wheel.jpeg",
+    img: "/assets/cartas/RWS1909_-_10_Wheel_of_Fortune.jpeg",
     video: "/assets/videos/a-roda-da-fortuna.mp4",
     tipo: "Arcano Maior",
     naipe: null,

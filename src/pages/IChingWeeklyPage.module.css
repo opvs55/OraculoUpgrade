@@ -90,53 +90,87 @@
 }
 
 .messageCard {
-  border: 1px solid rgba(225, 179, 130, 0.28);
+  border: 1px solid rgba(147, 197, 253, 0.28);
+  border-top: 3px solid rgba(147, 197, 253, 0.5);
   border-radius: 14px;
-  padding: 16px;
-  background: linear-gradient(145deg, rgba(40, 28, 54, 0.65), rgba(24, 18, 37, 0.7));
+  padding: 1.25rem 1.4rem;
+  background: linear-gradient(145deg, rgba(20, 30, 55, 0.78), rgba(14, 20, 40, 0.82));
+  position: relative;
+  overflow: hidden;
+}
+
+.messageCard::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 60px;
+  background: radial-gradient(ellipse at 50% 0%, rgba(147, 197, 253, 0.07) 0%, transparent 70%);
+  pointer-events: none;
 }
 
 .messageCard h2 {
-  margin: 0 0 8px;
-  color: #f0ce9f;
-  font-size: clamp(1.35rem, 2.2vw, 1.8rem);
-  font-family: 'Cormorant Garamond', Georgia, serif;
-  font-weight: 600;
+  margin: 0 0 0.75rem;
+  color: #c8e0ff;
+  font-size: clamp(1.3rem, 2.2vw, 1.75rem);
+  font-family: 'Cinzel', serif;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  line-height: 1.3;
 }
 
 .messageCard p {
   margin: 0;
-  line-height: 1.65;
-  color: rgba(244, 239, 230, 0.92);
+  line-height: 1.78;
+  color: rgba(220, 230, 250, 0.88);
+  font-size: 0.97rem;
 }
 
 .sectionBlock {
   display: grid;
-  gap: 8px;
+  gap: 10px;
+  border: 1px solid rgba(147, 197, 253, 0.14);
+  border-radius: 12px;
+  padding: 1rem 1.1rem;
+  background: rgba(10, 16, 34, 0.55);
 }
 
 .sectionBlock h3 {
-  margin: 0;
-  color: #e1b382;
-  font-size: 1rem;
+  margin: 0 0 0.1rem;
+  color: #93c5fd;
+  font-family: 'Cinzel', serif;
+  font-size: 0.82rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid rgba(147, 197, 253, 0.12);
 }
 
 .nestedTitle {
-  margin: 0.4rem 0 0.2rem;
-  color: rgba(244, 239, 230, 0.88);
-  font-size: 0.92rem;
+  margin: 0.35rem 0 0.15rem;
+  color: #c9b1fb;
+  font-family: 'Cinzel', serif;
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
 }
 
-.sectionBlock p,
+.sectionBlock p {
+  margin: 0;
+  line-height: 1.7;
+  color: rgba(220, 230, 250, 0.88);
+  font-size: 0.93rem;
+}
+
 .sectionBlock li {
   margin: 0;
-  line-height: 1.58;
-  color: rgba(244, 239, 230, 0.92);
+  line-height: 1.62;
+  color: rgba(220, 230, 250, 0.88);
+  font-size: 0.92rem;
 }
 
 .sectionBlock ul {
   margin: 0;
-  padding-left: 20px;
+  padding-left: 1.2rem;
   display: grid;
   gap: 8px;
 }

@@ -203,6 +203,7 @@ export default function GeneralOraclePage() {
     unifiedReadings,
     isLoadingUnifiedReadings,
     unifiedReading,
+    isLoadingUnifiedReading,
   } = useUnifiedReading({ readingId: id, listParams: { limit: 10 } });
 
   const modulesQuery = useQuery({
@@ -239,8 +240,8 @@ export default function GeneralOraclePage() {
       if (numerologyRes.error) throw numerologyRes.error;
 
       const modules = modulesRes.data || [];
-      const runesModule = modules.find((item) => item.oracle_type === 'runes_weekly' && item.status === 'ok');
-      const ichingModule = modules.find((item) => item.oracle_type === 'iching_weekly' && item.status === 'ok');
+      const runesModule = modules.find((item) => /runes/i.test(item.oracle_type) && item.status === 'ok');
+      const ichingModule = modules.find((item) => /iching|i_ching|i-ching/i.test(item.oracle_type) && item.status === 'ok');
 
       return {
         runesOutput: runesModule?.output_payload || null,
@@ -268,13 +269,16 @@ export default function GeneralOraclePage() {
   }, [user?.id, id, storageKey, currentWeekRef]);
 
   const detailReading = id ? unwrapApiPayload(unifiedReading) : null;
-  const currentReading = detailReading
-    || generatedReading
-    || localFallback
-    || currentWeekReadingFromList
-    || persistedWeeklyReading
-    || latestReadings?.[0]
-    || null;
+  const isLoadingDetail = !!id && isLoadingUnifiedReading;
+  const currentReading = isLoadingDetail
+    ? null
+    : (detailReading
+      || generatedReading
+      || localFallback
+      || currentWeekReadingFromList
+      || persistedWeeklyReading
+      || latestReadings?.[0]
+      || null);
 
   const finalReading = currentReading?.final_reading || currentReading?.finalReading || null;
   const weekRef = currentReading?.week_ref || currentReading?.weekRef;
@@ -327,7 +331,7 @@ export default function GeneralOraclePage() {
     window.localStorage.setItem(storageKey, JSON.stringify(currentReading));
   }, [id, user?.id, hasCurrentWeekReading, storageKey, currentReading]);
 
-  const isLoading = isLoadingRequirements || isLoadingUnifiedReadings || modulesQuery.isLoading;
+  const isLoading = isLoadingRequirements || isLoadingUnifiedReadings || modulesQuery.isLoading || isLoadingDetail;
 
   const totalModules = ORACLE_MODULES.length;
 
@@ -380,7 +384,7 @@ export default function GeneralOraclePage() {
         )}
 
         {/* ── Checklist de módulos ── */}
-        {!isLoading && (
+        {!isLoading && !finalReading && (
           <div className={styles.modulesSection}>
             <div className={styles.modulesSectionHeader}>
               <div>
@@ -473,7 +477,7 @@ export default function GeneralOraclePage() {
       </section>
 
       {/* ── Histórico ── */}
-      {latestReadings.length > 0 && (
+      {latestReadings.length > 0 && !finalReading && (
         <section className={styles.card}>
           <h2>Histórico de Sínteses</h2>
           <ul className={styles.historyList}>
@@ -490,7 +494,7 @@ export default function GeneralOraclePage() {
       )}
 
       {/* ── Como Funciona ── */}
-      <section className={styles.card}>
+      {!finalReading && <section className={styles.card}>
         <h2 className={styles.howTitle}>Como funciona a Síntese Integrada</h2>
         <p className={styles.howSubtitle}>
           Cada oráculo fala uma linguagem simbólica diferente. A síntese é o momento em que todas conversam.
@@ -503,7 +507,7 @@ export default function GeneralOraclePage() {
             </details>
           ))}
         </div>
-      </section>
+      </section>}
 
     </div>
   );

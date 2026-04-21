@@ -115,9 +115,9 @@ export default function GeneralReadingView({ finalReading }) {
 
       <Section title="Visão Geral" delay="90ms">
         {Array.isArray(finalReading?.overview) ? (
-          finalReading.overview.map((paragraph) => <p key={paragraph}>{paragraph}</p>)
+          finalReading.overview.map((paragraph) => <StyledText key={paragraph} text={paragraph} className={styles.overviewPara} />)
         ) : (
-          <p>{finalReading?.overview}</p>
+          <StyledText text={finalReading?.overview} className={styles.overviewPara} />
         )}
       </Section>
 
@@ -132,13 +132,20 @@ export default function GeneralReadingView({ finalReading }) {
                   className={`${styles.signalCard} ${styles.appear} ${styles[`tone_${tone}`]}`}
                   style={{ '--d': `${180 + index * 70}ms` }}
                 >
-                  {signal.img && (
+                  {signal.img ? (
                     <div className={styles.signalCardImg}>
                       <img src={signal.img} alt={signal.cardName} />
+                    </div>
+                  ) : (
+                    <div className={styles.signalCardOrb}>
+                      <span className={styles.signalCardOrbIcon}>
+                        {signal.key === 'runes' ? 'ᚪ' : signal.key === 'i_ching' ? '☷' : signal.key === 'numerology' ? '✴' : '✦'}
+                      </span>
                     </div>
                   )}
                   <div className={styles.signalCardBody}>
                     <h4 className={styles[`signalTitle_${tone}`]}>{signal.title}</h4>
+                    {signal.cardName && <p className={styles.cardNameLabel}>{signal.cardName}</p>}
                     <StyledText text={signal.value} />
                   </div>
                 </article>

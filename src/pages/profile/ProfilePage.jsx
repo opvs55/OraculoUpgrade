@@ -1,10 +1,17 @@
 import React, { useMemo } from 'react';
-import { useParams, useNavigate, useLocation } from 'react-router-dom';
+import { useParams, useNavigate, useLocation, Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '../../supabaseClient';
 import Loader from '../../components/common/Loader/Loader';
 import { goBackOrFallback } from '../../utils/navigation';
 import styles from './ProfilePage.module.css';
+
+const ORACLE_META = {
+  runes:            { icon: 'ᚪ', label: 'Runas',             color: '#b8e994', path: '/runas' },
+  iching:           { icon: '☷', label: 'I Ching',           color: '#93c5fd', path: '/iching' },
+  synthesis:        { icon: '☆', label: 'Síntese Semanal',   color: '#c9b1fb', path: '/oraculo/geral' },
+  numerologyWeekly: { icon: '✴', label: 'Numerologia',       color: '#f0d8b8', path: '/numerologia' },
+};
 
 const spreadTypeLabels = {
   oneCard: 'Tarot (1 carta)',
@@ -426,8 +433,7 @@ function ProfilePage() {
 
   const hasOracleSummary = useMemo(
     () => Boolean(
-      oracleSummary.tarot
-      || oracleSummary.runes
+      oracleSummary.runes
       || oracleSummary.iching
       || oracleSummary.synthesis
       || oracleSummary.numerologyWeekly,
@@ -435,23 +441,28 @@ function ProfilePage() {
     [oracleSummary],
   );
 
-  const renderOracleCard = (label, data) => (
-    <article className={styles.oracleMiniCard}>
-      <p className={styles.oracleMiniLabel}>{label}</p>
-      {data ? (
-        <>
-          <h4>{data.title}</h4>
-          <p>{data.description}</p>
-          <div className={styles.oracleMiniMeta}>
-            <span>{data.meta}</span>
-            <span>{formatDate(data.updatedAt)}</span>
-          </div>
-        </>
-      ) : (
-        <p className={styles.noDataMessage}>Ainda sem dados registrados.</p>
-      )}
-    </article>
-  );
+  const renderOracleCard = (key, data) => {
+    const meta = ORACLE_META[key];
+    return (
+      <Link to={meta.path} key={key} className={styles.oracleMiniCard} style={{ '--accent': meta.color }}>
+        <div className={styles.oracleMiniHeader}>
+          <span className={styles.oracleMiniIcon}>{meta.icon}</span>
+          <p className={styles.oracleMiniLabel}>{meta.label}</p>
+        </div>
+        {data ? (
+          <>
+            <h4>{data.title}</h4>
+            <p>{data.description}</p>
+            <div className={styles.oracleMiniMeta}>
+              <span>{data.meta}</span>
+            </div>
+          </>
+        ) : (
+          <p className={styles.noDataMessage}>Nenhum registro ainda.</p>
+        )}
+      </Link>
+    );
+  };
 
   const renderContent = () => {
     if (isLoadingProfile || isLoadingCount || isLoadingNumerology) {
@@ -505,22 +516,21 @@ function ProfilePage() {
 
           <main className={styles.profileRightColumn}>
             <section className={`${styles.profileSection} ${styles.oracleSection}`}>
-              <h2>Painel Dinâmico dos Oráculos</h2>
-              <p className={styles.introText}>
-                Visão rápida dos sinais recentes de Tarot, Runas, I Ching, Numerologia e da Síntese Semanal.
-              </p>
+              <div className={styles.sectionHeader}>
+                <h2>Sinais dos Oráculos</h2>
+                <Link to="/oraculo/dia" className={styles.sectionLink}>Ver carta do dia →</Link>
+              </div>
               {isLoadingOracleData ? (
                 <p className={styles.noDataMessage}>Carregando sinais recentes...</p>
               ) : hasOracleSummary ? (
                 <div className={styles.oracleGrid}>
-                  {renderOracleCard('Tarot Semanal', oracleSummary.tarot)}
-                  {renderOracleCard('Runas', oracleSummary.runes)}
-                  {renderOracleCard('I Ching', oracleSummary.iching)}
-                  {renderOracleCard('Síntese Semanal', oracleSummary.synthesis)}
-                  {renderOracleCard('Numerologia Semanal', oracleSummary.numerologyWeekly)}
+                  {renderOracleCard('runes', oracleSummary.runes)}
+                  {renderOracleCard('iching', oracleSummary.iching)}
+                  {renderOracleCard('synthesis', oracleSummary.synthesis)}
+                  {renderOracleCard('numerologyWeekly', oracleSummary.numerologyWeekly)}
                 </div>
               ) : (
-                <p className={styles.noDataMessage}>Este perfil ainda não possui módulos suficientes para montar o painel dinâmico.</p>
+                <p className={styles.noDataMessage}>Nenhum módulo de oráculo registrado ainda. Faça uma leitura semanal para popular este painel.</p>
               )}
             </section>
 
