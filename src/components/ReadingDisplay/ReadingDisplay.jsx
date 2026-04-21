@@ -158,6 +158,7 @@ const CelticCrossInterpretation = ({ data, cardsData = [] }) => {
             {/* Mantemos o card para cada análise */}
             <div className={styles.analysisCard}>
               <div className={styles.positionCardMeta}>
+                <div className={styles.celticPosNumber}>{index + 1}</div>
                 {(cardsData[index]?.image || cardsData[index]?.img) ? (
                   <img
                     src={cardsData[index]?.image || cardsData[index]?.img}
@@ -167,7 +168,7 @@ const CelticCrossInterpretation = ({ data, cardsData = [] }) => {
                 ) : (
                   <div className={styles.positionCardThumbPlaceholder} />
                 )}
-                <div>
+                <div className={styles.celticCardInfo}>
                   <h4 className={styles.cardPositionTitle}>{analise.posicao || POSICOES_CRUZ_CELTA_META[index]?.title}</h4>
                   <p className={styles.positionCardName}>
                     {cardsData[index]?.name || cardsData[index]?.nome || 'Carta não identificada'}
@@ -176,7 +177,7 @@ const CelticCrossInterpretation = ({ data, cardsData = [] }) => {
                   <p className={styles.celticShortMeaning}>{POSICOES_CRUZ_CELTA_META[index]?.shortMeaning}</p>
                 </div>
               </div>
-              <p>{analise.texto}</p>
+              <p className={styles.celticAnalysisText}>{analise.texto}</p>
             </div>
 
             {/* <<< MUDANÇA: Adiciona um divisor entre os cards (exceto após o último) >>> */}

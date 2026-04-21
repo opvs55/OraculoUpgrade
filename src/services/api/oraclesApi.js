@@ -14,7 +14,7 @@ async function getAuthHeaders() {
     : {};
 }
 
-async function postJson(endpointKey, payload, { withAuth = false } = {}) {
+async function postJson(endpointKey, payload, { withAuth = false, timeoutMs } = {}) {
   const authHeaders = withAuth ? await getAuthHeaders() : {};
 
   return requestApi(resolveEndpointSequence(endpointKey), {
@@ -24,12 +24,14 @@ async function postJson(endpointKey, payload, { withAuth = false } = {}) {
       ...authHeaders,
     },
     body: JSON.stringify(payload),
+    ...(timeoutMs ? { timeoutMs } : {}),
   });
 }
 
 export const oraclesApi = {
   createTarotReading(payload) {
-    return postJson('tarotReadings', payload);
+    const isCelticCross = payload?.spreadType === 'celticCross';
+    return postJson('tarotReadings', payload, { timeoutMs: isCelticCross ? 90000 : 45000 });
   },
 
   chatTarot(payload) {

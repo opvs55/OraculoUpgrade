@@ -284,3 +284,89 @@
   color: #c7a37e;
   font-size: 0.95rem;
 }
+
+/* ─── Cruz Celta: container vertical ─────────────────── */
+.verticalAnalysisContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  margin-bottom: 2.5rem;
+}
+
+.verticalAnalysisContainer .analysisCard {
+  border-radius: 0;
+  border-left: 3px solid rgba(225, 179, 130, 0.35);
+  border-top: none;
+  border-right: none;
+  border-bottom: none;
+  background: transparent;
+  padding: 1.25rem 1.25rem 1.25rem 1.5rem;
+  transition: border-color 0.2s;
+}
+
+.verticalAnalysisContainer .analysisCard:first-child {
+  border-top: 1px solid rgba(44, 44, 84, 0.6);
+  border-radius: 8px 8px 0 0;
+}
+
+.verticalAnalysisContainer .analysisCard:last-child {
+  border-radius: 0 0 8px 8px;
+}
+
+.verticalAnalysisContainer .analysisCard:hover {
+  transform: none;
+  border-left-color: rgba(225, 179, 130, 0.75);
+  background: rgba(225, 179, 130, 0.04);
+}
+
+.verticalAnalysisContainer .cardPositionTitle {
+  font-size: 1.05rem;
+  margin-bottom: 0.6rem;
+  border-bottom: none;
+  padding-bottom: 0;
+  color: #e1b382;
+}
+
+.verticalAnalysisContainer .analysisCard p {
+  font-size: 0.97rem;
+  line-height: 1.78;
+  color: #d8d5e8;
+  margin: 0;
+}
+
+.verticalDivider {
+  border: none;
+  border-top: 1px solid rgba(44, 44, 84, 0.5);
+  margin: 0;
+}
+
+.celticPosNumber {
+  flex-shrink: 0;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: rgba(225, 179, 130, 0.12);
+  border: 1px solid rgba(225, 179, 130, 0.35);
+  color: #e1b382;
+  font-family: 'Cinzel', serif;
+  font-size: 0.75rem;
+  font-weight: 700;
+  display: grid;
+  place-items: center;
+  align-self: flex-start;
+  margin-top: 2px;
+}
+
+.celticCardInfo {
+  flex: 1;
+  min-width: 0;
+}
+
+.celticAnalysisText {
+  margin: 0.9rem 0 0 !important;
+  padding-top: 0.75rem !important;
+  border-top: 1px solid rgba(44, 44, 84, 0.4) !important;
+  font-size: 0.97rem !important;
+  line-height: 1.8 !important;
+  color: #d8d5e8 !important;
+}
