@@ -16,11 +16,12 @@ function NumerologyForm({
   return (
     <div className={styles.formWrapper}>
       {!isSuccessResetting && (
-        <div className={styles.formContext}>
-          <p className={styles.formContextTitle}>O que você vai receber</p>
+        <div className={styles.messageCard}>
+          <h2>O que você vai receber</h2>
           <ul className={styles.formContextList}>
             <li>✦ Seu <strong>Número do Caminho de Vida</strong> com interpretação completa</li>
-            <li>◎ <strong>Arquétipo do Dia de Nascimento</strong> com pontos fortes, atenções e correspondência no Tarot</li>
+            <li>◎ <strong>Arcano pessoal e Arcano do Ano</strong> — as cartas que regem sua jornada</li>
+            <li>◎ <strong>Arquétipo do Dia de Nascimento</strong> com pontos fortes e correspondência no Tarot</li>
             <li>⊕ <strong>Vibração semanal</strong> para guiar decisões desta semana</li>
           </ul>
         </div>
@@ -43,11 +44,11 @@ function NumerologyForm({
         <button
           type="submit"
           disabled={isCalculating}
-          className={styles.submitButton}
+          className={styles.primaryButton}
         >
           {isCalculating ? 'Calculando...' : 'Revelar meus Números'}
         </button>
-        {formError && <p className={styles.errorMessage}>{formError}</p>}
+        {formError && <p className={styles.inlineError}>{formError}</p>}
       </form>
     </div>
   );

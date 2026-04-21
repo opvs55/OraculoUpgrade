@@ -1,750 +1,584 @@
-.pageContainer {
-  min-height: calc(100vh - 80px);
-  padding: 4.5rem 1rem 3rem;
-  display: flex;
-  justify-content: center;
-  align-items: flex-start;
+/* ── NumerologyPage — padrão unificado com Runas/I Ching ── */
+
+.page {
+  padding: 24px 0 48px;
   color: #f4efe6;
-}
-
-.content {
   width: 100%;
-  max-width: 980px;
-  border-radius: 16px;
-  border: 1px solid rgba(225, 179, 130, 0.2);
-  background: linear-gradient(160deg, rgba(24, 20, 44, 0.9), rgba(11, 10, 27, 0.92));
-  box-shadow: 0 18px 48px rgba(0, 0, 0, 0.45);
-  padding: 2rem;
 }
 
-.headerIntro {
-  text-align: center;
-  margin-bottom: 1.7rem;
-}
-
-.headerTabs {
-  margin-top: 1.2rem;
+/* ── Header ── */
+.header {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 0.75rem;
+  gap: 10px;
+  margin-bottom: 8px;
 }
 
-.headerTab {
-  border-radius: 12px;
+.eyebrow {
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  font-size: 0.78rem;
+  color: rgba(225, 179, 130, 0.75);
+}
+
+.header h1 {
+  margin: 0;
+  font-size: clamp(1.85rem, 3.8vw, 2.8rem);
+  color: #e1b382;
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-weight: 600;
+}
+
+.subtitle {
+  margin: 0;
+  color: rgba(244, 239, 230, 0.8);
+}
+
+/* ── Card principal ── */
+.card {
   border: 1px solid rgba(225, 179, 130, 0.22);
-  background: rgba(17, 16, 38, 0.74);
-  padding: 0.8rem 0.9rem;
-  text-align: left;
-}
-
-.headerTab h3 {
-  margin: 0;
-  font-size: 0.98rem;
-  color: #f0cfaa;
-}
-
-.headerTab p {
-  margin: 0.36rem 0 0;
-  color: #bfc1da;
-  font-size: 0.88rem;
-  line-height: 1.5;
-}
-
-.headerTitle {
-  margin: 0;
-  color: #eac89e;
-  font-family: 'Cinzel', serif;
-  font-size: clamp(1.8rem, 3vw, 2.5rem);
-}
-
-.headerSubtitle {
-  margin: 0.55rem auto 0;
-  max-width: 660px;
-  color: rgba(239, 233, 222, 0.82);
-  line-height: 1.6;
-}
-
-/* ── Novo layout heroSplit (padrão Tarot) ── */
-.heroSplit {
+  border-radius: 18px;
+  padding: 24px;
+  background: linear-gradient(160deg, rgba(19, 15, 30, 0.95), rgba(26, 20, 38, 0.82));
+  box-shadow: 0 20px 45px rgba(0, 0, 0, 0.32);
   display: grid;
-  grid-template-columns: 200px 1fr;
-  gap: 1.5rem;
-  margin-bottom: 1.75rem;
-  align-items: start;
+  gap: 20px;
 }
 
-.numberVisual {
+/* ── Loading ── */
+.loadingBlock {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0.5rem;
-  background: linear-gradient(160deg, rgba(30, 20, 55, 0.95), rgba(16, 12, 36, 0.98));
-  border: 1px solid rgba(171, 145, 255, 0.35);
-  border-radius: 14px;
-  padding: 1.5rem 1rem;
-  text-align: center;
-  box-shadow: 0 8px 28px rgba(120, 80, 220, 0.18);
+  gap: 12px;
+  padding: 24px 0;
 }
 
-.numberGlyph {
-  font-family: 'Cinzel', serif;
-  font-size: 4.5rem;
-  font-weight: 700;
-  color: #c9a6ff;
-  line-height: 1;
-  text-shadow: 0 0 24px rgba(171, 145, 255, 0.5);
-}
-
-.numberLabel {
+.loadingHint {
+  font-size: 0.85rem;
+  color: rgba(244, 239, 230, 0.55);
+  font-style: italic;
   margin: 0;
-  font-family: 'Cinzel', serif;
-  font-size: 0.72rem;
+}
+
+/* ── Status row / badge ── */
+.statusRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.badge {
+  display: inline-flex;
+  border: 1px solid rgba(225, 179, 130, 0.45);
+  border-radius: 999px;
+  padding: 6px 12px;
+  font-size: 0.82rem;
+  color: #f9ddbf;
+  background: rgba(225, 179, 130, 0.1);
+}
+
+.cacheInfo {
+  font-size: 0.82rem;
+  color: rgba(244, 239, 230, 0.72);
+}
+
+/* ── Message card (weekly panel) ── */
+.weeklyPanel {
+  display: grid;
+  gap: 14px;
+}
+
+.messageCard {
+  border: 1px solid rgba(225, 179, 130, 0.28);
+  border-radius: 14px;
+  padding: 16px;
+  background: linear-gradient(145deg, rgba(40, 28, 54, 0.65), rgba(24, 18, 37, 0.7));
+  display: grid;
+  gap: 10px;
+}
+
+.messageCard h2 {
+  margin: 0;
+  color: #f0ce9f;
+  font-size: clamp(1.35rem, 2.2vw, 1.8rem);
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-weight: 600;
+}
+
+.messageCard p {
+  margin: 0;
+  line-height: 1.65;
+  color: rgba(244, 239, 230, 0.92);
+}
+
+/* ── Arcanos visuais ── */
+.arcanaRow {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.arcanaCard {
+  border: 1px solid rgba(225, 179, 130, 0.22);
+  border-radius: 14px;
+  background: linear-gradient(145deg, rgba(30, 22, 48, 0.8), rgba(18, 14, 32, 0.85));
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  transition: border-color 0.2s ease, transform 0.2s ease;
+}
+
+.arcanaCard:hover {
+  border-color: rgba(225, 179, 130, 0.44);
+  transform: translateY(-2px);
+}
+
+.arcanaImgWrap {
+  width: 100%;
+  aspect-ratio: 2 / 3;
+  overflow: hidden;
+  background: rgba(10, 8, 20, 0.9);
+}
+
+.arcanaImg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.35s ease;
+}
+
+.arcanaCard:hover .arcanaImg {
+  transform: scale(1.04);
+}
+
+.arcanaImgPlaceholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 2.5rem;
+  color: rgba(225, 179, 130, 0.4);
+}
+
+.arcanaInfo {
+  padding: 12px 14px 14px;
+  display: grid;
+  gap: 3px;
+}
+
+.arcanaEyebrow {
+  margin: 0;
+  font-size: 0.68rem;
   text-transform: uppercase;
   letter-spacing: 0.12em;
-  color: #cdb2ff;
+  color: rgba(225, 179, 130, 0.65);
 }
 
-.numberSub {
+.arcanaNumber {
   margin: 0;
-  font-size: 0.82rem;
-  color: #a9acc6;
+  font-size: 0.75rem;
+  color: rgba(244, 239, 230, 0.5);
 }
 
-.numberDate {
+.arcanaName {
   margin: 0;
-  font-size: 0.74rem;
-  color: #6e7090;
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #f0ce9f;
+}
+
+.arcanaKeyword {
+  margin: 0;
+  font-size: 0.78rem;
+  color: rgba(244, 239, 230, 0.7);
   font-style: italic;
 }
 
-.weeklyPanel {
-  display: flex;
-  flex-direction: column;
-  gap: 0.85rem;
-}
-
-.weeklyPanelHeader {
-  display: flex;
-  flex-direction: column;
-  gap: 0.2rem;
-}
-
-.weeklyPanelTitle {
-  margin: 0;
-  font-family: 'Cinzel', serif;
-  font-size: 1.2rem;
-  color: #efd2b3;
-}
-
-.weeklyPanelSub {
-  margin: 0;
-  font-size: 0.88rem;
-  color: #a9acc6;
-}
-
-.weeklyEmpty {
-  font-size: 0.88rem;
-  color: #7a7c9a;
-  font-style: italic;
-  margin: 0;
-}
-
-@media (max-width: 768px) {
-  .heroSplit {
-    grid-template-columns: 1fr;
-  }
-  .numberVisual {
-    flex-direction: row;
-    justify-content: center;
-    gap: 1.2rem;
-    padding: 1rem;
-  }
-  .numberGlyph {
-    font-size: 3rem;
-  }
-}
-
-/* ── Legado (mantido para compatibilidade) ── */
-.dynamicSplitSection {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 0.9rem;
-  margin-bottom: 1.25rem;
-}
-
-.dynamicCard {
-  border-radius: 12px;
-  border: 1px solid rgba(225, 179, 130, 0.2);
-  background: rgba(13, 12, 29, 0.78);
-  padding: 0.9rem;
-  display: grid;
-  gap: 0.45rem;
-}
-
-.dynamicCard h3 {
-  margin: 0;
-  font-size: 1.03rem;
-  color: #efd2b3;
-}
-
-.dynamicCard p {
-  margin: 0;
-  color: #d7d8ea;
-  line-height: 1.55;
-  font-size: 0.92rem;
-}
-
-.dynamicLabel {
-  margin: 0;
+.arcanaSubLabel {
+  margin: 2px 0 0;
   font-size: 0.72rem;
-  text-transform: uppercase;
-  letter-spacing: 0.09em;
-  color: #cdb2ff;
+  color: rgba(225, 179, 130, 0.5);
 }
 
-.dynamicMeta {
-  color: #a9acc9;
-  font-size: 0.82rem;
-}
-
-.personalCard {
-  border-color: rgba(171, 145, 255, 0.34);
-}
-
-.weeklyCard {
-  border-color: rgba(225, 179, 130, 0.3);
-}
-
-.weeklySummary {
-  border-radius: 10px;
-  border: 1px solid rgba(225, 179, 130, 0.22);
-  background: rgba(22, 20, 42, 0.8);
-  padding: 0.55rem 0.65rem;
+/* ── Section blocks ── */
+.resultsContainer {
   display: grid;
-  gap: 0.28rem;
+  gap: 20px;
 }
 
-.weeklySummary strong {
-  color: #f2d5b3;
+.sectionBlock {
+  display: grid;
+  gap: 10px;
+}
+
+.sectionBlock h3 {
+  margin: 0;
+  color: #e1b382;
+  font-size: 1.05rem;
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-weight: 600;
+}
+
+.sectionBlock p,
+.sectionBlock li {
+  margin: 0;
+  line-height: 1.65;
+  color: rgba(244, 239, 230, 0.92);
+}
+
+.sectionBlock ul {
+  margin: 0;
+  padding-left: 20px;
+  display: grid;
+  gap: 8px;
+}
+
+.meaningText {
+  display: grid;
+  gap: 8px;
+}
+
+.meaningText p {
+  margin: 0;
+  line-height: 1.65;
+  color: rgba(244, 239, 230, 0.92);
+}
+
+.meaningText strong {
+  color: #e1b382;
+}
+
+/* ── Archetype grid ── */
+.archetypeGridContainer {
+  display: grid;
+  grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr);
+  gap: 12px;
+}
+
+.archetypeMain {
+  display: grid;
+  gap: 10px;
+}
+
+.archetypeSidebar {
+  display: grid;
+  gap: 10px;
+  align-content: start;
+}
+
+/* ── Deep dive cards ── */
+.deepDiveCard {
+  border: 1px solid rgba(225, 179, 130, 0.22);
+  border-radius: 10px;
+  background: rgba(16, 13, 26, 0.7);
+  padding: 12px;
+  display: grid;
+  gap: 8px;
+}
+
+.deepDiveCard p {
+  margin: 0;
+}
+
+.deepDiveTitle {
+  color: #f0ce9f !important;
+  font-weight: 700;
+  font-size: 0.84rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+/* ── Radar cards ── */
+.radarCard {
+  border: 1px solid rgba(225, 179, 130, 0.2);
+  border-radius: 10px;
+  background: rgba(16, 13, 26, 0.65);
+  padding: 12px;
+  display: grid;
+  gap: 8px;
+}
+
+.radarCard h4 {
+  margin: 0;
+  color: #f0ce9f;
   font-size: 0.9rem;
 }
 
-.weeklySummary span {
-  color: #cccee4;
-  font-size: 0.85rem;
+.radarCard ul {
+  margin: 0;
+  padding-left: 18px;
+  display: grid;
+  gap: 6px;
 }
 
-.weeklyStale {
-  display: inline-block;
-  font-size: 0.75rem;
-  color: #b8914a;
-  background: rgba(225, 179, 130, 0.1);
-  border: 1px solid rgba(225, 179, 130, 0.25);
+/* ── Chips ── */
+.chipsRow {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.themeChip {
   border-radius: 999px;
-  padding: 0.2rem 0.65rem;
-  margin-bottom: 0.4rem;
+  padding: 6px 11px;
+  font-size: 0.84rem;
+  border: 1px solid rgba(225, 179, 130, 0.36);
+  background: rgba(225, 179, 130, 0.08);
 }
 
-.weeklyError {
-  font-size: 0.83rem;
-  color: #ffb5b5;
-  background: rgba(255, 129, 129, 0.08);
-  border: 1px solid rgba(255, 129, 129, 0.25);
-  border-radius: 8px;
-  padding: 0.5rem 0.75rem;
+/* ── Buttons ── */
+.primaryButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  border-radius: 10px;
+  padding: 10px 16px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+  border: none;
+  color: #1f182f;
+  background: #e1b382;
+}
+
+.primaryButton:hover {
+  transform: translateY(-1px);
+  opacity: 0.92;
+}
+
+.primaryButton:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.secondaryButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  padding: 9px 14px;
+  font-weight: 600;
+  font-size: 0.88rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  background: transparent;
+  border: 1px solid rgba(225, 179, 130, 0.45);
+  color: #f9ddbf;
+}
+
+.secondaryButton:hover {
+  background: rgba(225, 179, 130, 0.1);
+}
+
+.secondaryButton:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+/* ── Error / Empty ── */
+.errorCard {
+  border: 1px solid rgba(255, 130, 130, 0.35);
+  border-radius: 12px;
+  padding: 14px;
+  background: rgba(90, 22, 28, 0.28);
+  display: grid;
+  gap: 10px;
+}
+
+.errorCard h2,
+.errorCard h3 {
+  margin: 0;
+  color: #ffb4b4;
+}
+
+.inlineError {
+  color: #ffb4b4;
+  font-size: 0.88rem;
   margin: 0;
 }
 
-.weeklyVibe {
-  display: inline-block;
-  font-size: 0.78rem;
-  font-family: 'Cinzel', serif;
-  letter-spacing: 0.1em;
-  color: #e1b382;
-  text-transform: uppercase;
-  margin-bottom: 0.5rem;
+.emptyState {
+  display: grid;
+  gap: 12px;
 }
 
-.weeklyNarrative {
-  font-size: 0.88rem;
-  line-height: 1.65;
-  color: #d8d9ee;
-  margin: 0.4rem 0 0;
-}
-
-.weeklyThemes {
-  list-style: none;
-  padding: 0;
-  margin: 0.6rem 0 0;
-  display: flex;
-  flex-direction: column;
-  gap: 0.3rem;
-}
-
-.weeklyThemes li {
-  font-size: 0.82rem;
-  color: #c9a96e;
-  padding-left: 1rem;
-  position: relative;
-}
-
-.weeklyThemes li::before {
-  content: '✦';
-  position: absolute;
-  left: 0;
-  font-size: 0.6rem;
-  top: 2px;
-  color: #c9a96e;
-}
-
+/* ── Form ── */
 .formWrapper {
   display: grid;
-  gap: 1.25rem;
+  gap: 20px;
 }
 
 .formContext {
-  background: rgba(201, 166, 255, 0.06);
-  border: 1px solid rgba(201, 166, 255, 0.18);
+  border: 1px solid rgba(225, 179, 130, 0.2);
   border-radius: 12px;
-  padding: 1rem 1.2rem;
+  padding: 16px;
+  background: rgba(18, 14, 32, 0.65);
 }
 
 .formContextTitle {
-  margin: 0 0 0.6rem;
-  font-family: 'Cinzel', serif;
-  font-size: 0.78rem;
+  margin: 0 0 10px;
+  font-size: 0.82rem;
   text-transform: uppercase;
   letter-spacing: 0.1em;
-  color: rgba(201, 166, 255, 0.7);
+  color: rgba(225, 179, 130, 0.75);
 }
 
 .formContextList {
   list-style: none;
   padding: 0;
   margin: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 0.4rem;
+  display: grid;
+  gap: 8px;
 }
 
 .formContextList li {
-  font-size: 0.86rem;
-  color: #c8bfdf;
-  line-height: 1.4;
-}
-
-.formContextList strong {
-  color: #e8d8ff;
+  font-size: 0.9rem;
+  color: rgba(244, 239, 230, 0.85);
+  line-height: 1.5;
 }
 
 .numerologyForm {
   display: grid;
-  gap: 1rem;
-  justify-items: center;
-  text-align: center;
-  padding: 0.25rem 0 0.5rem;
+  gap: 12px;
 }
 
 .dateLabel {
-  font-weight: 700;
-  color: #e8d6ba;
+  font-size: 0.88rem;
+  color: rgba(244, 239, 230, 0.75);
+  margin: 0;
 }
 
 .dateInput {
-  width: min(360px, 100%);
-  border: 1px solid rgba(225, 179, 130, 0.4);
-  background: rgba(12, 12, 29, 0.75);
-  color: #f6f1e8;
+  padding: 10px 14px;
   border-radius: 10px;
-  padding: 0.8rem 0.95rem;
-  font-size: 1rem;
+  border: 1px solid rgba(225, 179, 130, 0.35);
+  background: rgba(12, 10, 24, 0.8);
+  color: #f4efe6;
+  font-size: 0.96rem;
+  width: 100%;
 }
 
-.submitButton,
-.secondaryButton {
-  border: none;
-  border-radius: 999px;
-  font-weight: 700;
-  cursor: pointer;
-  padding: 0.7rem 1.2rem;
-  transition: all 0.2s ease;
+.dateInput:focus {
+  outline: none;
+  border-color: rgba(225, 179, 130, 0.65);
 }
 
 .submitButton {
   background: #e1b382;
-  color: #181629;
+  color: #1f182f;
+  border: none;
+  border-radius: 10px;
+  padding: 11px 16px;
+  font-weight: 700;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: opacity 0.2s ease, transform 0.2s ease;
 }
 
 .submitButton:hover {
+  opacity: 0.88;
   transform: translateY(-1px);
-  box-shadow: 0 8px 18px rgba(225, 179, 130, 0.25);
 }
 
 .submitButton:disabled {
-  opacity: 0.7;
+  opacity: 0.55;
   cursor: not-allowed;
-}
-
-.secondaryButton {
-  background: transparent;
-  color: #e1b382;
-  border: 1px solid rgba(225, 179, 130, 0.5);
-}
-
-.errorContainer {
-  border-radius: 12px;
-  border: 1px solid rgba(255, 129, 129, 0.4);
-  background: rgba(255, 129, 129, 0.1);
-  padding: 1rem;
-  text-align: center;
 }
 
 .errorMessage {
+  color: #ffb4b4;
+  font-size: 0.88rem;
   margin: 0;
-  color: #ffb5b5;
 }
 
-.resultsContainer {
-  display: grid;
-  gap: 1.2rem;
-}
-
-.resultContent {
-  display: grid;
-  gap: 1.2rem;
-}
-
-.lifePathHero {
-  border-radius: 14px;
-  border: 1px solid rgba(225, 179, 130, 0.24);
-  background: linear-gradient(140deg, rgba(20, 17, 37, 0.96), rgba(31, 23, 52, 0.92));
-  padding: 1.1rem;
-  display: grid;
-  grid-template-columns: auto 1fr;
-  gap: 1.1rem;
+/* ── Modal ── */
+.modalOverlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(5, 4, 14, 0.78);
+  backdrop-filter: blur(4px);
+  display: flex;
   align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 1rem;
 }
 
-.lifePathOrb {
-  width: 118px;
-  height: 118px;
-  border-radius: 50%;
+.modalBox {
+  background: linear-gradient(160deg, rgba(28, 20, 48, 0.98), rgba(14, 11, 28, 0.99));
+  border: 1px solid rgba(225, 179, 130, 0.3);
+  border-radius: 16px;
+  padding: 24px;
+  max-width: 380px;
+  width: 100%;
   display: grid;
-  place-items: center;
-  font-size: 2.7rem;
-  font-weight: 700;
-  color: #fff3df;
-  border: 1px solid rgba(225, 179, 130, 0.5);
-  background:
-    radial-gradient(circle at 35% 24%, rgba(255, 230, 185, 0.35), rgba(225, 179, 130, 0.1) 45%, rgba(20, 15, 34, 0.95) 76%);
-  box-shadow: 0 0 0 7px rgba(225, 179, 130, 0.08), 0 14px 30px rgba(0, 0, 0, 0.4);
-  animation: orbFloat 5.5s ease-in-out infinite;
+  gap: 12px;
+  box-shadow: 0 24px 50px rgba(0, 0, 0, 0.5);
 }
 
-.orbMeta {
-  display: grid;
-  gap: 0.3rem;
-}
-
-.eyebrow {
+.modalTitle {
   margin: 0;
-  font-size: 0.74rem;
-  text-transform: uppercase;
-  letter-spacing: 0.09em;
-  color: rgba(225, 179, 130, 0.92);
+  font-family: 'Cinzel', serif;
+  color: #f0ce9f;
+  font-size: 1.1rem;
 }
 
-.heroTitle {
+.modalDesc {
   margin: 0;
-  font-size: clamp(1.15rem, 2.6vw, 1.5rem);
-  color: #f4e6d1;
-}
-
-.heroDescription {
-  margin: 0;
-  color: rgba(236, 230, 220, 0.82);
+  color: rgba(244, 239, 230, 0.78);
+  font-size: 0.9rem;
   line-height: 1.55;
 }
 
-.resultCard {
-  border-radius: 14px;
-  border: 1px solid rgba(171, 145, 255, 0.3);
-  background: rgba(39, 33, 65, 0.9);
-  padding: 1.2rem;
-}
-
-.secretMeaningCard {
-  background: linear-gradient(160deg, rgba(37, 32, 63, 0.96), rgba(24, 19, 44, 0.95));
-}
-
-.cardTitle {
-  margin: 0 0 0.95rem;
-  color: #d7c1ff;
-  font-family: 'Cinzel', serif;
-  font-size: clamp(1.2rem, 2.7vw, 1.6rem);
-  border-bottom: 1px solid rgba(171, 145, 255, 0.35);
-  padding-bottom: 0.7rem;
-}
-
-.cardSubSection {
-  margin-bottom: 1rem;
-}
-
-.meaningText p {
-  margin: 0 0 0.85rem;
-  color: rgba(236, 231, 249, 0.92);
-  line-height: 1.68;
-  font-size: 1rem;
-}
-
-.meaningText strong {
-  color: #f1d8b5;
-}
-
-.archetypeGridContainer {
-  display: grid;
-  grid-template-columns: 2fr 1fr;
-  gap: 1rem;
-}
-
-.archetypeMain,
-.archetypeSidebar {
-  display: grid;
-  gap: 0.8rem;
-}
-
-.archetypeSection {
-  border-radius: 10px;
-  border: 1px solid rgba(171, 145, 255, 0.24);
-  background: rgba(19, 14, 36, 0.65);
-  padding: 0.75rem;
-}
-
-.archetypeSection h4 {
-  margin: 0 0 0.5rem;
-  color: #c9b1fb;
-  font-size: 0.9rem;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-}
-
-.archetypeListCard {
-  border-radius: 10px;
-  border: 1px solid rgba(171, 145, 255, 0.24);
-  background: rgba(19, 14, 36, 0.65);
-  padding: 0.75rem;
-}
-
-.archetypeListCard h5 {
-  margin: 0 0 0.55rem;
-  color: #d3bdfd;
-  text-transform: uppercase;
-  font-size: 0.78rem;
-  letter-spacing: 0.05em;
-}
-
-.adviceCard .meaningText p {
-  margin-bottom: 0;
-  font-style: italic;
-}
-
-.archetypeList {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: grid;
-  gap: 0.3rem;
-}
-
-.archetypeList li {
-  border-radius: 999px;
-  padding: 0.23rem 0.6rem;
-  font-size: 0.82rem;
-  width: fit-content;
-}
-
-.strengthsCard .archetypeList li {
-  background: rgba(102, 212, 154, 0.12);
-  color: #9ee7c1;
-  border: 1px solid rgba(102, 212, 154, 0.3);
-}
-
-.weaknessesCard .archetypeList li {
-  background: rgba(255, 145, 145, 0.12);
-  color: #ffb5b5;
-  border: 1px solid rgba(255, 145, 145, 0.3);
-}
-
-.warningMessage {
-  margin: 0;
-  border-radius: 10px;
-  border: 1px solid rgba(255, 213, 125, 0.45);
-  background: rgba(255, 213, 125, 0.11);
-  padding: 0.75rem;
-  color: #ffe19a;
-}
-
-.resultActions {
+.modalActions {
   display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 0.75rem;
-  flex-wrap: wrap;
-  padding-top: 0.25rem;
+  gap: 10px;
 }
 
-.ctaButton {
-  text-decoration: none;
-  font-weight: 700;
-  font-size: 0.9rem;
-  color: #0d0c1d;
-  background: linear-gradient(120deg, #e1b382, #d8a675);
-  border-radius: 999px;
-  padding: 0.6rem 1.3rem;
-  transition: opacity 0.2s;
-}
-
-.ctaButton:hover {
-  opacity: 0.85;
-}
-
-.resetButton {
-  border-radius: 999px;
-  border: 1px solid rgba(255, 142, 142, 0.45);
-  background: rgba(255, 142, 142, 0.12);
-  color: #ffc6c6;
-  padding: 0.58rem 1rem;
-  font-weight: 700;
-  cursor: pointer;
-}
-
-.resetButton:hover {
-  background: rgba(255, 142, 142, 0.2);
-}
-
-.resetButton:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-}
-
-.resetError {
+/* ── Disclaimer ── */
+.disclaimerFooter {
+  margin-top: 8px;
+  padding-top: 14px;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  font-size: 0.72rem;
+  color: rgba(169, 172, 198, 0.45);
+  line-height: 1.5;
+  font-style: italic;
   text-align: center;
 }
 
-@keyframes orbFloat {
-  0%,
-  100% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(-5px);
-  }
-}
-
-@media (max-width: 760px) {
-  .content {
-    padding: 1.15rem;
-  }
-
-  .headerTabs {
-    grid-template-columns: 1fr;
-  }
-
-  .dynamicSplitSection {
-    grid-template-columns: 1fr;
-  }
-
-  .lifePathHero {
-    grid-template-columns: 1fr;
-    justify-items: center;
-    text-align: center;
+/* ── Responsive ── */
+@media (max-width: 700px) {
+  .arcanaRow {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .archetypeGridContainer {
     grid-template-columns: 1fr;
   }
+}
 
-  .archetypeList li {
-    width: 100%;
-    text-align: center;
+@media (max-width: 480px) {
+  .arcanaRow {
+    grid-template-columns: 1fr;
   }
 }
 
-.modalOverlay {
-  position: fixed;
-  inset: 0;
-  z-index: 9999;
-  background: rgba(5, 4, 18, 0.75);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 1.5rem;
+/* ── NumerologyForm legacy support ── */
+.formContextTitle {
+  margin: 0 0 10px;
+  font-size: 0.82rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: rgba(225, 179, 130, 0.75);
 }
 
-.modalBox {
-  background: linear-gradient(160deg, rgba(26, 20, 48, 0.98), rgba(13, 10, 30, 0.98));
-  border: 1px solid rgba(225, 179, 130, 0.35);
-  border-radius: 16px;
-  padding: 2rem 2.2rem;
-  max-width: 400px;
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.6);
-}
-
-.modalTitle {
-  font-family: 'Cinzel', serif;
-  font-size: 1.1rem;
-  color: #f1d6b5;
-  margin: 0;
-  font-weight: 700;
-}
-
-.modalDesc {
-  font-size: 0.87rem;
-  color: #9a8caa;
-  line-height: 1.55;
-  margin: 0;
-}
-
-.modalActions {
-  display: flex;
-  gap: 0.75rem;
-  margin-top: 0.5rem;
-}
-
-.modalConfirm {
-  flex: 1;
-  background: rgba(220, 80, 80, 0.15);
-  border: 1px solid rgba(220, 80, 80, 0.4);
-  color: #f08080;
-  border-radius: 999px;
-  padding: 0.55rem 1rem;
-  font-size: 0.88rem;
-  font-weight: 700;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-
-.modalConfirm:hover {
-  background: rgba(220, 80, 80, 0.28);
-}
-
-.modalCancel {
-  flex: 1;
-  background: transparent;
-  border: 1px solid rgba(225, 179, 130, 0.3);
-  color: #c9bfa8;
-  border-radius: 999px;
-  padding: 0.55rem 1rem;
-  font-size: 0.88rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-
-.modalCancel:hover {
-  background: rgba(225, 179, 130, 0.08);
-}

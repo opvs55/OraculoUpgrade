@@ -2,184 +2,167 @@
   LAYOUT RECONSTRUÍDO (Duas Colunas + Numerologia)
 */
 
-/* --- 1. O Wrapper Principal (FUNDO) --- */
+/* --- 1. Wrapper --- */
 .profileGridWrapper {
-  padding: 4rem 1rem; /* Padding padrão */
-  background-color: #0D0C1D; 
-  min-height: calc(100vh - 80px); 
-  
-  /* --- MUDANÇA 1: "Descolar" do Header --- */
-  padding-top: 6rem; /* Aumenta o espaço no topo */
+  min-height: calc(100vh - 80px);
+  padding: 3.5rem 1rem 4rem;
+  color: #f4efe6;
 }
 
-/* --- 2. O Container Principal (CARTÃO) --- */
+/* --- 2. Container --- */
 .profileContainer {
-  max-width: 1200px; /* Aumentado para mais conteúdo */
+  max-width: 1100px;
   width: 100%;
   margin: 0 auto;
-  padding: 3rem;
-  background-color: rgba(23, 22, 43, 0.75); 
-  border: 1px solid rgba(225, 179, 130, 0.2);
-  border-radius: 12px;
-  box-shadow: 0 10px 35px rgba(0, 0, 0, 0.5);
-  /* Corrigido: o container do loader deve ser flex */
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  gap: 1.5rem;
 }
 
-/* --- 3. O LAYOUT DE GRELHA (Dentro do Container) --- */
+/* --- 3. Layout de grid --- */
 .profileLayoutGrid {
   display: grid;
-  grid-template-columns: 320px 1fr; /* Coluna fixa à esquerda */
-  gap: 3rem; 
+  grid-template-columns: 240px 1fr;
+  gap: 1.5rem;
+  align-items: start;
 }
 
-/* --- 4. Coluna da Esquerda (ASIDE) --- */
+/* --- 4. Coluna esquerda --- */
 .profileLeftColumn {
-  grid-column: 1;
-  text-align: center;
   position: sticky;
-  top: 2rem;
-  align-self: start; 
-  /* Adicionado para conter os elementos */
+  top: 5.5rem;
   display: flex;
   flex-direction: column;
-  gap: 1.5rem; /* Espaço entre avatar, stats e botão */
+  gap: 1rem;
+  text-align: center;
 }
 
 .profileAvatar {
-  width: 180px;
-  height: 180px;
+  width: 160px;
+  height: 160px;
   border-radius: 50%;
-  border: 4px solid #E1B382; 
-  margin: 0 auto 0 auto; /* Centraliza (remove margin-bottom) */
+  border: 2px solid rgba(225, 179, 130, 0.55);
+  margin: 0 auto;
   object-fit: cover;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
 }
 
 .profileFullName {
   font-family: 'Cinzel', serif;
-  font-size: 2rem;
-  color: #E1B382;
+  font-size: 1.3rem;
+  color: #eac89e;
   margin: 0;
-  line-height: 1.2;
+  line-height: 1.25;
 }
 
 .profileUsername {
-  font-size: 1.1rem;
-  color: #a0a0a0;
-  margin-top: 0.25rem; /* Menos espaço */
-  margin-bottom: 0; /* Espaço controlado pelo gap */
+  font-size: 0.88rem;
+  color: #8a8caa;
+  margin: 0;
 }
 
 .profileBio {
-  font-size: 1rem;
-  color: #c7c7c7;
-  line-height: 1.6;
+  font-size: 0.88rem;
+  color: #b8bace;
+  line-height: 1.55;
   font-style: italic;
-  margin-bottom: 0; /* Espaço controlado pelo gap */
+  margin: 0;
 }
 
-/* --- 5. NOVO CARTÃO DE ESTATÍSTICAS --- */
+/* --- 5. Stats card --- */
 .statsCard {
-  background-color: rgba(13, 12, 29, 0.6);
-  border: 1px solid rgba(225, 179, 130, 0.2);
-  border-radius: 8px;
-  padding: 1rem;
+  background: linear-gradient(160deg, rgba(22, 18, 40, 0.9), rgba(13, 11, 28, 0.92));
+  border: 1px solid rgba(225, 179, 130, 0.18);
+  border-radius: 14px;
+  padding: 0.9rem;
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr; /* 3 colunas */
-  gap: 0.5rem;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 0.4rem;
 }
 
 .statItem {
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 0.5rem;
+  padding: 0.4rem;
 }
 
 .statValue {
   font-family: 'Cinzel', serif;
-  font-size: 1.8rem;
-  font-weight: bold;
-  color: #E1B382;
+  font-size: 1.55rem;
+  font-weight: 700;
+  color: #e1b382;
   line-height: 1;
 }
 
 .statLabel {
-  font-size: 0.75rem; /* Pequeno */
-  font-weight: bold;
-  color: #a0a0a0;
+  font-size: 0.65rem;
+  color: #7a7c9a;
   text-transform: uppercase;
-  letter-spacing: 0.5px;
-  margin-top: 0.5rem;
+  letter-spacing: 0.07em;
+  margin-top: 0.3rem;
   text-align: center;
 }
-/* --- FIM DO CARTÃO DE ESTATÍSTICAS --- */
-
 
 .backButton {
-  background: none;
-  border: 1px solid #4a5568;
-  color: #a0a0a0;
-  font-size: 0.9rem;
-  font-weight: bold;
-  padding: 0.6rem 1.2rem;
-  border-radius: 6px;
+  background: transparent;
+  border: 1px solid rgba(225, 179, 130, 0.3);
+  color: #c9bfa8;
+  font-size: 0.84rem;
+  font-weight: 600;
+  padding: 0.5rem 1rem;
+  border-radius: 999px;
   cursor: pointer;
   transition: all 0.2s;
-  width: 100%; 
-  margin-top: 0; /* Espaço controlado pelo gap */
+  width: 100%;
 }
 .backButton:hover {
-  background-color: #4a5568;
-  color: #fff;
+  background: rgba(225, 179, 130, 0.08);
+  color: #f2dec7;
 }
 
-/* --- 6. Coluna da Direita (MAIN) --- */
+/* --- 6. Coluna direita --- */
 .profileRightColumn {
-  grid-column: 2;
-  min-width: 0; 
+  min-width: 0;
   display: flex;
   flex-direction: column;
-  gap: 2.5rem; /* Espaço entre os cartões */
+  gap: 1.25rem;
 }
 
 .profileSection {
-  background-color: rgba(13, 12, 29, 0.6); 
-  border-radius: 8px;
-  padding: 1.5rem 2rem;
-  border: 1px solid rgba(225, 179, 130, 0.1);
-  margin-bottom: 0; /* Espaço agora é controlado pelo gap do .profileRightColumn */
+  background: linear-gradient(160deg, rgba(22, 18, 40, 0.88), rgba(13, 11, 28, 0.9));
+  border-radius: 16px;
+  padding: 1.4rem 1.5rem;
+  border: 1px solid rgba(225, 179, 130, 0.15);
 }
 
 .profileSection h2 {
   font-family: 'Cinzel', serif;
-  color: #E1B382;
-  font-size: 1.5rem;
-  margin-top: 0;
-  margin-bottom: 1.5rem;
-  padding-bottom: 0.8rem;
-  border-bottom: 1px solid rgba(225, 179, 130, 0.3);
+  color: #eac89e;
+  font-size: 1rem;
+  letter-spacing: 0.04em;
+  margin: 0 0 1rem;
+  padding-bottom: 0.65rem;
+  border-bottom: 1px solid rgba(225, 179, 130, 0.15);
+  text-transform: uppercase;
 }
 
 .profileSection p,
 .storyText p {
-  font-size: 1.05rem;
-  line-height: 1.8;
-  color: #e0e0e0;
-  margin-bottom: 1rem;
+  font-size: 0.96rem;
+  line-height: 1.75;
+  color: #d8d9ee;
+  margin-bottom: 0.8rem;
 }
 .storyText p:last-child {
   margin-bottom: 0;
 }
 
 .introText {
-  color: #b7b7d5;
-  line-height: 1.65;
-  margin-top: -0.35rem;
-  margin-bottom: 1rem;
+  color: #8a8caa;
+  font-size: 0.86rem;
+  line-height: 1.55;
+  margin: -0.25rem 0 0.9rem;
 }
 
 /* --- 7A. Painel dinâmico dos oráculos --- */
@@ -311,79 +294,82 @@
 
 /* --- 7. NOVOS ESTILOS DE NUMEROLOGIA --- */
 
-/* Texto (Essência, Luz, etc) */
 .meaningText p {
-  font-size: 1.05rem;
-  line-height: 1.8;
-  color: #e0e0e0;
-  margin-bottom: 1rem;
+  font-size: 0.92rem;
+  line-height: 1.72;
+  color: rgba(220, 218, 240, 0.9);
+  margin-bottom: 0.75rem;
 }
 .meaningText strong {
-  color: #E1B382;
+  color: #e1b382;
   font-weight: 700;
 }
-.meaningText:last-child p:last-child {
+.meaningText p:last-child {
   margin-bottom: 0;
 }
 
-/* Sub-secções (Luz, Sombra, Missão) */
 .cardSubSection {
-  margin-bottom: 1.5rem;
+  margin-bottom: 1rem;
 }
 .cardSubSection:last-child {
   margin-bottom: 0;
 }
 .cardSubSection h4 {
-  font-size: 1.1rem;
+  font-size: 0.8rem;
+  font-family: 'Cinzel', serif;
   font-weight: 600;
-  margin-top: 0;
-  margin-bottom: 0.8rem;
+  margin: 0 0 0.6rem;
   text-transform: uppercase;
-  letter-spacing: 0.8px;
+  letter-spacing: 0.08em;
+  color: #c9b1fb;
 }
 /* Cores para Luz, Sombra, Missão */
 .lightTitle { color: #b8e994; }
 .shadowTitle { color: #ffab91; }
 .missionTitle { color: #ab91ff; }
 
-
-/* Cartão do Arquétipo (roxo) */
+/* Cartão do Arquétipo */
 .archetypeCard {
-  background-color: rgba(40, 38, 70, 0.8);
-  border-color: rgba(171, 145, 255, 0.3);
+  border-color: rgba(171, 145, 255, 0.25);
 }
 .archetypeCard h2 {
   color: #d1b3ff;
-  border-bottom-color: rgba(171, 145, 255, 0.4);
+  border-bottom-color: rgba(171, 145, 255, 0.2);
 }
-/* Texto específico do arquétipo */
 .archetypeCard .meaningText p {
   color: #e0d8ff;
-  opacity: 0.95;
 }
 
-
-/* Layout de Grelha do Arquétipo (copiado da Numerologia) */
 .archetypeGridContainer {
   display: grid;
   grid-template-columns: 2fr 1fr;
-  gap: 2.5rem;
+  gap: 1.25rem;
 }
 .archetypeMain {
   display: flex;
   flex-direction: column;
-  gap: 1.8rem;
+  gap: 1rem;
 }
 .archetypeSidebar {
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  gap: 0.85rem;
+}
+.archetypeSection {
+  border-radius: 10px;
+  border: 1px solid rgba(171, 145, 255, 0.16);
+  background: rgba(14, 11, 30, 0.5);
+  padding: 0.85rem 1rem;
 }
 .archetypeSection h4 {
-  font-size: 1.1rem;
-  color: #ab91ff;
-  border-bottom: 1px solid rgba(171, 145, 255, 0.3);
-  padding-bottom: 0.5rem;
+  font-size: 0.78rem;
+  color: #c9b1fb;
+  font-family: 'Cinzel', serif;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin: 0 0 0.55rem;
+  padding-bottom: 0.4rem;
+  border-bottom: 1px solid rgba(171, 145, 255, 0.15);
 }
 .archetypeSection .meaningText p {
   font-style: normal;
@@ -391,20 +377,19 @@
 
 /* Cards da Sidebar do Arquétipo */
 .archetypeListCard {
-  background-color: rgba(13, 12, 29, 0.6);
-  border: 1px solid rgba(171, 145, 255, 0.2);
-  border-radius: 8px;
-  padding: 1.25rem;
+  background: rgba(14, 11, 30, 0.5);
+  border: 1px solid rgba(171, 145, 255, 0.16);
+  border-radius: 10px;
+  padding: 0.85rem 1rem;
 }
 .archetypeListCard h5 {
-  font-size: 1rem;
-  font-weight: 700;
-  color: #d1b3ff;
-  margin-top: 0;
-  margin-bottom: 1rem;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: #c9b1fb;
+  margin: 0 0 0.6rem;
   text-transform: uppercase;
-  letter-spacing: 0.5px;
-  text-align: center;
+  letter-spacing: 0.08em;
+  font-family: 'Cinzel', serif;
 }
 .adviceCard .meaningText p {
   font-style: italic;
@@ -418,10 +403,9 @@
   text-align: center;
 }
 .archetypeList li {
-  margin-bottom: 0.6rem;
-  font-size: 0.95rem;
+  margin-bottom: 0.45rem;
+  font-size: 0.88rem;
   line-height: 1.4;
-  opacity: 0.9;
 }
 .strengthsCard .archetypeList li { color: #b8e994; }
 .weaknessesCard .archetypeList li { color: #ffab91; }
@@ -430,7 +414,6 @@
   color: #b5b5c8;
   font-style: italic;
 }
-
 
 /* --- 8. ESTADOS (Erro) --- */
 .notFound {
@@ -445,46 +428,31 @@
   margin-top: 1.5rem;
 }
 
-
 /* --- 9. RESPONSIVIDADE (Mobile) --- */
-@media (max-width: 900px) {
-  .profileContainer {
-    padding: 1.5rem;
-  }
+@media (max-width: 860px) {
   .profileLayoutGrid {
-    grid-template-columns: 1fr; /* Coluna única no mobile */
-    gap: 2.5rem;
+    grid-template-columns: 1fr;
+    gap: 1.25rem;
   }
   .profileLeftColumn {
+    position: static;
     grid-row: 1;
-    position: static; /* Remove o "sticky" */
   }
   .profileRightColumn {
     grid-row: 2;
-    gap: 2rem; /* Espaço menor entre cartões */
+    gap: 1rem;
   }
-  .profileAvatar {
-    width: 140px;
-    height: 140px;
-  }
-  .profileFullName {
-    font-size: 1.8rem;
-  }
-  /* Grelha do arquétipo vira coluna única */
   .archetypeGridContainer {
     grid-template-columns: 1fr;
-    gap: 2rem;
+    gap: 1rem;
   }
-
   .oracleGrid {
     grid-template-columns: 1fr;
   }
-
   .timelineItem {
     grid-template-columns: 10px 1fr;
     gap: 0.7rem;
   }
-
   .timelineDot {
     width: 10px;
     height: 10px;

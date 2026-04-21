@@ -1,23 +1,20 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import styles from '../../pages/NumerologyPage.module.css';
+import { getArcana, getYearArcana, getArcanaImageUrl } from '../../utils/arcanaMap';
 
 const renderFormattedText = (text) => {
   if (!text) return null;
   const regex = /\*\*(.*?)\*\*/g;
-
   return (
     <div className={styles.meaningText}>
       {text.split('\n').map((paragraph, pIndex) => {
-        const trimmedParagraph = paragraph.trim();
-        if (!trimmedParagraph) return null;
-
-        const parts = trimmedParagraph.split(regex);
+        const trimmed = paragraph.trim();
+        if (!trimmed) return null;
+        const parts = trimmed.split(regex);
         return (
           <p key={pIndex}>
-            {parts.map((part, partIndex) =>
-              partIndex % 2 === 1 ? <strong key={partIndex}>{part}</strong> : part
-            )}
+            {parts.map((part, i) => i % 2 === 1 ? <strong key={i}>{part}</strong> : part)}
           </p>
         );
       })}
@@ -25,8 +22,36 @@ const renderFormattedText = (text) => {
   );
 };
 
+function ArcanaCard({ arcana, label, sublabel }) {
+  const imgUrl = getArcanaImageUrl(arcana?.img);
+  return (
+    <div className={styles.arcanaCard}>
+      <div className={styles.arcanaImgWrap}>
+        {imgUrl
+          ? <img src={imgUrl} alt={arcana.name} className={styles.arcanaImg} />
+          : <div className={styles.arcanaImgPlaceholder}>{arcana?.number ?? '?'}</div>
+        }
+      </div>
+      <div className={styles.arcanaInfo}>
+        <p className={styles.arcanaEyebrow}>{label}</p>
+        <p className={styles.arcanaNumber}>Arcano {arcana?.number}</p>
+        <p className={styles.arcanaName}>{arcana?.name}</p>
+        <p className={styles.arcanaKeyword}>{arcana?.keyword}</p>
+        {sublabel && <p className={styles.arcanaSubLabel}>{sublabel}</p>}
+      </div>
+    </div>
+  );
+}
+
 function NumerologyResults({ resultData, onReset, isResetting, errorResetting }) {
-  const lifePathNumber = resultData?.life_path_number ?? '—';
+  const lifePathNumber = resultData?.life_path_number ?? null;
+  const birthdayNumber = resultData?.birthday_number ?? null;
+  const birthDate = resultData?.input_birth_date ?? null;
+
+  const lifePathArcana = getArcana(lifePathNumber);
+  const birthdayArcana = getArcana(birthdayNumber);
+  const yearArcana = getYearArcana(birthDate);
+
   let archetypeData = null;
   let archetypeParseError = null;
   const rawArchetypeText = resultData?.birthday_secret_meaning;
@@ -34,20 +59,20 @@ function NumerologyResults({ resultData, onReset, isResetting, errorResetting })
   if (rawArchetypeText) {
     try {
       archetypeData = JSON.parse(rawArchetypeText);
-    } catch (error) {
-      if (rawArchetypeText.startsWith('{"error":')) {
-        archetypeParseError = JSON.parse(rawArchetypeText).error;
-      } else {
-        archetypeData = {
-          archetype_title: 'O Arquétipo do Seu Dia de Nascimento',
-          archetype_description: rawArchetypeText,
-          numerology_details: null,
-          tarot_card: null,
-          advice: null,
-          strengths: [],
-          weaknesses: [],
-        };
+      if (archetypeData?.error) {
+        archetypeParseError = archetypeData.error;
+        archetypeData = null;
       }
+    } catch {
+      archetypeData = {
+        archetype_title: 'O Arquétipo do Seu Dia de Nascimento',
+        archetype_description: rawArchetypeText,
+        numerology_details: null,
+        tarot_card: null,
+        advice: null,
+        strengths: [],
+        weaknesses: [],
+      };
     }
   }
 
@@ -55,117 +80,129 @@ function NumerologyResults({ resultData, onReset, isResetting, errorResetting })
 
   return (
     <div className={styles.resultsContainer}>
-      <div className={styles.resultContent}>
-        <section className={styles.lifePathHero}>
-          <div className={styles.lifePathOrb} aria-label={`Número ${lifePathNumber}`}>{lifePathNumber}</div>
-          <div className={styles.orbMeta}>
-            <p className={styles.eyebrow}>Número de caminho de vida</p>
-            <h2 className={styles.heroTitle}>Sua vibração principal desta jornada</h2>
-            <p className={styles.heroDescription}>
-              A numerologia revela o padrão-base da sua energia. Use este número como foco para decisões, ritmo e autoconhecimento.
-            </p>
-          </div>
-        </section>
 
-        {archetypeParseError && (
-          <div className={`${styles.resultCard} ${styles.secretMeaningCard}`}>
-            <h3 className={styles.cardTitle}>O Arquétipo do Seu Dia de Nascimento</h3>
-            <p className={styles.errorMessage}>{archetypeParseError}</p>
-          </div>
+      {/* ── Arcanos visuais ── */}
+      <div className={styles.arcanaRow}>
+        {lifePathArcana && (
+          <ArcanaCard
+            arcana={lifePathArcana}
+            label="Arcano do Caminho de Vida"
+            sublabel={`Número ${lifePathNumber}`}
+          />
         )}
-
-        {!archetypeParseError && !archetypeData && (
-          <div className={`${styles.resultCard} ${styles.secretMeaningCard}`}>
-            <h3 className={styles.cardTitle}>Arquétipo indisponível</h3>
-            <p className={styles.warningMessage}>
-              Ainda não foi possível montar o seu card de arquétipo. Tente recalcular em instantes.
-            </p>
-            <div className={styles.resultActions}>
-              <button onClick={onReset} className={styles.resetButton} disabled={isResetting}>
-                Recalcular
-              </button>
-            </div>
-          </div>
+        {birthdayArcana && birthdayNumber !== lifePathNumber && (
+          <ArcanaCard
+            arcana={birthdayArcana}
+            label="Arcano do Dia de Nascimento"
+            sublabel={`Número ${birthdayNumber}`}
+          />
         )}
-
-        {!archetypeParseError && archetypeData && (
-          <div className={`${styles.resultCard} ${styles.secretMeaningCard}`}>
-            <h3 className={styles.cardTitle}>
-              {archetypeData.archetype_title || 'O Arquétipo do Seu Dia de Nascimento'}
-            </h3>
-
-            {!hasStructuredArchetype && (
-              <div className={styles.cardSubSection}>
-                {renderFormattedText(archetypeData.archetype_description)}
-              </div>
-            )}
-
-            {hasStructuredArchetype && (
-              <div className={styles.archetypeGridContainer}>
-                <div className={styles.archetypeMain}>
-                  <div className={styles.archetypeSection}>
-                    <h4>Arquétipo central</h4>
-                    {renderFormattedText(archetypeData.archetype_description)}
-                  </div>
-
-                  {archetypeData.numerology_details && (
-                    <div className={styles.archetypeSection}>
-                      <h4>Numerologia e planetas</h4>
-                      {renderFormattedText(archetypeData.numerology_details)}
-                    </div>
-                  )}
-
-                  {archetypeData.tarot_card && (
-                    <div className={styles.archetypeSection}>
-                      <h4>Correspondência no Tarot</h4>
-                      {renderFormattedText(archetypeData.tarot_card)}
-                    </div>
-                  )}
-                </div>
-
-                <div className={styles.archetypeSidebar}>
-                  {archetypeData.advice && (
-                    <div className={`${styles.archetypeListCard} ${styles.adviceCard}`}>
-                      <h5>Conselho</h5>
-                      {renderFormattedText(archetypeData.advice)}
-                    </div>
-                  )}
-
-                  {archetypeData.strengths?.length > 0 && (
-                    <div className={`${styles.archetypeListCard} ${styles.strengthsCard}`}>
-                      <h5>Pontos fortes</h5>
-                      <ul className={styles.archetypeList}>
-                        {archetypeData.strengths.map((item, i) => <li key={i}>{item}</li>)}
-                      </ul>
-                    </div>
-                  )}
-
-                  {archetypeData.weaknesses?.length > 0 && (
-                    <div className={`${styles.archetypeListCard} ${styles.weaknessesCard}`}>
-                      <h5>Pontos de atenção</h5>
-                      <ul className={styles.archetypeList}>
-                        {archetypeData.weaknesses.map((item, i) => <li key={i}>{item}</li>)}
-                      </ul>
-                    </div>
-                  )}
-                </div>
-              </div>
-            )}
-          </div>
+        {yearArcana && (
+          <ArcanaCard
+            arcana={yearArcana}
+            label={`Arcano do Ano ${new Date().getFullYear()}`}
+            sublabel="Vibração do seu ano atual"
+          />
         )}
-
       </div>
 
-      <div className={styles.resultActions}>
-        <Link to="/oraculo/geral" className={styles.ctaButton}>Ver Síntese Integrada →</Link>
-        <button onClick={onReset} className={styles.resetButton} disabled={isResetting}>
-          {isResetting ? 'Apagando...' : 'Refazer minha leitura'}
+      {/* ── Caminho de Vida ── */}
+      {resultData?.life_path_meaning && (
+        <div className={styles.sectionBlock}>
+          <h3>Caminho de Vida · {lifePathNumber}</h3>
+          {renderFormattedText(resultData.life_path_meaning)}
+        </div>
+      )}
+
+      {/* ── Arquétipo do Dia de Nascimento ── */}
+      {archetypeParseError && (
+        <div className={styles.errorCard}>
+          <h3>Arquétipo do Dia de Nascimento</h3>
+          <p>{archetypeParseError}</p>
+          <button onClick={onReset} className={styles.primaryButton} disabled={isResetting}>
+            Recalcular
+          </button>
+        </div>
+      )}
+
+      {!archetypeParseError && !archetypeData && rawArchetypeText == null && (
+        <div className={styles.messageCard}>
+          <h3>Arquétipo do Dia de Nascimento</h3>
+          <p className={styles.loadingHint}>Ainda não disponível. Tente recalcular em instantes.</p>
+          <button onClick={onReset} className={styles.primaryButton} disabled={isResetting}>
+            Recalcular
+          </button>
+        </div>
+      )}
+
+      {!archetypeParseError && archetypeData && (
+        <div className={styles.sectionBlock}>
+          <h3>{archetypeData.archetype_title || 'Arquétipo do Dia de Nascimento'}</h3>
+
+          {!hasStructuredArchetype && renderFormattedText(archetypeData.archetype_description)}
+
+          {hasStructuredArchetype && (
+            <div className={styles.archetypeGridContainer}>
+              <div className={styles.archetypeMain}>
+                {archetypeData.archetype_description && (
+                  <article className={styles.deepDiveCard}>
+                    <p className={styles.deepDiveTitle}>Arquétipo central</p>
+                    {renderFormattedText(archetypeData.archetype_description)}
+                  </article>
+                )}
+                {archetypeData.numerology_details && (
+                  <article className={styles.deepDiveCard}>
+                    <p className={styles.deepDiveTitle}>Numerologia e planetas</p>
+                    {renderFormattedText(archetypeData.numerology_details)}
+                  </article>
+                )}
+                {archetypeData.tarot_card && (
+                  <article className={styles.deepDiveCard}>
+                    <p className={styles.deepDiveTitle}>Correspondência no Tarot</p>
+                    {renderFormattedText(archetypeData.tarot_card)}
+                  </article>
+                )}
+              </div>
+
+              <div className={styles.archetypeSidebar}>
+                {archetypeData.advice && (
+                  <div className={styles.radarCard}>
+                    <h4>Conselho</h4>
+                    {renderFormattedText(archetypeData.advice)}
+                  </div>
+                )}
+                {archetypeData.strengths?.length > 0 && (
+                  <div className={styles.radarCard}>
+                    <h4>Pontos fortes</h4>
+                    <ul>
+                      {archetypeData.strengths.map((item, i) => <li key={i}>{item}</li>)}
+                    </ul>
+                  </div>
+                )}
+                {archetypeData.weaknesses?.length > 0 && (
+                  <div className={styles.radarCard}>
+                    <h4>Pontos de atenção</h4>
+                    <ul>
+                      {archetypeData.weaknesses.map((item, i) => <li key={i}>{item}</li>)}
+                    </ul>
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* ── Ações ── */}
+      <div className={styles.statusRow}>
+        <Link to="/oraculo/geral" className={styles.primaryButton}>Ver Síntese Integrada →</Link>
+        <button onClick={onReset} className={styles.secondaryButton} disabled={isResetting}>
+          {isResetting ? 'Apagando...' : 'Refazer leitura'}
         </button>
       </div>
+
       {errorResetting && (
-        <p className={`${styles.errorMessage} ${styles.resetError}`}>
-          Erro ao apagar: {errorResetting.message}
-        </p>
+        <p className={styles.inlineError}>Erro ao apagar: {errorResetting.message}</p>
       )}
     </div>
   );

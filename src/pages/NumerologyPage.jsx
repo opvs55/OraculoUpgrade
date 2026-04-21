@@ -1,10 +1,11 @@
-// src/pages/NumerologyPage.jsx (O NOVO GESTOR)
+// src/pages/NumerologyPage.jsx
 import React, { useMemo, useState, useEffect } from 'react';
-import { useAuth } from '../context/AuthContext'; // Verifique o caminho
-import { useNumerologyReading } from '../hooks/useNumerologyReading'; // Verifique o caminho
-import NumberLoader from '../components/common/NumberLoader/NumberLoader'; // Verifique o caminho
-import NumerologyForm from '../components/numerology/NumerologyForm'; // <<< NOVO
-import NumerologyResults from '../components/numerology/NumerologyResults'; // <<< NOVO
+import { useAuth } from '../context/AuthContext';
+import { useNumerologyReading } from '../hooks/useNumerologyReading';
+import Loader from '../components/common/Loader/Loader';
+import DecorativeDivider from '../components/common/DecorativeDivider/DecorativeDivider';
+import NumerologyForm from '../components/numerology/NumerologyForm';
+import NumerologyResults from '../components/numerology/NumerologyResults';
 import styles from './NumerologyPage.module.css';
 import { usePageTitle } from '../hooks/usePageTitle';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
@@ -218,89 +219,117 @@ function NumerologyPage() {
   };
 
   return (
-    <div className={`content_wrapper ${styles.pageContainer}`}>
+    <div className={`content_wrapper ${styles.page}`}>
+
       {showResetConfirm && (
         <div className={styles.modalOverlay} role="dialog" aria-modal="true" aria-labelledby="reset-modal-title">
           <div className={styles.modalBox}>
             <p className={styles.modalTitle} id="reset-modal-title">Apagar leitura?</p>
-            <p className={styles.modalDesc}>Sua numerologia pessoal será removida e você poderá calcular uma nova. Esta ação não pode ser desfeita.</p>
+            <p className={styles.modalDesc}>Sua numerologia pessoal será removida e você poderá calcular uma nova.</p>
             <div className={styles.modalActions}>
-              <button type="button" className={styles.modalConfirm} onClick={handleConfirmReset}>Sim, apagar</button>
-              <button type="button" className={styles.modalCancel} onClick={() => setShowResetConfirm(false)}>Cancelar</button>
+              <button type="button" className={styles.primaryButton} onClick={handleConfirmReset}>Sim, apagar</button>
+              <button type="button" className={styles.secondaryButton} onClick={() => setShowResetConfirm(false)}>Cancelar</button>
             </div>
           </div>
         </div>
       )}
-      <div className={styles.content}>
-        <header className={styles.headerIntro}>
-          <h1 className={styles.headerTitle}>Numerologia Pessoal</h1>
-          <p className={styles.headerSubtitle}>
-            Descubra seu caminho de vida e o arquétipo do seu nascimento com uma leitura clara,
-            elegante e prática para sua rotina.
-          </p>
-        </header>
-        {/* heroSplit só aparece quando já existem dados */}
-        {numerologyData && (
-          <section className={styles.heroSplit}>
-            <div className={styles.numberVisual}>
-              <div className={styles.numberGlyph}>{numerologyData.life_path_number}</div>
-              <p className={styles.numberLabel}>Caminho de Vida</p>
-              {numerologyData.birthday_number && (
-                <p className={styles.numberSub}>Nascimento · {numerologyData.birthday_number}</p>
-              )}
-              {numerologyData.created_at && (
-                <p className={styles.numberDate}>
-                  Base desde {new Date(numerologyData.created_at).toLocaleDateString('pt-BR')}
-                </p>
-              )}
-            </div>
 
-            <div className={styles.weeklyPanel}>
-              <div className={styles.weeklyPanelHeader}>
-                <p className={styles.dynamicLabel}>Canal Semanal</p>
-                <h2 className={styles.weeklyPanelTitle}>Numerologia da Semana</h2>
-                <p className={styles.weeklyPanelSub}>Direção de curto prazo para seu ciclo atual.</p>
-              </div>
+      <header className={styles.header}>
+        <p className={styles.eyebrow}>Oráculos</p>
+        <h1>Numerologia Pessoal</h1>
+        <p className={styles.subtitle}>
+          Descubra seu Caminho de Vida, os Arcanos que regem seu nascimento e a vibração da sua semana.
+        </p>
+      </header>
 
-              {weeklySummary ? (
-                <div className={styles.weeklySummary}>
-                  {!weeklySummary.isCurrentWeek && (
-                    <span className={styles.weeklyStale}>Leitura da semana anterior · Gere uma nova abaixo</span>
-                  )}
-                  {weeklySummary.personalWeekVibe && (
-                    <span className={styles.weeklyVibe}>
-                      Vibração {weeklySummary.personalWeekVibe} · {weeklySummary.weekRef}
-                    </span>
-                  )}
-                  {weeklySummary.narrative && (
-                    <p className={styles.weeklyNarrative}>{weeklySummary.narrative}</p>
-                  )}
-                  {weeklySummary.themes.length > 0 && (
-                    <ul className={styles.weeklyThemes}>
-                      {weeklySummary.themes.map((t, i) => <li key={i}>{t}</li>)}
-                    </ul>
-                  )}
-                </div>
-              ) : (
-                <p className={styles.weeklyEmpty}>Nenhuma leitura semanal gerada ainda.</p>
-              )}
+      <DecorativeDivider />
 
-              {formError && <p className={styles.weeklyError}>{formError}</p>}
-
-              <button
-                type="button"
-                className={styles.secondaryButton}
-                onClick={handleGenerateWeekly}
-                disabled={weeklyMutation.isPending || isLoadingReading || isCalculating || isResetting}
-              >
-                {weeklyMutation.isPending ? '❆ Gerando...' : weeklySummary?.isCurrentWeek ? 'Atualizar leitura semanal' : 'Gerar leitura semanal'}
-              </button>
-            </div>
-          </section>
+      <section className={styles.card}>
+        {(isLoadingReading || isCalculating || isResetting) && (
+          <div className={styles.loadingBlock}>
+            <Loader />
+            <p className={styles.loadingHint}>
+              {isCalculating ? 'Calculando sua numerologia...' : isResetting ? 'Apagando leitura...' : 'Carregando...'}
+            </p>
+          </div>
         )}
 
-        {renderContent()}
-      </div>
+        {!isLoadingReading && !isCalculating && !isResetting && (errorLoadingReading || errorCalculating || errorResetting) && (
+          <div className={styles.errorCard}>
+            <h2>Ocorreu um erro</h2>
+            <p>{(errorLoadingReading || errorCalculating || errorResetting)?.message}</p>
+            <button onClick={handleRetry} className={styles.primaryButton}>Tentar novamente</button>
+          </div>
+        )}
+
+        {!isLoadingReading && !isCalculating && !isResetting && !errorLoadingReading && !errorCalculating && !errorResetting && (
+          <>
+            {/* Painel semanal — aparece quando há leitura pessoal */}
+            {numerologyData && !isSuccessResetting && (
+              <>
+                <div className={styles.statusRow}>
+                  <span className={styles.badge}>
+                    Caminho de Vida {numerologyData.life_path_number}
+                    {numerologyData.birthday_number ? ` · Nascimento ${numerologyData.birthday_number}` : ''}
+                  </span>
+                  {numerologyData.created_at && (
+                    <span className={styles.cacheInfo}>
+                      Base desde {new Date(numerologyData.created_at).toLocaleDateString('pt-BR')}
+                    </span>
+                  )}
+                </div>
+
+                <div className={styles.weeklyPanel}>
+                  <div className={styles.messageCard}>
+                    <h2>Numerologia Semanal</h2>
+                    {weeklySummary ? (
+                      <>
+                        {!weeklySummary.isCurrentWeek && (
+                          <p className={styles.loadingHint}>Leitura da semana anterior — gere uma nova abaixo.</p>
+                        )}
+                        {weeklySummary.personalWeekVibe && (
+                          <span className={styles.badge} style={{ display: 'inline-flex', marginBottom: '8px' }}>
+                            Vibração {weeklySummary.personalWeekVibe} · {weeklySummary.weekRef}
+                          </span>
+                        )}
+                        {weeklySummary.headline && <p><strong>{weeklySummary.headline}</strong></p>}
+                        {weeklySummary.narrative && <p>{weeklySummary.narrative}</p>}
+                        {weeklySummary.themes.length > 0 && (
+                          <div className={styles.chipsRow}>
+                            {weeklySummary.themes.map((t, i) => (
+                              <span key={i} className={styles.themeChip}>{t}</span>
+                            ))}
+                          </div>
+                        )}
+                      </>
+                    ) : (
+                      <p className={styles.loadingHint}>Nenhuma leitura semanal gerada ainda.</p>
+                    )}
+                  </div>
+
+                  {formError && <p className={styles.inlineError}>{formError}</p>}
+
+                  <button
+                    type="button"
+                    className={styles.secondaryButton}
+                    onClick={handleGenerateWeekly}
+                    disabled={weeklyMutation.isPending || weeklyNumerologyQuery.isLoading}
+                  >
+                    {weeklyMutation.isPending
+                      ? 'Gerando...'
+                      : weeklySummary?.isCurrentWeek
+                        ? 'Atualizar leitura semanal'
+                        : 'Gerar leitura semanal'}
+                  </button>
+                </div>
+              </>
+            )}
+
+            {/* Resultados ou Formulário */}
+            {renderContent()}
+          </>
+        )}
+      </section>
     </div>
   );
 }
