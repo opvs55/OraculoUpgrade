@@ -1,140 +1,388 @@
-.libraryContainer {
-  padding: 2rem 1rem 3.5rem;
-  color: #e0e0e0;
+/* ── Layout ── */
+.page {
   max-width: 1180px;
   margin: 0 auto;
+  padding: 2rem 1rem 4rem;
+  color: #e0e0e0;
+}
+
+/* ── Hero ── */
+.hero {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.eyebrow {
+  font-family: 'Cinzel', serif;
+  font-size: 0.78rem;
+  letter-spacing: 0.2em;
+  color: rgba(225, 179, 130, 0.6);
+  text-transform: uppercase;
+  margin: 0 0 0.4rem;
 }
 
 .mainTitle {
   font-family: 'Cinzel', serif;
-  text-align: center;
-  font-size: 3rem;
+  font-size: 2.6rem;
   color: #E1B382;
-  margin-bottom: 0.5rem;
+  margin: 0 0 0.5rem;
 }
 
 .subtitle {
-  text-align: center;
-  font-size: 1.1rem;
+  font-size: 1rem;
   color: #a0a0a0;
-  margin-bottom: 1.6rem;
+  margin: 0;
 }
 
-.oracleTracks {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 12px;
+/* ── Oracle tabs (nível 1) ── */
+.oracleTabs {
+  display: flex;
+  justify-content: center;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+  margin-bottom: 1.75rem;
+}
+
+.oracleTab,
+.oracleTabActive {
+  font-family: 'Cinzel', serif;
+  font-size: 0.9rem;
+  font-weight: 700;
+  padding: 0.55rem 1.4rem;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: all 0.2s;
+  border: 1px solid rgba(74, 90, 155, 0.5);
+  background: transparent;
+  color: #9a9cb8;
+}
+
+.oracleTab:hover {
+  border-color: rgba(161, 169, 216, 0.6);
+  color: #d8d9ee;
+}
+
+.oracleTabActive {
+  background: rgba(225, 179, 130, 0.15);
+  border-color: rgba(225, 179, 130, 0.55);
+  color: #E1B382;
+}
+
+/* ── Tab content ── */
+.tabContent {
+  animation: fadeIn 0.18s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── Tab hero banner ── */
+.tabHero {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1.5rem;
+  background: linear-gradient(135deg, rgba(26, 20, 45, 0.88), rgba(14, 12, 32, 0.92));
+  border: 1px solid rgba(225, 179, 130, 0.18);
+  border-radius: 12px;
+  padding: 1.25rem 1.5rem;
   margin-bottom: 1.5rem;
 }
 
-.trackCard {
-  border: 1px solid rgba(225, 179, 130, 0.22);
-  border-radius: 12px;
-  background: linear-gradient(145deg, rgba(26, 20, 45, 0.85), rgba(14, 12, 32, 0.88));
-  padding: 1rem;
-}
-
-.trackCard h2 {
-  margin: 0;
+.tabHero h2 {
+  font-family: 'Cinzel', serif;
   color: #f1d6b5;
-  font-size: 1.05rem;
+  margin: 0 0 0.3rem;
+  font-size: 1.15rem;
 }
 
-.trackCard p {
-  margin: 0.5rem 0 0.75rem;
-  color: rgba(228, 221, 208, 0.82);
+.tabHero p {
+  color: rgba(228, 221, 208, 0.75);
   font-size: 0.88rem;
-  line-height: 1.45;
+  margin: 0;
+  line-height: 1.5;
+  max-width: 480px;
 }
 
-.trackCard a {
+.heroCta {
+  flex-shrink: 0;
   text-decoration: none;
   font-weight: 700;
+  font-size: 0.85rem;
   color: #0d0c1d;
   background: linear-gradient(120deg, #e1b382, #d8a675);
   border-radius: 999px;
-  padding: 0.32rem 0.75rem;
-  font-size: 0.82rem;
+  padding: 0.45rem 1rem;
+  white-space: nowrap;
+  transition: opacity 0.2s;
 }
 
-.tabNav {
+.heroCta:hover {
+  opacity: 0.85;
+}
+
+/* ── Tarot: sub-tabs de naipe (nível 2) ── */
+.sectionNav {
   display: flex;
-  justify-content: center;
-  gap: 0.8rem;
-  margin-bottom: 2rem;
+  gap: 0.5rem;
   flex-wrap: wrap;
+  margin-bottom: 1.25rem;
 }
 
-.tabButton {
-  font-family: 'Cinzel', serif;
-  background-color: transparent;
-  border: 1px solid #2c2c54;
-  color: #a0a0a0;
-  padding: 0.8rem 1.5rem;
+.sectionTab,
+.sectionTabActive {
+  font-size: 0.82rem;
+  padding: 0.38rem 0.9rem;
   border-radius: 6px;
   cursor: pointer;
-  font-size: 1rem;
-  font-weight: bold;
-  transition: all 0.3s ease;
+  border: 1px solid rgba(44, 44, 84, 0.8);
+  background: transparent;
+  color: #8a8caa;
+  transition: all 0.18s;
 }
 
-.tabButton:hover {
-  background-color: #2c2c54;
-  color: #fff;
+.sectionTab:hover {
+  background: rgba(44, 44, 84, 0.5);
+  color: #d8d9ee;
 }
 
-.activeTab {
-  background-color: #E1B382;
-  color: #0D0C1D;
-  border-color: #E1B382;
+.sectionTabActive {
+  background: #2c2c54;
+  color: #e2d4ff;
+  border-color: rgba(161, 169, 216, 0.4);
 }
 
-/* --- ESTILOS PARA AS SEÇÕES E GRADES --- */
-
-.section {
-  margin-bottom: 4rem;
-}
-
-.sectionTitle {
-  font-family: 'Cinzel', serif;
-  font-size: 1.7rem;
-  color: #c7a37e;
-  border-bottom: 1px solid #2c2c54;
-  padding-bottom: 0.7rem;
-  margin-bottom: 1.2rem;
-}
-
+/* ── Card grid ── */
 .cardGrid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(165px, 1fr));
-  gap: 1.1rem;
+  grid-template-columns: repeat(auto-fill, minmax(155px, 1fr));
+  gap: 1rem;
 }
 
 .cardItem {
-  border: 1px solid rgba(225, 179, 130, 0.2);
+  border: 1px solid rgba(225, 179, 130, 0.18);
   border-radius: 10px;
   background: rgba(17, 14, 36, 0.62);
-  padding: 0.55rem;
+  padding: 0.5rem;
+  transition: border-color 0.2s;
 }
 
+.cardItem:hover {
+  border-color: rgba(225, 179, 130, 0.4);
+}
+
+/* ── Runas ── */
+.runesGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(145px, 1fr));
+  gap: 0.75rem;
+}
+
+.runeCard {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 0.3rem;
+  background: rgba(20, 15, 40, 0.7);
+  border: 1px solid rgba(100, 80, 160, 0.3);
+  border-radius: 10px;
+  padding: 1rem 0.75rem 0.85rem;
+  cursor: pointer;
+  transition: all 0.18s;
+  user-select: none;
+}
+
+.runeCard:hover {
+  border-color: rgba(171, 145, 255, 0.5);
+  background: rgba(30, 22, 60, 0.8);
+}
+
+.runeCardExpanded {
+  border-color: rgba(225, 179, 130, 0.55);
+  background: rgba(40, 28, 65, 0.88);
+}
+
+.runeSymbol {
+  font-size: 2rem;
+  color: #c9a6ff;
+  line-height: 1;
+}
+
+.runeName {
+  font-family: 'Cinzel', serif;
+  font-size: 0.82rem;
+  color: #e8d4ff;
+  margin: 0;
+}
+
+.runeKeywords {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.25rem;
+}
+
+.runeKeywords span {
+  font-size: 0.68rem;
+  color: #9a8ccc;
+  background: rgba(100, 80, 160, 0.15);
+  border: 1px solid rgba(100, 80, 160, 0.25);
+  border-radius: 999px;
+  padding: 0.1rem 0.45rem;
+}
+
+.runeExpanded {
+  margin-top: 0.5rem;
+  padding-top: 0.5rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  width: 100%;
+  text-align: left;
+}
+
+.runeExpanded p {
+  font-size: 0.75rem;
+  color: #c0bcd8;
+  margin: 0.2rem 0;
+  line-height: 1.45;
+}
+
+/* ── I Ching ── */
+.ichingGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 0.65rem;
+}
+
+.ichingCard {
+  background: rgba(20, 15, 40, 0.65);
+  border: 1px solid rgba(74, 90, 155, 0.28);
+  border-radius: 9px;
+  padding: 0.75rem 0.85rem;
+  transition: border-color 0.18s;
+}
+
+.ichingCard:hover {
+  border-color: rgba(161, 169, 216, 0.45);
+}
+
+.ichingNumber {
+  display: inline-block;
+  font-family: 'Cinzel', serif;
+  font-size: 0.7rem;
+  color: rgba(225, 179, 130, 0.6);
+  margin-bottom: 0.2rem;
+  letter-spacing: 0.05em;
+}
+
+.ichingName {
+  font-family: 'Cinzel', serif;
+  font-size: 0.82rem;
+  color: #f1d6b5;
+  margin: 0 0 0.3rem;
+}
+
+.ichingFocus {
+  font-size: 0.76rem;
+  color: #9a9cb8;
+  margin: 0;
+  line-height: 1.45;
+}
+
+/* ── Numerologia ── */
+.numerologyGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+}
+
+.numerologyCard {
+  background: linear-gradient(145deg, rgba(26, 20, 45, 0.9), rgba(14, 12, 32, 0.92));
+  border: 1px solid rgba(171, 145, 255, 0.2);
+  border-radius: 12px;
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  transition: border-color 0.2s;
+}
+
+.numerologyCard:hover {
+  border-color: rgba(171, 145, 255, 0.4);
+}
+
+.numerologyIcon {
+  font-size: 1.5rem;
+  color: #c9a6ff;
+}
+
+.numerologyCard h4 {
+  font-family: 'Cinzel', serif;
+  color: #e8d4ff;
+  font-size: 0.95rem;
+  margin: 0;
+}
+
+.numerologyCard p {
+  color: #9a9cb8;
+  font-size: 0.84rem;
+  margin: 0;
+  line-height: 1.5;
+  flex: 1;
+}
+
+.numerologyCta {
+  align-self: flex-start;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #c9a6ff;
+  text-decoration: none;
+  border: 1px solid rgba(171, 145, 255, 0.35);
+  border-radius: 999px;
+  padding: 0.3rem 0.8rem;
+  transition: all 0.2s;
+}
+
+.numerologyCta:hover {
+  background: rgba(171, 145, 255, 0.12);
+}
+
+.numerologyNote {
+  background: rgba(171, 145, 255, 0.05);
+  border: 1px solid rgba(171, 145, 255, 0.15);
+  border-radius: 8px;
+  padding: 0.9rem 1.1rem;
+}
+
+.numerologyNote p {
+  margin: 0;
+  font-size: 0.84rem;
+  color: #9a8ccc;
+  font-style: italic;
+}
+
+/* ── Responsive ── */
 @media (max-width: 768px) {
-  .mainTitle {
-    font-size: 2.2rem;
+  .mainTitle { font-size: 2rem; }
+
+  .tabHero {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
   }
-  .oracleTracks {
-    grid-template-columns: 1fr;
-  }
-  .sectionTitle {
-    font-size: 1.4rem;
-  }
+
   .cardGrid {
-    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
   }
-  .tabNav {
-    gap: 0.5rem;
+
+  .runesGrid {
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
   }
-  .tabButton {
-    padding: 0.6rem 1rem;
-    font-size: 0.9rem;
+
+  .ichingGrid {
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
   }
 }

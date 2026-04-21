@@ -6,6 +6,7 @@ import { useAuth } from '../hooks/useAuth';
 import { oraclesApi } from '../services/api/oraclesApi';
 import RunesCast from '../components/runes/RunesCast';
 import styles from './RunesWeeklyPage.module.css';
+import { usePageTitle } from '../hooks/usePageTitle';
 
 const toList = (value) => {
   if (Array.isArray(value)) return value.filter(Boolean);
@@ -49,6 +50,7 @@ const normalizeWeeklyData = (payload) => {
 };
 
 export default function RunesWeeklyPage() {
+  usePageTitle('Runas Semanais');
   const { user } = useAuth();
   const userId = user?.id;
   const queryClient = useQueryClient();
@@ -235,10 +237,7 @@ export default function RunesWeeklyPage() {
                   )}
 
                   {disclaimer && (
-                    <div className={styles.sectionBlock}>
-                      <h3>Nota</h3>
-                      <p className={styles.disclaimer}>{disclaimer}</p>
-                    </div>
+                    <p className={styles.disclaimerFooter}>{disclaimer}</p>
                   )}
                 </div>
               </>

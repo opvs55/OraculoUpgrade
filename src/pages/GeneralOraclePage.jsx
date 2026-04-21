@@ -6,6 +6,7 @@ import { useUnifiedReading } from '../features/unified/useUnifiedReading';
 import { useAuth } from '../context/AuthContext';
 import { supabase } from '../supabaseClient';
 import styles from './GeneralOraclePage.module.css';
+import { usePageTitle } from '../hooks/usePageTitle';
 
 const requirementMeta = {
   has_weekly_card: { label: 'Tarot', action: '/tarot', cta: 'Ir para Tarot' },
@@ -116,6 +117,7 @@ const buildFallbackGeneralReading = ({ tarotCard, runesOutput, ichingOutput, num
 };
 
 export default function GeneralOraclePage() {
+  usePageTitle('Síntese Semanal');
   const { id } = useParams();
   const navigate = useNavigate();
   const { user } = useAuth();
@@ -273,13 +275,21 @@ export default function GeneralOraclePage() {
 
       {!isLoading && missingChecklist.length > 0 && (
         <section className={styles.card}>
-          <h2>Complete seus oráculos semanais</h2>
-          <p className={styles.stableModeHint}>Para uma síntese completa, gere os oráculos abaixo primeiro:</p>
+          <div className={styles.pendingHeader}>
+            <span className={styles.pendingIcon}>◎</span>
+            <div>
+              <h2>Quase lá — {4 - missingChecklist.length} de 4 oráculos prontos</h2>
+              <p className={styles.stableModeHint}>
+                Complete os oráculos abaixo para desbloquear sua síntese personalizada da semana.
+                Cada um leva menos de um minuto.
+              </p>
+            </div>
+          </div>
           <ul className={styles.checklist}>
             {missingChecklist.map((item) => (
               <li key={item.action}>
-                <span>{item.label}</span>
-                <Link to={item.action}>{item.cta}</Link>
+                <span className={styles.checklistLabel}>⊕ {item.label}</span>
+                <Link to={item.action} className={styles.checklistCta}>{item.cta} →</Link>
               </li>
             ))}
           </ul>

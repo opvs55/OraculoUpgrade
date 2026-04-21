@@ -10,6 +10,7 @@ import Loader from '../../components/common/Loader/Loader';
 import { useReelsLab } from '../../features/reels/useReelsLab';
 import { goBackOrFallback } from '../../utils/navigation';
 import styles from './MyProfilePage.module.css';
+import { usePageTitle } from '../../hooks/usePageTitle';
 
 const spreadTypeLabels = {
   oneCard: 'Tarot (1 carta)',
@@ -135,6 +136,7 @@ function useUnifiedOracleHub(userId) {
 }
 
 export default function MyProfilePage() {
+  usePageTitle('Meu Espaço');
   const navigate = useNavigate();
   const location = useLocation();
   const { user } = useAuth();
@@ -227,8 +229,7 @@ export default function MyProfilePage() {
             </div>
             <div className={styles.heroActions}>
               <Link to="/tarot" className={styles.primaryButton}>Fazer leitura</Link>
-              <Link to="/biblioteca" className={styles.secondaryButton}>Biblioteca Tarot</Link>
-              <Link to="/biblioteca/oraculos" className={styles.secondaryButton}>Biblioteca Oráculos</Link>
+              <Link to="/biblioteca" className={styles.secondaryButton}>Biblioteca</Link>
               {profile?.username && <Link to={`/perfil/${profile.username}`} className={styles.secondaryButton}>Perfil público</Link>}
             </div>
           </div>

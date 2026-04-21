@@ -5,6 +5,7 @@ import { useGenerateReading } from '../hooks/useReadings';
 import Loader from '../components/common/Loader/Loader';
 import { suggestedQuestions } from '../constants/suggestionConstants';
 import styles from './TarotPage.module.css';
+import { usePageTitle } from '../hooks/usePageTitle';
 
 const listaDeVideos = [
   '/assets/video1.mp4',
@@ -18,6 +19,7 @@ const VISITOR_READING_KEY = 'visitorReadingDone';
 const mysticPhrase = 'O que o destino deseja revelar hoje?';
 
 function TarotPage() {
+  usePageTitle('Tarot');
   const navigate = useNavigate();
   const { user } = useAuth();
   const { mutate: generateReading, isPending, error: mutationError, reset } = useGenerateReading();
@@ -122,14 +124,33 @@ function TarotPage() {
   // --- RENDERIZAÇÃO DOS FORMULÁRIOS ---
 
   // Formulário Padrão
+  const spreadDescriptions = {
+    threeCards: 'Passado · Presente · Futuro. Rápido, direto e poderoso para qualquer pergunta.',
+    celticCross: '10 cartas que revelam raízes, bloqueios e o caminho à frente. Para perguntas complexas.',
+    templeOfAphrodite: '7 cartas dedicadas a analisar a dinâmica entre duas pessoas em um relacionamento.',
+    pathChoice: '2 caminhos revelados pelas cartas. Ideal quando você está diante de uma decisão difícil.',
+  };
+
   const defaultForm = (
     <div className={styles.formContainer}>
-      <p className={styles.subtitle}>Selecione um método de leitura abaixo.</p>
-      <div className={styles.buttonGroup}>
-        <button onClick={() => setSelectedSpread('celticCross')} className={`${styles.submitButton} ${selectedSpread === 'celticCross' ? styles.activeButton : ''}`}>Cruz Celta</button>
-        <button onClick={() => setSelectedSpread('threeCards')} className={`${styles.submitButton} ${selectedSpread === 'threeCards' ? styles.activeButton : ''}`}>3 Cartas</button>
-        <button onClick={() => setSelectedSpread('templeOfAphrodite')} className={`${styles.submitButton} ${selectedSpread === 'templeOfAphrodite' ? styles.activeButton : ''}`}>Templo de Afrodite</button>
-        <button onClick={() => setFormType('pathChoice')} className={styles.submitButton}>Escolha de Caminho</button>
+      <p className={styles.subtitle}>Escolha um método de leitura:</p>
+      <div className={styles.spreadGrid}>
+        <button onClick={() => setSelectedSpread('threeCards')} className={`${styles.spreadCard} ${selectedSpread === 'threeCards' ? styles.spreadCardActive : ''}`}>
+          <span className={styles.spreadName}>3 Cartas</span>
+          <span className={styles.spreadDesc}>{spreadDescriptions.threeCards}</span>
+        </button>
+        <button onClick={() => setSelectedSpread('celticCross')} className={`${styles.spreadCard} ${selectedSpread === 'celticCross' ? styles.spreadCardActive : ''}`}>
+          <span className={styles.spreadName}>Cruz Celta</span>
+          <span className={styles.spreadDesc}>{spreadDescriptions.celticCross}</span>
+        </button>
+        <button onClick={() => setSelectedSpread('templeOfAphrodite')} className={`${styles.spreadCard} ${selectedSpread === 'templeOfAphrodite' ? styles.spreadCardActive : ''}`}>
+          <span className={styles.spreadName}>Templo de Afrodite</span>
+          <span className={styles.spreadDesc}>{spreadDescriptions.templeOfAphrodite}</span>
+        </button>
+        <button onClick={() => setFormType('pathChoice')} className={`${styles.spreadCard} ${formType === 'pathChoice' ? styles.spreadCardActive : ''}`}>
+          <span className={styles.spreadName}>Escolha de Caminho</span>
+          <span className={styles.spreadDesc}>{spreadDescriptions.pathChoice}</span>
+        </button>
       </div>
 
       {/* Mostra SÓ se uma tiragem for selecionada E NÃO FOR o Templo de Afrodite */}

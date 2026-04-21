@@ -6,11 +6,13 @@ import NumberLoader from '../components/common/NumberLoader/NumberLoader'; // Ve
 import NumerologyForm from '../components/numerology/NumerologyForm'; // <<< NOVO
 import NumerologyResults from '../components/numerology/NumerologyResults'; // <<< NOVO
 import styles from './NumerologyPage.module.css';
+import { usePageTitle } from '../hooks/usePageTitle';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '../supabaseClient';
 import { oraclesApi } from '../services/api/oraclesApi';
 
 function NumerologyPage() {
+  usePageTitle('Numerologia');
   const { user } = useAuth();
   const [birthDate, setBirthDate] = useState('');
   const [formError, setFormError] = useState(null);

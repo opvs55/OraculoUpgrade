@@ -152,6 +152,13 @@ function PastReadingPage() {
           </div>
         </div>
 
+        {/* --- CTA pós-leitura --- */}
+        <div className={styles.postReadingActions}>
+          <Link to="/tarot" className={styles.postReadingPrimary}>✦ Nova leitura</Link>
+          {user && <Link to="/historico" className={styles.postReadingSecondary}>Ver histórico</Link>}
+          <Link to="/perfil" className={styles.postReadingSecondary}>Meu perfil</Link>
+        </div>
+
         {/* --- 2. SEÇÃO DE COMUNIDADE (Pública) --- */}
         {!isTemporary && (
           <div className={styles.communitySection}>

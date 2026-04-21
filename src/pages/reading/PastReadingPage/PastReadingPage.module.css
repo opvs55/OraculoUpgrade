@@ -216,3 +216,55 @@
   background-color: var(--color-primary-main);
   color: var(--color-text-on-primary);
 }
+
+/* ── Ações pós-leitura ── */
+.postReadingActions {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  justify-content: center;
+  padding: 1.5rem 0 0.5rem;
+  margin-top: 1rem;
+  border-top: 1px solid rgba(225, 179, 130, 0.15);
+  width: 100%;
+}
+
+.postReadingPrimary {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.65rem 1.6rem;
+  background: rgba(225, 179, 130, 0.15);
+  border: 1px solid rgba(225, 179, 130, 0.5);
+  border-radius: 999px;
+  color: #E1B382;
+  font-family: 'Cinzel', serif;
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-decoration: none;
+  transition: all 0.2s;
+}
+
+.postReadingPrimary:hover {
+  background: rgba(225, 179, 130, 0.25);
+  box-shadow: 0 0 16px rgba(225, 179, 130, 0.25);
+}
+
+.postReadingSecondary {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.65rem 1.2rem;
+  background: transparent;
+  border: 1px solid rgba(100, 100, 140, 0.45);
+  border-radius: 999px;
+  color: #a9acc6;
+  font-size: 0.83rem;
+  text-decoration: none;
+  transition: all 0.2s;
+}
+
+.postReadingSecondary:hover {
+  border-color: rgba(161, 169, 216, 0.65);
+  color: #d8d9ee;
+}

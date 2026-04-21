@@ -25,8 +25,6 @@ const RunesWeeklyPage = lazy(() => import('../pages/RunesWeeklyPage'));
 const IChingWeeklyPage = lazy(() => import('../pages/IChingWeeklyPage'));
 const MyProfilePage = lazy(() => import('../pages/profile/MyProfilePage'));
 const ReadingHistoryPage = lazy(() => import('../pages/history/ReadingHistoryPage'));
-const ReelsLabPage = lazy(() => import('../pages/reels/ReelsLabPage'));
-const OracleLibraryPage = lazy(() => import('../pages/learning/OracleLibraryPage'));
 const InteractiveReadingHubPage = lazy(() => import('../pages/interactive/InteractiveReadingHubPage'));
 const InteractiveReadingQueuePage = lazy(() => import('../pages/interactive/InteractiveReadingQueuePage'));
 const InteractiveReadingSessionPage = lazy(() => import('../pages/interactive/InteractiveReadingSessionPage'));
@@ -80,9 +78,9 @@ function AppRoutes() {
           <Route path="/perfil" element={<MyProfilePage />} />
           <Route path="/perfil/editar" element={<EditarPerfilPage />} />
           <Route path="/historico" element={<ReadingHistoryPage />} />
-          <Route path="/reels" element={<ReelsLabPage />} />
+          <Route path="/reels" element={<Navigate to="/perfil" replace />} />
           <Route path="/biblioteca" element={<CardLibraryPage />} />
-          <Route path="/biblioteca/oraculos" element={<OracleLibraryPage />} />
+          <Route path="/biblioteca/oraculos" element={<Navigate to="/biblioteca" replace />} />
           <Route path="/biblioteca/:cardSlug" element={<LearningCardDetailPage />} />
           <Route path="/oraculo/geral" element={<GeneralOraclePage />} />
           <Route path="/oraculo/geral/:id" element={<GeneralOraclePage />} />

@@ -206,6 +206,17 @@
   opacity: 0.78;
 }
 
+.disclaimerFooter {
+  margin-top: 2rem;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  font-size: 0.72rem;
+  color: rgba(169, 172, 198, 0.45);
+  line-height: 1.5;
+  font-style: italic;
+  text-align: center;
+}
+
 .primaryButton {
   width: fit-content;
   border-radius: 10px;

@@ -17,6 +17,13 @@ const criarCartas = (naipe, elemento, tipo) => {
     Ouros: ['as-ouros', 'dois-ouros', 'tres-ouros', 'quatro-ouros', 'cinco-ouros', 'seis-ouros', 'sete-ouros', 'oito-ouros', 'nove-ouros', 'dez-ouros', 'valete-ouros', 'cavaleiro-ouros', 'rainha-ouros', 'rei-ouros']
   };
 
+  const rweNames = {
+    Paus: 'Wands',
+    Copas: 'Cups',
+    Espadas: 'Swords',
+    Ouros: 'Pentacles',
+  };
+
   const descricoes = {
     Paus: {
       geral: "O naipe de Paus representa a energia do fogo, criatividade, paixão, ação e inspiração. Estas cartas estão conectadas com a nossa força vital, ambições e capacidade de manifestar nossos desejos através da ação direta.",
@@ -49,7 +56,7 @@ const criarCartas = (naipe, elemento, tipo) => {
       id,
       slug: slugs[naipe][i],
       nome: nomes[naipe][i],
-      img: `/assets/cartas/${tipo.toLowerCase()}/${numero}_${naipe.toLowerCase()}.jpeg`,
+      img: `/assets/cartas/RWS1909_-_${rweNames[naipe]}_${String(numero).padStart(2, '0')}.jpeg`,
       video: `/assets/videos/${slugs[naipe][i]}.mp4`,
       tipo: "Arcano Menor",
       naipe: tipo,
