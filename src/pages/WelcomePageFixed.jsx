@@ -1,18 +1,16 @@
-// src/pages/WelcomePageNew.jsx
-// Página principal inspirada no design do ChatGPT
+// src/pages/WelcomePageFixed.jsx
+// Página principal inspirada no design do ChatGPT - Versão Corrigida
 
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { baralhoDetalhado } from '../tarotDeck.js';
-import styles from './WelcomePageNew.module.css';
+import styles from './WelcomePageFixed.module.css';
 
 const oracles = [
   {
     id: 'tarot',
     title: 'Tarot',
     description: 'Leitura simbólica profunda com 78 cartas antigas',
-    icon: 'tarot',
-    cardImage: '/assets/cartas/RWS1909_-_00_Fool.jpeg',
+    icon: '🃏',
     to: '/tarot',
     color: '#c36e97'
   },
@@ -20,8 +18,7 @@ const oracles = [
     id: 'numerologia',
     title: 'Numerologia',
     description: 'Descubra os números que governam sua jornada',
-    icon: 'numerology',
-    cardImage: '/assets/cartas/RWS1909_-_21_World.jpeg',
+    icon: '🔢',
     to: '/numerologia',
     color: '#e1b382'
   },
@@ -29,8 +26,7 @@ const oracles = [
     id: 'runas',
     title: 'Runas',
     description: 'Sabedoria ancestral das pedras mágicas',
-    icon: 'runes',
-    cardImage: '/assets/cartas/RWS1909_-_01_Magician.jpeg',
+    icon: '🪨',
     to: '/runas',
     color: '#4a90e2'
   },
@@ -38,33 +34,18 @@ const oracles = [
     id: 'iching',
     title: 'I Ching',
     description: 'Os 64 hexagramas do livro das mutações',
-    icon: 'iching',
-    cardImage: '/assets/cartas/RWS1909_-_10_Wheel_of_Fortune.jpeg',
+    icon: '☯',
     to: '/iching',
     color: '#7b68ee'
   }
 ];
 
-const floatingCards = [
-  { id: 1, image: '/assets/cartas/RWS1909_-_07_Chariot.jpeg', delay: 0 },
-  { id: 2, image: '/assets/cartas/RWS1909_-_17_Star.jpeg', delay: 2 },
-  { id: 3, image: '/assets/cartas/RWS1909_-_13_Death.jpeg', delay: 4 },
-  { id: 4, image: '/assets/cartas/RWS1909_-_19_Sun.jpeg', delay: 6 },
-  { id: 5, image: '/assets/cartas/RWS1909_-_06_Lovers.jpeg', delay: 8 }
-];
-
-function WelcomePageNew() {
+function WelcomePageFixed() {
   const [mounted, setMounted] = useState(false);
-  const [hoveredOracle, setHoveredOracle] = useState(null);
 
   useEffect(() => {
     setMounted(true);
   }, []);
-
-  const getRandomCard = () => {
-    const randomIndex = Math.floor(Math.random() * baralhoDetalhado.length);
-    return baralhoDetalhado[randomIndex];
-  };
 
   return (
     <div className={styles.welcomeContainer}>
@@ -74,20 +55,6 @@ function WelcomePageNew() {
         <div className={styles.backgroundOverlay} />
       </div>
 
-      {/* Cartas flutuantes animadas */}
-      <div className={styles.floatingCards}>
-        {floatingCards.map((card) => (
-          <div
-            key={card.id}
-            className={styles.floatingCard}
-            style={{
-              backgroundImage: `url(${card.image})`,
-              animationDelay: `${card.delay}s`
-            }}
-          />
-        ))}
-      </div>
-
       {/* Conteúdo principal */}
       <div className={styles.content}>
         {/* Hero Section */}
@@ -95,8 +62,7 @@ function WelcomePageNew() {
           <div className={styles.heroContent}>
             <div className={styles.titleContainer}>
               <h1 className={styles.mainTitle}>
-                <span className={styles.titlePart1}>ESOTERI</span>
-                <span className={styles.titlePart2}>CON</span>
+                ESOTERICON
               </h1>
               <div className={styles.titleDecoration}>
                 <span className={styles.decorationLine} />
@@ -135,37 +101,20 @@ function WelcomePageNew() {
                 to={oracle.to}
                 className={styles.oracleCard}
                 style={{ '--oracle-color': oracle.color }}
-                onMouseEnter={() => setHoveredOracle(oracle.id)}
-                onMouseLeave={() => setHoveredOracle(null)}
               >
-                <div className={styles.oracleImage}>
-                  <div 
-                    className={styles.imageContainer}
-                    style={{ backgroundImage: `url(${oracle.cardImage})` }}
-                  />
-                  <div className={styles.imageOverlay} />
+                <div className={styles.oracleIcon}>
+                  <span>{oracle.icon}</span>
                 </div>
                 
                 <div className={styles.oracleContent}>
                   <div className={styles.oracleHeader}>
                     <h3 className={styles.oracleTitle}>{oracle.title}</h3>
-                    <div 
-                      className={styles.oracleIcon}
-                      style={{ backgroundColor: oracle.color }}
-                    >
-                      {oracle.icon === 'tarot' && '°'}
-                      {oracle.icon === 'numerology' && '8'}
-                      {oracle.icon === 'runes' && 'R'}
-                      {oracle.icon === 'iching' && 'Y'}
-                    </div>
                   </div>
                   
                   <p className={styles.oracleDescription}>{oracle.description}</p>
                   
                   <div className={styles.oracleFooter}>
-                    <span className={styles.oracleCTA}>
-                      {hoveredOracle === oracle.id ? 'Começar agora' : 'Explorar'}
-                    </span>
+                    <span className={styles.oracleCTA}>Explorar</span>
                     <span className={styles.oracleArrow}>»</span>
                   </div>
                 </div>
@@ -221,4 +170,4 @@ function WelcomePageNew() {
   );
 }
 
-export default WelcomePageNew;
+export default WelcomePageFixed;
