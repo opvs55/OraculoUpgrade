@@ -341,12 +341,16 @@
 
 @media (max-width: 768px) {
   .header {
-    grid-template-columns: auto 1fr auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     padding: 0 1rem;
     height: 58px;
   }
 
   .navCenter { display: none; }
+
+  .navRight { margin-left: auto; }
 
   .menuButton { display: inline-flex; }
 
