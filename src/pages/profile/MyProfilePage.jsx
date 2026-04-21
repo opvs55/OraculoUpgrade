@@ -122,8 +122,6 @@ function useUnifiedOracleHub(userId) {
         ),
       ]);
 
-      console.log('[unifiedOracleHub] readings:', readings);
-
       return {
         recentReadings: readings,
         latestWeeklyCard: weeklyCardRows[0] || null,

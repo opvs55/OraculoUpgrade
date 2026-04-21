@@ -131,6 +131,32 @@
 /* CTA */
 .ctaWrapper {
   margin-bottom: 2rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.secondaryButton {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.95rem 1.8rem;
+  border: 1px solid rgba(201, 169, 110, 0.35);
+  border-radius: 40px;
+  background: transparent;
+  color: rgba(240, 230, 204, 0.7) !important;
+  font-family: 'Cinzel', serif;
+  font-size: 0.78rem;
+  letter-spacing: 0.12em;
+  text-decoration: none !important;
+  text-transform: uppercase;
+  transition: border-color 0.25s ease, color 0.25s ease;
+}
+
+.secondaryButton:hover {
+  border-color: rgba(201, 169, 110, 0.65);
+  color: #f0e6cc !important;
 }
 
 .primaryButton {

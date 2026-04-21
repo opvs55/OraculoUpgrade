@@ -66,7 +66,6 @@ function TarotPage() {
       return;
     }
 
-    console.log(`Iniciando leitura do tipo: ${spreadType}`);
 
     generateReading({ question: questionData, user: user || null, spreadType: spreadType }, {
       onSuccess: (data) => {
@@ -78,9 +77,7 @@ function TarotPage() {
           navigate(`/leitura/${data.id}`);
         }
       },
-      onError: (err) => {
-        console.error('Erro no generateReading:', err);
-      }
+      onError: () => {}
     });
   }, [user, visitorHasRead, generateReading, navigate, reset]);
 
@@ -222,7 +219,7 @@ function TarotPage() {
       </video>
       <div className={styles.videoOverlay}></div>
       <div className={styles.conteudoCentralizado}>
-        <h1 className={styles.mainTitleLogo}>ORÁCULO</h1>
+        <h1 className={styles.mainTitleLogo}>ESOTERICON</h1>
         <p className={styles.mysticText} aria-live="polite">
           {mysticPhrase}
         </p>

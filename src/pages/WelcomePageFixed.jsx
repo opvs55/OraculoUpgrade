@@ -62,8 +62,11 @@ function WelcomePageFixed() {
         </p>
 
         <div className={styles.ctaWrapper}>
-          <Link to="/cadastro" className={styles.primaryButton}>
-            REVELAR MINHA LEITURA ✦
+          <Link to="/tarot" className={styles.primaryButton}>
+            FAZER LEITURA GRATUITA ✨
+          </Link>
+          <Link to="/login" className={styles.secondaryButton}>
+            Já tenho conta
           </Link>
         </div>
 

@@ -253,7 +253,6 @@ export function useGenerateReading() {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: async ({ question, user, spreadType }) => {
-      console.log("[useGenerateReading] Iniciando. User recebido:", user); 
       let cards;
       switch (spreadType) {
         case 'threeCards': cards = sortearTresCartas(); break;
@@ -262,11 +261,8 @@ export function useGenerateReading() {
         case 'pathChoice': cards = sortearEscolhaDeCaminho(); break;
         case 'celticCross': default: cards = sortearCruzCelta(); break;
       }
-      console.log("[useGenerateReading] Cartas sorteadas.");
       const apiResponse = await getInterpretation(question, cards, spreadType);
-      console.log("[useGenerateReading] Interpretação da IA recebida.");
       if (user && user.id) { 
-        console.log("[useGenerateReading] Usuário LOGADO. Preparando para salvar...");
         const dataToInsert = {
           user_id: user.id, 
           question,
@@ -288,10 +284,8 @@ export function useGenerateReading() {
             console.error("[useGenerateReading] Erro Supabase ao INSERIR leitura:", insertError);
             throw new Error(`Erro ao salvar leitura: ${insertError.message}`); 
         }
-        console.log("[useGenerateReading] Leitura salva com SUCESSO:", newReading);
         return newReading;
       } else {
-        console.log("[useGenerateReading] Usuário VISITANTE. Gerando dados temporários...");
         const temporaryReading = {
           id: `temp-${Date.now()}-${Math.random().toString(16).slice(2)}`, 
           created_at: new Date().toISOString(),
@@ -306,16 +300,12 @@ export function useGenerateReading() {
               card_interpretations: apiResponse.data.cardInterpretations
           })
         };
-        console.log("[useGenerateReading] Leitura temporária gerada:", temporaryReading.id);
         return temporaryReading;
       }
     },
     onSuccess: (data, variables) => {
       if (data.user_id && variables.user?.id) { 
-        console.log("Invalidando histórico para usuário:", variables.user.id);
         queryClient.invalidateQueries({ queryKey: ['readings', 'history', variables.user.id] });
-      } else {
-        console.log("Leitura temporária, histórico não invalidado.");
       }
     },
     onError: (error) => {
@@ -330,7 +320,6 @@ export function useUpdateDidacticCache() {
   return useMutation({
     mutationFn: async ({ readingId, updatedInterpretations }) => {
       if (readingId?.startsWith('temp-')) {
-          console.warn("Tentativa de atualizar cache didático de leitura temporária ignorada.");
           return;
       }
       const { error } = await supabase
@@ -344,7 +333,6 @@ export function useUpdateDidacticCache() {
     },
     onSuccess: (data, variables) => {
        if (!variables.readingId?.startsWith('temp-')) {
-           console.log('CACHE DIDÁTICO INVALIDADO:', variables.readingId);
            queryClient.invalidateQueries({ queryKey: ['readings', 'detail', variables.readingId] });
        }
     },

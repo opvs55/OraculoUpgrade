@@ -164,8 +164,8 @@ function Header() {
                       <Link to="/biblioteca" role="menuitem" className={styles.accountMenuLink}>
                         Biblioteca
                       </Link>
-                      <Link to="/reels" role="menuitem" className={styles.accountMenuLink}>
-                        Reels
+                      <Link to="/historico" role="menuitem" className={styles.accountMenuLink}>
+                        Histórico
                       </Link>
                       <Link to="/perfil/editar" role="menuitem" className={styles.accountMenuLink} state={{ from: location.pathname }}>
                         Configurações
@@ -213,7 +213,7 @@ function Header() {
             <NavLink to="/iching" className={styles.mobileLink} onClick={handleCloseMenu}>I Ching</NavLink>
             <NavLink to="/oraculo/geral" className={styles.mobileLink} onClick={handleCloseMenu}>Síntese Semanal</NavLink>
             <NavLink to="/perfil" className={styles.mobileLink} onClick={handleCloseMenu}>Meu Espaço</NavLink>
-            <NavLink to="/reels" className={styles.mobileLink} onClick={handleCloseMenu}>Reels</NavLink>
+            <NavLink to="/historico" className={styles.mobileLink} onClick={handleCloseMenu}>Histórico</NavLink>
             <NavLink to="/biblioteca" className={styles.mobileLink} onClick={handleCloseMenu}>Biblioteca</NavLink>
             <NavLink to="/perfil/editar" className={styles.mobileLink} onClick={handleCloseMenu}>Configurações</NavLink>
             <button type="button" className={styles.mobileGhostButton} onClick={signOut}>Sair</button>
