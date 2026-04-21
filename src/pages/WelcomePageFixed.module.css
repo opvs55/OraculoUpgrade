@@ -182,6 +182,20 @@
   box-shadow: 0 0 24px rgba(201, 169, 110, 0.3);
 }
 
+.tryLink {
+  display: block;
+  margin: -0.5rem 0 1.5rem;
+  font-size: 0.8rem;
+  color: rgba(201, 169, 110, 0.55);
+  text-decoration: none;
+  letter-spacing: 0.04em;
+  transition: color 0.2s ease;
+}
+
+.tryLink:hover {
+  color: rgba(201, 169, 110, 0.9);
+}
+
 /* trust row */
 .trustRow {
   display: flex;

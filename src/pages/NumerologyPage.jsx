@@ -3,6 +3,7 @@ import React, { useMemo, useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useNumerologyReading } from '../hooks/useNumerologyReading';
 import Loader from '../components/common/Loader/Loader';
+import NumberLoader from '../components/common/NumberLoader/NumberLoader';
 import DecorativeDivider from '../components/common/DecorativeDivider/DecorativeDivider';
 import NumerologyForm from '../components/numerology/NumerologyForm';
 import NumerologyResults from '../components/numerology/NumerologyResults';
@@ -171,29 +172,7 @@ function NumerologyPage() {
   
   // Função interna para decidir o que renderizar
   const renderContent = () => {
-    // 1. Loading
-    if (isLoadingReading || isCalculating || isResetting) {
-      return <NumberLoader />;
-    }
-
-    // 2. Erro
-    // (Lógica de erro combinada para simplificar)
-    const combinedError = errorLoadingReading || errorCalculating || errorResetting;
-    if (combinedError) {
-      return (
-        <div className={styles.errorContainer}>
-          <p className={styles.errorMessage}>
-            Ocorreu um erro: {combinedError.message}
-          </p>
-          <button onClick={handleRetry} className={styles.secondaryButton}>
-            Tentar Novamente
-          </button>
-        </div>
-      );
-    }
-
-    // 3. Resultados ou Formulário
-    // Se temos dados E não acabámos de resetar, mostra os resultados
+    // Resultados ou Formulário
     if (numerologyData && !isSuccessResetting) {
       return (
         <NumerologyResults
@@ -205,7 +184,6 @@ function NumerologyPage() {
       );
     }
 
-    // 4. Se não, mostra o formulário
     return (
       <NumerologyForm
         birthDate={birthDate}

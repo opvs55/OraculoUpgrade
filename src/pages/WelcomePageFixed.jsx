@@ -62,13 +62,16 @@ function WelcomePageFixed() {
         </p>
 
         <div className={styles.ctaWrapper}>
-          <Link to="/tarot" className={styles.primaryButton}>
-            FAZER LEITURA GRATUITA ✨
+          <Link to="/cadastro" className={styles.primaryButton}>
+            CRIAR CONTA GRÁTIS ✦
           </Link>
           <Link to="/login" className={styles.secondaryButton}>
             Já tenho conta
           </Link>
         </div>
+        <Link to="/tarot" className={styles.tryLink}>
+          Ou experimente sem conta →
+        </Link>
 
         <div className={styles.trustRow}>
           <span>+2.000 leituras realizadas</span>
