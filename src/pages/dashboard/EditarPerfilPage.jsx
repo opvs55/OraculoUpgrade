@@ -4,7 +4,7 @@ import { useAuth } from '../../context/AuthContext';
 import { useUserProfile } from '../../hooks/useUserProfile';
 import { supabase } from '../../supabaseClient';
 import styles from './EditarPerfilPage.module.css'; 
-import { baralho } from '../../tarotDeck';
+import { baralhoDetalhado } from '../../tarotDeck';
 import Loader from '../../components/common/Loader/Loader';
 import ChangePasswordForm from '../../pages/auth/ChangePasswordForm/ChangePasswordForm';
 import { getMissingProfileFields } from '../../utils/profileCompletion';
@@ -40,8 +40,8 @@ function EditarPerfilPage() {
 
   useEffect(() => {
     if (!profile || profile.avatar_url || hasAutoSelectedAvatar.current) return;
-    const randomIndex = Math.floor(Math.random() * baralho.length);
-    const randomCard = baralho[randomIndex];
+    const randomIndex = Math.floor(Math.random() * baralhoDetalhado.length);
+    const randomCard = baralhoDetalhado[randomIndex];
     hasAutoSelectedAvatar.current = true;
     setAvatarUrl(randomCard.img);
     updateProfile({ avatar_url: randomCard.img });
@@ -121,8 +121,8 @@ function EditarPerfilPage() {
   };
 
   const handleRandomCardSelect = () => {
-    const randomIndex = Math.floor(Math.random() * baralho.length);
-    const randomCard = baralho[randomIndex];
+    const randomIndex = Math.floor(Math.random() * baralhoDetalhado.length);
+    const randomCard = baralhoDetalhado[randomIndex];
     setAvatarUrl(randomCard.img);
     setShowModal(false);
   };
@@ -321,7 +321,7 @@ function EditarPerfilPage() {
               </button>
             </div>
             <div className={styles.cardGrid}>
-              {baralho.map(carta => (
+              {baralhoDetalhado.map(carta => (
                 <img 
                   key={carta.id} 
                   src={carta.img} 

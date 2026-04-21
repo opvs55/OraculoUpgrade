@@ -30,8 +30,7 @@ export const baralhoDetalhado = [
 // Exportações individuais para uso específico
 export { 
   todosArcanosMaiores as arcanosMaiores,
-  todosArcanosMenores as arcanosMenores,
-  arcanosMenores
+  todosArcanosMenores as arcanosMenores
 };
 
 // Utilitários para busca
