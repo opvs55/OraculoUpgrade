@@ -5,6 +5,18 @@ import { useAuth } from '../../context/AuthContext';
 import { supabase } from '../../supabaseClient';
 import styles from './ReadingHistoryPage.module.css';
 
+const extractPreview = (reading) => {
+  if (reading.main_interpretation) return reading.main_interpretation.slice(0, 120) + '...';
+  const d = reading.interpretation_data;
+  if (!d) return null;
+  const data = d?.data ?? d;
+  const resumo = data?.interpretacao?.resumo || data?.resumo_geral || data?.resumo || data?.summary;
+  if (resumo) return resumo.slice(0, 120) + '...';
+  const analises = data?.interpretacao?.analise_cartas || data?.analise_cartas;
+  if (Array.isArray(analises) && analises[0]?.texto) return analises[0].texto.slice(0, 120) + '...';
+  return null;
+};
+
 const spreadTypeLabels = {
   threeCards: 'Três Cartas',
   celticCross: 'Cruz Celta',
@@ -30,7 +42,7 @@ export default function ReadingHistoryPage() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from('readings')
-        .select('id, created_at, spread_type, question, main_interpretation')
+        .select('id, created_at, spread_type, question, main_interpretation, interpretation_data')
         .eq('user_id', user.id)
         .order('created_at', { ascending: false })
         .limit(30);
@@ -74,9 +86,9 @@ export default function ReadingHistoryPage() {
                         {reading.question && (
                           <p className={styles.itemQuestion}>"{reading.question}"</p>
                         )}
-                        {reading.main_interpretation && (
+                        {extractPreview(reading) && (
                           <p className={styles.itemPreview}>
-                            {reading.main_interpretation.slice(0, 120)}...
+                            {extractPreview(reading)}
                           </p>
                         )}
                       </div>

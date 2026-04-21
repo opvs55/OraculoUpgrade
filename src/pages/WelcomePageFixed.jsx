@@ -1,6 +1,7 @@
 // src/pages/WelcomePageFixed.jsx
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 import styles from './WelcomePageFixed.module.css';
 
 const features = [
@@ -31,6 +32,8 @@ const features = [
 ];
 
 function WelcomePageFixed() {
+  const { user } = useAuth();
+
   return (
     <div className={styles.welcomeContainer}>
       {/* Fundo: imagem + overlay escuro */}
@@ -61,25 +64,38 @@ function WelcomePageFixed() {
           perceber padrões e transformar perguntas em direção.
         </p>
 
-        <div className={styles.ctaWrapper}>
-          <Link to="/cadastro" className={styles.primaryButton}>
-            CRIAR CONTA GRÁTIS ✦
-          </Link>
-          <Link to="/login" className={styles.secondaryButton}>
-            Já tenho conta
-          </Link>
-        </div>
-        <Link to="/tarot" className={styles.tryLink}>
-          Ou experimente sem conta →
-        </Link>
+        {user ? (
+          <div className={styles.ctaWrapper}>
+            <Link to="/tarot" className={styles.primaryButton}>
+              FAZER UMA LEITURA ✦
+            </Link>
+            <Link to="/oraculo/geral" className={styles.secondaryButton}>
+              Síntese Semanal
+            </Link>
+          </div>
+        ) : (
+          <>
+            <div className={styles.ctaWrapper}>
+              <Link to="/cadastro" className={styles.primaryButton}>
+                CRIAR CONTA GRÁTIS ✦
+              </Link>
+              <Link to="/login" className={styles.secondaryButton}>
+                Já tenho conta
+              </Link>
+            </div>
+            <Link to="/tarot" className={styles.tryLink}>
+              Ou experimente sem conta →
+            </Link>
 
-        <div className={styles.trustRow}>
-          <span>+2.000 leituras realizadas</span>
-          <span className={styles.trustDot}>•</span>
-          <span>Privacidade garantida</span>
-          <span className={styles.trustDot}>•</span>
-          <span>Resposta imediata</span>
-        </div>
+            <div className={styles.trustRow}>
+              <span>Gratuito para começar</span>
+              <span className={styles.trustDot}>•</span>
+              <span>Privacidade garantida</span>
+              <span className={styles.trustDot}>•</span>
+              <span>Resposta imediata</span>
+            </div>
+          </>
+        )}
       </section>
 
       {/* FEATURES */}

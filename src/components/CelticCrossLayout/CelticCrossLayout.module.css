@@ -8,8 +8,8 @@
 .gridContainer {
   display: grid;
   grid-template-columns: repeat(4, 110px);
-  grid-template-rows: repeat(4, 160px);
-  gap: 16px;
+  grid-template-rows: repeat(4, 210px);
+  gap: 8px 16px;
   justify-content: center;
   margin: 1.5rem auto;
 }
@@ -39,14 +39,20 @@
   justify-content: flex-start;
   gap: 0.4rem;
   animation: fadeInUp 0.5s ease both;
+  overflow: visible;
+}
+
+.cardPosition img {
+  width: 90px !important;
+  height: auto;
 }
 
 /* ── Mobile ── */
 @media (max-width: 768px) {
   .gridContainer {
     grid-template-columns: repeat(3, 80px);
-    grid-template-rows: repeat(5, 130px);
-    gap: 10px;
+    grid-template-rows: repeat(5, 175px);
+    gap: 6px 10px;
   }
 
   .position1  { grid-area: 2 / 2 / 3 / 3; }

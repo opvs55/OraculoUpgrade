@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useGenerateReading } from '../hooks/useReadings';
@@ -6,6 +6,42 @@ import Loader from '../components/common/Loader/Loader';
 import { suggestedQuestions } from '../constants/suggestionConstants';
 import styles from './TarotPage.module.css';
 import { usePageTitle } from '../hooks/usePageTitle';
+
+const CELTIC_MESSAGES = [
+  'Embaralhando as 78 cartas do baralho…',
+  'Posicionando as 10 cartas da Cruz Celta…',
+  'Analisando o Coração da Matéria…',
+  'Revelando o Desafio Imediato…',
+  'Sondando as raízes do passado…',
+  'Projetando o caminho à frente…',
+  'Consultando esperanças e medos…',
+  'Sintetizando a leitura completa…',
+  'Quase pronto — aguarde um momento…',
+];
+
+const THREE_MESSAGES = [
+  'Embaralhando as cartas…',
+  'Canalizando a sabedoria dos arcanos…',
+  'Interpretando as energias presentes…',
+];
+
+function useProgressMessages(isPending, spreadType) {
+  const [msgIndex, setMsgIndex] = useState(0);
+  const intervalRef = useRef(null);
+
+  useEffect(() => {
+    if (!isPending) { setMsgIndex(0); return; }
+    const messages = spreadType === 'celticCross' ? CELTIC_MESSAGES : THREE_MESSAGES;
+    const delay = spreadType === 'celticCross' ? 8000 : 5000;
+    intervalRef.current = setInterval(() => {
+      setMsgIndex((i) => Math.min(i + 1, messages.length - 1));
+    }, delay);
+    return () => clearInterval(intervalRef.current);
+  }, [isPending, spreadType]);
+
+  const messages = spreadType === 'celticCross' ? CELTIC_MESSAGES : THREE_MESSAGES;
+  return messages[msgIndex] || messages[messages.length - 1];
+}
 
 const listaDeVideos = [
   '/assets/video1.mp4',
@@ -34,6 +70,7 @@ function TarotPage() {
   const [formError, setFormError] = useState(null);
   const [name1, setName1] = useState('');
   const [name2, setName2] = useState('');
+  const loadingMessage = useProgressMessages(isPending, selectedSpread);
   useEffect(() => {
     if (!user) {
       const hasDoneReading = localStorage.getItem(VISITOR_READING_KEY);
@@ -118,7 +155,7 @@ function TarotPage() {
   };
 
   if (isPending) {
-    return <Loader customText="Canalizando a sabedoria dos arcanos..." />;
+    return <Loader customText={loadingMessage} />;
   }
 
   // --- RENDERIZAÇÃO DOS FORMULÁRIOS ---
