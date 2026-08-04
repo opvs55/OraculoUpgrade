@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import GeneralReadingView from '../components/oracle/GeneralReadingView';
 import EnergyTrend from '../components/oracle/EnergyTrend';
+import { getCurrentWeekRef } from '../utils/isoWeek';
 import { useUnifiedReading } from '../features/unified/useUnifiedReading';
 import styles from './GeneralOraclePage.module.css';
 
@@ -41,7 +42,10 @@ export default function GeneralOraclePage() {
     setUiError('');
 
     try {
-      const response = await generateCentralReading({});
+      // O backend exige week_ref (formato ISO "YYYY-Www") no corpo da
+      // requisição — antes não era enviado e toda geração falhava na
+      // validação ("Não foi possível validar os dados enviados").
+      const response = await generateCentralReading({ week_ref: getCurrentWeekRef() });
       setGeneratedReading(response || null);
     } catch (err) {
       setGeneratedReading(null);
