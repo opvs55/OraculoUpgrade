@@ -1,5 +1,7 @@
 import React from 'react';
 import styles from './GeneralReadingView.module.css';
+import SignalConstellation from './SignalConstellation';
+import EnergyDial from './EnergyDial';
 
 function Section({ title, delay = '0ms', children, className = '' }) {
   if (!children) return null;
@@ -31,19 +33,18 @@ export default function GeneralReadingView({ finalReading }) {
   const signals = finalReading?.signals || {};
   const synthesis = finalReading?.synthesis || {};
   const practicalGuidance = finalReading?.practical_guidance || {};
-
-  const signalCards = [
-    { key: 'tarot', title: 'Tarot', value: signals?.tarot },
-    { key: 'runes', title: 'Runas', value: signals?.runes },
-    { key: 'i_ching', title: 'I Ching', value: signals?.i_ching },
-    { key: 'numerology', title: 'Numerologia', value: signals?.numerology },
-  ].filter((item) => item.value);
+  const hasSignals = Object.values(signals).some(Boolean);
 
   return (
     <div className={styles.wrapper}>
       <Section delay="40ms" className={styles.headerBlock}>
         <h2>{finalReading?.title || 'Leitura Geral Semanal'}</h2>
         {finalReading?.one_liner && <blockquote>“{finalReading.one_liner}”</blockquote>}
+        {finalReading?.energy_score !== undefined && finalReading?.energy_score !== null && (
+          <div className={styles.dialWrap}>
+            <EnergyDial score={finalReading.energy_score} />
+          </div>
+        )}
       </Section>
 
       <Section title="Visão Geral" delay="90ms">
@@ -54,20 +55,9 @@ export default function GeneralReadingView({ finalReading }) {
         )}
       </Section>
 
-      {signalCards.length > 0 && (
+      {hasSignals && (
         <Section title="Sinais da Semana" delay="130ms">
-          <div className={styles.signalsGrid}>
-            {signalCards.map((signal, index) => (
-              <article
-                key={signal.key}
-                className={`${styles.signalCard} ${styles.appear}`}
-                style={{ '--d': `${180 + index * 70}ms` }}
-              >
-                <h4>{signal.title}</h4>
-                <p>{signal.value}</p>
-              </article>
-            ))}
-          </div>
+          <SignalConstellation signals={signals} />
         </Section>
       )}
 
@@ -95,17 +85,15 @@ export default function GeneralReadingView({ finalReading }) {
         <p>{finalReading?.closing}</p>
       </Section>
 
-      <Section delay="320ms" className={styles.footerBlock}>
-        <div className={styles.tags}>
-          {Array.isArray(finalReading?.tags) &&
-            finalReading.tags.map((tag) => (
+      {Array.isArray(finalReading?.tags) && finalReading.tags.length > 0 && (
+        <Section delay="320ms" className={styles.footerBlock}>
+          <div className={styles.tags}>
+            {finalReading.tags.map((tag) => (
               <span key={tag} className={styles.chip}>{tag}</span>
             ))}
-        </div>
-        {finalReading?.energy_score !== undefined && finalReading?.energy_score !== null && (
-          <span className={styles.energyBadge}>Energia: {finalReading.energy_score}</span>
-        )}
-      </Section>
+          </div>
+        </Section>
+      )}
     </div>
   );
 }

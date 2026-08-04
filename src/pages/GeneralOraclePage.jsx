@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import GeneralReadingView from '../components/oracle/GeneralReadingView';
+import EnergyTrend from '../components/oracle/EnergyTrend';
 import { useUnifiedReading } from '../features/unified/useUnifiedReading';
 import styles from './GeneralOraclePage.module.css';
 
@@ -163,6 +164,9 @@ export default function GeneralOraclePage() {
         <h2>Histórico recente</h2>
         {isLoadingUnifiedReadings && <p>Carregando histórico...</p>}
         {!isLoadingUnifiedReadings && latestReadings.length === 0 && <p>Nenhuma leitura geral encontrada.</p>}
+        {!isLoadingUnifiedReadings && latestReadings.length >= 2 && (
+          <EnergyTrend readings={latestReadings} />
+        )}
         <ul className={styles.historyList}>
           {latestReadings.map((reading) => (
             <li key={reading.id}>
