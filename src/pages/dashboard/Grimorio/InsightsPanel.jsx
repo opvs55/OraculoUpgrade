@@ -19,7 +19,7 @@ export default function InsightsPanel({ insights, isLoading, variant = 'panel' }
       )}
       {!isLoading && !insights && (
         <div className={styles.insightsPlaceholder}>
-          <p>Em breve: padrões do seu grimório.</p>
+          <p>Em breve: padrões do seu diário.</p>
           <p>Use títulos e notas para fortalecer seus sinais.</p>
         </div>
       )}
@@ -29,7 +29,7 @@ export default function InsightsPanel({ insights, isLoading, variant = 'panel' }
   if (variant === 'accordion') {
     return (
       <details className={styles.insightsAccordion}>
-        <summary className={styles.insightsSummary}>Insights do Grimório</summary>
+        <summary className={styles.insightsSummary}>Insights do Diário</summary>
         {content}
       </details>
     );
@@ -37,7 +37,7 @@ export default function InsightsPanel({ insights, isLoading, variant = 'panel' }
 
   return (
     <aside className={styles.insightsPanel}>
-      <h3 className={styles.insightsTitle}>Insights do Grimório</h3>
+      <h3 className={styles.insightsTitle}>Insights do Diário</h3>
       {content}
     </aside>
   );

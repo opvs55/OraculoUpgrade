@@ -1,15 +1,20 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import DecorativeDivider from '../../components/common/DecorativeDivider/DecorativeDivider';
 import Loader from '../../components/common/Loader/Loader';
 import { useAuth } from '../../hooks/useAuth';
 import { oraclesApi } from '../../services/api/oraclesApi';
+import { resolveTarotCardImage } from '../../utils/resolveTarotCardImage';
+import { baralho } from '../../tarotDeck';
 import styles from './FeaturePage.module.css';
 
 export default function YearMapPage() {
   const { user } = useAuth();
   const userId = user?.id;
   const currentYear = new Date().getUTCFullYear();
+  const currentMonthNumber = new Date().getUTCMonth() + 1;
+  const [selectedMonth, setSelectedMonth] = useState(null);
 
   const query = useQuery({
     queryKey: ['oracles', 'year-map', userId, currentYear],
@@ -22,6 +27,11 @@ export default function YearMapPage() {
   const cards = Array.isArray(data?.cards_data) ? data.cards_data : [];
   const peakMonths = new Set(finalReading?.peak_months || []);
   const challengeMonths = new Set(finalReading?.challenge_months || []);
+
+  const activeMonth = selectedMonth ?? currentMonthNumber;
+  const activeCard = cards.find((c) => c.month === activeMonth) || cards[0];
+  const activeCardInfo = activeCard ? baralho.find((c) => c.nome === activeCard.name) : null;
+  const otherCards = cards.filter((c) => c.month !== activeCard?.month);
 
   return (
     <div className={`content_wrapper ${styles.page}`}>
@@ -63,10 +73,46 @@ export default function YearMapPage() {
               </div>
             )}
 
+            {activeCard && (
+              <div className={styles.sectionBlock}>
+                <h3>
+                  {activeCard.month_name}
+                  {activeCard.month === currentMonthNumber ? ' · Mês atual' : ''}
+                </h3>
+                <div className={styles.monthSpotlight}>
+                  {resolveTarotCardImage(activeCard.name) && (
+                    <img
+                      src={resolveTarotCardImage(activeCard.name)}
+                      alt={activeCard.name}
+                      className={styles.monthSpotlightImage}
+                    />
+                  )}
+                  <div className={styles.monthSpotlightContent}>
+                    <p className={styles.monthCardName}>{activeCard.name}</p>
+                    <div className={styles.chipsRow}>
+                      {peakMonths.has(activeCard.month) && <span className={styles.tagPeak}>Auge do ano</span>}
+                      {challengeMonths.has(activeCard.month) && <span className={styles.tagChallenge}>Desafio</span>}
+                      {activeCardInfo?.palavras_chave?.direito?.slice(0, 3).map((word) => (
+                        <span key={word} className={styles.themeChip}>{word}</span>
+                      ))}
+                    </div>
+                    {activeCardInfo && (
+                      <>
+                        <p>{activeCardInfo.significados?.direito || activeCardInfo.descricao}</p>
+                        <Link to={`/biblioteca/${activeCardInfo.slug}`} className={styles.aboutLink}>
+                          Ver significado completo →
+                        </Link>
+                      </>
+                    )}
+                  </div>
+                </div>
+              </div>
+            )}
+
             <div className={styles.sectionBlock}>
-              <h3>Suas 12 cartas</h3>
+              <h3>As outras cartas do ano</h3>
               <div className={styles.monthGrid}>
-                {cards.map((card) => {
+                {otherCards.map((card) => {
                   const isPeak = peakMonths.has(card.month);
                   const isChallenge = challengeMonths.has(card.month);
                   const cardClass = [
@@ -74,14 +120,21 @@ export default function YearMapPage() {
                     isPeak ? styles.peak : '',
                     isChallenge ? styles.challenge : '',
                   ].filter(Boolean).join(' ');
+                  const thumb = resolveTarotCardImage(card.name);
 
                   return (
-                    <div key={card.month} className={cardClass}>
+                    <button
+                      key={card.month}
+                      type="button"
+                      className={cardClass}
+                      onClick={() => setSelectedMonth(card.month)}
+                    >
+                      {thumb && <img src={thumb} alt={card.name} className={styles.monthCardThumb} />}
                       <p className={styles.monthLabel}>{card.month_name}</p>
                       <p className={styles.monthCardName}>{card.name}</p>
                       {isPeak && <span className={styles.monthTag}>Auge</span>}
                       {isChallenge && <span className={styles.monthTag}>Desafio</span>}
-                    </div>
+                    </button>
                   );
                 })}
               </div>

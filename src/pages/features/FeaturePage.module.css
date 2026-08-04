@@ -115,6 +115,18 @@
   gap: 8px;
 }
 
+.aboutLink {
+  color: #e1b382;
+  text-decoration: none;
+  font-size: 0.88rem;
+  font-weight: 600;
+  width: fit-content;
+}
+
+.aboutLink:hover {
+  text-decoration: underline;
+}
+
 .chipsRow {
   display: flex;
   gap: 8px;
@@ -214,12 +226,65 @@
 }
 
 .monthCard {
+  appearance: none;
+  font: inherit;
+  cursor: pointer;
+  width: 100%;
   border: 1px solid rgba(225, 179, 130, 0.22);
   border-radius: 12px;
   padding: 12px;
   background: rgba(15, 12, 22, 0.55);
   text-align: center;
+  color: inherit;
+  transition: border-color 0.2s ease, transform 0.2s ease;
 }
+
+.monthCard:hover {
+  border-color: rgba(225, 179, 130, 0.6);
+  transform: translateY(-3px);
+}
+
+.monthCardThumb {
+  width: 54px;
+  border-radius: 6px;
+  margin: 0 auto 0.5rem;
+  display: block;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.35);
+}
+
+.monthSpotlight {
+  display: flex;
+  gap: 1.25rem;
+  align-items: flex-start;
+  flex-wrap: wrap;
+}
+
+.monthSpotlightImage {
+  width: 130px;
+  flex-shrink: 0;
+  border-radius: 10px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+}
+
+.monthSpotlightContent {
+  display: grid;
+  gap: 8px;
+  flex: 1;
+  min-width: 220px;
+}
+
+.tagPeak,
+.tagChallenge {
+  display: inline-block;
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 0.2rem 0.6rem;
+  border-radius: 999px;
+}
+
+.tagPeak { background: rgba(138, 183, 155, 0.2); color: #8ab79b; }
+.tagChallenge { background: rgba(224, 149, 78, 0.2); color: #e0954e; }
 
 .monthCard.peak {
   border-color: rgba(138, 183, 155, 0.7);

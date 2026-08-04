@@ -40,7 +40,7 @@ export default function GrimorioToolbar({
       <div className={styles.toolbarHeader}>
         <div>
           <p className={styles.toolbarEyebrow}>Arquivo vivo</p>
-          <h2 className={styles.toolbarTitle}>Histórico do Grimório</h2>
+          <h2 className={styles.toolbarTitle}>Histórico do Diário</h2>
         </div>
         <span className={styles.toolbarCount}>{totalCount} leituras</span>
       </div>

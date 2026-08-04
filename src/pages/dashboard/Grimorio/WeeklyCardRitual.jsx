@@ -19,7 +19,6 @@ export default function WeeklyCardRitual({
   isSessionLoading,
   errorMessage,
   onFilterByCard,
-  onRelateRecent,
 }) {
   const keyword = cardDetails?.palavras_chave?.direito?.[0];
   const imageUrl = getCardImageUrl(cardDetails?.img);
@@ -94,13 +93,6 @@ export default function WeeklyCardRitual({
                   onClick={() => onFilterByCard(cardDetails.nome)}
                 >
                   Entender esta carta
-                </button>
-                <button
-                  type="button"
-                  className={styles.ritualLinkButton}
-                  onClick={onRelateRecent}
-                >
-                  Usar na Leitura Geral
                 </button>
               </div>
             </>

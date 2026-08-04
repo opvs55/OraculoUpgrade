@@ -47,7 +47,7 @@ function CommunityFeedPage() {
 
         <section className={styles.ritualCard}>
           <p className={styles.ritualEyebrow}>Ritual da Semana</p>
-          <h2 className={styles.ritualTitle}>Círculo Grimório • {weekRef}</h2>
+          <h2 className={styles.ritualTitle}>Círculo do Diário • {weekRef}</h2>
           <p className={styles.ritualText}>
             Nesta semana, o foco da comunidade está em compartilhar leituras com a vibração do ritual coletivo.
           </p>

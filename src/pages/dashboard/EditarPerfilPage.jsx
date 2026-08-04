@@ -94,7 +94,7 @@ function EditarPerfilPage() {
     updateProfile(updates, {
       onSuccess: () => {
         setMessage('Perfil atualizado com sucesso! Boas-vindas e boas leituras. Redirecionando...');
-        setTimeout(() => navigate('/meu-grimorio'), 2000); 
+        setTimeout(() => navigate('/diario'), 2000); 
       },
       onError: (error) => {
         console.error("Erro ao atualizar perfil:", error);
@@ -160,7 +160,7 @@ function EditarPerfilPage() {
               o perfil agora. <strong>Todos os campos são obrigatórios.</strong>
             </p>
             <p className={styles.welcomeHint}>
-              Assim que salvar, você será redirecionado para o seu grimório e poderá iniciar suas leituras.
+              Assim que salvar, você será redirecionado para o seu diário e poderá iniciar suas leituras.
             </p>
           </section>
         )}
@@ -234,7 +234,7 @@ function EditarPerfilPage() {
                 />
               </div>
               <div className={styles.formActions}>
-                <Link to="/meu-grimorio" className={styles.cancelButton}>Cancelar</Link> 
+                <Link to="/diario" className={styles.cancelButton}>Cancelar</Link> 
                 <button type="submit" className={styles.saveButton} disabled={isUpdating || isDeleting}>
                   {isUpdating ? 'Salvando...' : 'Salvar Alterações'}
                 </button>

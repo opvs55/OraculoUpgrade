@@ -11,7 +11,6 @@ const NAV_MENU = [
   { label: 'Leitura de Tarot', to: '/tarot' },
   { label: 'Carta do Dia', to: '/oraculo/dia' },
   { label: 'Mapa do Ano', to: '/tarot/mapa-do-ano' },
-  { label: 'Histórico', to: '/historico' },
 ];
 
 function Header() {
@@ -115,8 +114,8 @@ function Header() {
         ))}
 
         {!loading && user && (
-          <NavLink to="/meu-grimorio" className={navLinkClass}>
-            Grimório
+          <NavLink to="/diario" className={navLinkClass}>
+            Diário
           </NavLink>
         )}
       </nav>
@@ -192,14 +191,17 @@ function Header() {
           ))}
           {user && (
             <>
-              <NavLink to="/meu-grimorio" className={styles.mobileLink} onClick={handleCloseMenu}>
-                Grimório
+              <NavLink to="/diario" className={styles.mobileLink} onClick={handleCloseMenu}>
+                Diário
               </NavLink>
               <NavLink to="/biblioteca" className={styles.mobileLink} onClick={handleCloseMenu}>
                 Biblioteca
               </NavLink>
               <NavLink to="/comunidade" className={styles.mobileLink} onClick={handleCloseMenu}>
                 Comunidade
+              </NavLink>
+              <NavLink to="/historico" className={styles.mobileLink} onClick={handleCloseMenu}>
+                Histórico
               </NavLink>
               <NavLink to="/perfil/editar" className={styles.mobileLink} onClick={handleCloseMenu}>
                 Perfil

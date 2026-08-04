@@ -1,10 +1,12 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import DecorativeDivider from '../../components/common/DecorativeDivider/DecorativeDivider';
 import Loader from '../../components/common/Loader/Loader';
 import { useAuth } from '../../hooks/useAuth';
 import { oraclesApi } from '../../services/api/oraclesApi';
 import { resolveTarotCardImage } from '../../utils/resolveTarotCardImage';
+import { baralho } from '../../tarotDeck';
 import styles from './FeaturePage.module.css';
 
 export default function CartaDoDiaPage() {
@@ -19,6 +21,8 @@ export default function CartaDoDiaPage() {
 
   const data = query.data;
   const cardImage = data ? resolveTarotCardImage(data.card_name) : null;
+  const cardInfo = data ? baralho.find((card) => card.nome === data.card_name) : null;
+  const keywords = cardInfo?.palavras_chave?.direito?.slice(0, 4) || [];
 
   return (
     <div className={`content_wrapper ${styles.page}`}>
@@ -53,12 +57,29 @@ export default function CartaDoDiaPage() {
 
             <div className={styles.messageCard}>
               <h2>{data.card_name}</h2>
+              {keywords.length > 0 && (
+                <div className={styles.chipsRow}>
+                  {keywords.map((word) => (
+                    <span key={word} className={styles.themeChip}>{word}</span>
+                  ))}
+                </div>
+              )}
               {data.interpretation ? (
                 <p>{data.interpretation}</p>
               ) : (
                 <p>Sua mensagem do dia está sendo preparada — volte em instantes.</p>
               )}
             </div>
+
+            {cardInfo && (
+              <div className={styles.sectionBlock}>
+                <h3>Sobre {cardInfo.nome}</h3>
+                <p>{cardInfo.descricao}</p>
+                <Link to={`/biblioteca/${cardInfo.slug}`} className={styles.aboutLink}>
+                  Ver significado completo →
+                </Link>
+              </div>
+            )}
           </div>
         )}
       </section>

@@ -77,7 +77,7 @@ export default function RunesWeeklyPage() {
       <header className={styles.header}>
         <p className={styles.eyebrow}>Oráculos</p>
         <h1>Runas Semanais</h1>
-        <p className={styles.subtitle}>Um mapa simbólico da semana com o tom do seu grimório.</p>
+        <p className={styles.subtitle}>Um mapa simbólico da semana com o tom do seu diário.</p>
       </header>
 
       <DecorativeDivider />

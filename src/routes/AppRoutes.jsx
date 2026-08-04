@@ -77,7 +77,7 @@ function AppRoutes() {
 
         {/* --- Rotas Protegidas (Agrupadas) --- */}
         <Route element={<ProtectedRoute />}>
-          <Route path="/meu-grimorio" element={<MeuGrimorioPage />} />
+          <Route path="/diario" element={<MeuGrimorioPage />} />
           <Route path="/perfil/editar" element={<EditarPerfilPage />} />
           <Route path="/biblioteca" element={<CardLibraryPage />} />
           <Route path="/biblioteca/:cardSlug" element={<LearningCardDetailPage />} />

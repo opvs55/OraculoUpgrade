@@ -239,7 +239,7 @@ export default function ReadingHistoryList({
   if (isError) {
     return (
       <div className={styles.historyEmpty}>
-        <p>Não foi possível carregar seu grimório.</p>
+        <p>Não foi possível carregar seu diário.</p>
         <button type="button" className={styles.historyActionPrimary} onClick={onRetry}>
           Tentar novamente
         </button>
@@ -250,7 +250,7 @@ export default function ReadingHistoryList({
   if (!readings.length) {
     return (
       <div className={styles.historyEmpty}>
-        <p>Seu grimório ainda está em silêncio. Faça sua primeira leitura.</p>
+        <p>Seu diário ainda está em silêncio. Faça sua primeira leitura.</p>
         <Link to="/tarot" className={styles.historyActionPrimary}>
           Fazer leitura
         </Link>

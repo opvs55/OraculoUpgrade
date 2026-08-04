@@ -1,36 +1,17 @@
 import React, { useMemo, useState } from 'react';
-import { useQuery } from '@tanstack/react-query';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { useDebouncedValue } from '../../hooks/useDebouncedValue';
 import { useGrimorioReadings } from '../../hooks/useGrimorioReadings';
 import { useWeeklyCard } from '../../hooks/useWeeklyCard';
 import { useGrimorioInsights, useDerivedGrimorioInsights } from '../../hooks/useGrimorioInsights';
-import { resolveRune } from '../../constants/runes';
-import HexagramDisplay from '../../components/iching/HexagramDisplay';
-import { oraclesApi } from '../../services/api/oraclesApi';
 import GrimorioToolbar from './Grimorio/GrimorioToolbar';
 import WeeklyCardRitual from './Grimorio/WeeklyCardRitual';
 import ReadingHistoryList from './Grimorio/ReadingHistoryList';
 import InsightsPanel from './Grimorio/InsightsPanel';
-import styles from './MeuGrimorioPage.module.css'; 
+import styles from './MeuGrimorioPage.module.css';
 
-const normalizeWeeklyData = (payload) => {
-  const root = payload ?? {};
-  const source = root?.data?.data ?? root?.data ?? root;
-  const module = source?.module ?? null;
-
-  return {
-    status: source?.status ?? module?.status ?? null,
-    weekRef: source?.week_ref ?? module?.week_ref ?? null,
-    module,
-    outputPayload: module?.output_payload ?? module?.outputPayload ?? {},
-  };
-};
-
-const getOracleHeadline = (outputPayload) => outputPayload?.headline || outputPayload?.summary || 'Leitura semanal disponível.';
-
-function MeuGrimorioPage() { 
+function MeuGrimorioPage() {
   const [videoAtualIndex, setVideoAtualIndex] = useState(() => Math.floor(Math.random() * 2));
   const navigate = useNavigate();
   const { user } = useAuth();
@@ -55,18 +36,6 @@ function MeuGrimorioPage() {
   } = useWeeklyCard(user?.id);
   const { data: insightsReadings, isLoading: isInsightsLoading } = useGrimorioInsights(user?.id);
   const derivedInsights = useDerivedGrimorioInsights(insightsReadings);
-
-  const runesWeeklyQuery = useQuery({
-    queryKey: ['oracles', 'runes', 'weekly', 'me', user?.id],
-    queryFn: () => oraclesApi.getMyRunesWeekly(),
-    enabled: !!user?.id,
-  });
-
-  const ichingWeeklyQuery = useQuery({
-    queryKey: ['oracles', 'iching', 'weekly', 'me', user?.id],
-    queryFn: () => oraclesApi.getMyIChingWeekly(),
-    enabled: !!user?.id,
-  });
 
   const handleVideoEnd = () => setVideoAtualIndex(prev => (prev + 1) % 2);
   const { periodStart, periodEnd } = useMemo(() => {
@@ -112,18 +81,6 @@ function MeuGrimorioPage() {
     cardFilter,
   });
 
-  const runesWeekly = useMemo(() => normalizeWeeklyData(runesWeeklyQuery.data), [runesWeeklyQuery.data]);
-  const ichingWeekly = useMemo(() => normalizeWeeklyData(ichingWeeklyQuery.data), [ichingWeeklyQuery.data]);
-
-  const runesOutput = runesWeekly.outputPayload;
-  const ichingOutput = ichingWeekly.outputPayload;
-  const runeSymbols = (Array.isArray(runesOutput?.runes) ? runesOutput.runes : [])
-    .slice(0, 3)
-    .map((rune) => resolveRune(rune?.key || rune?.name || rune?.symbol || rune).symbol);
-  const ichingLines = Array.isArray(ichingOutput?.lines) ? ichingOutput.lines : [];
-  const hasRunesWeekly = runesWeekly.status === 'ok' && runesWeekly.module;
-  const hasIChingWeekly = ichingWeekly.status === 'ok' && ichingWeekly.module;
-
   return (
     <div className={styles.painelContainer}>
       <video
@@ -146,52 +103,7 @@ function MeuGrimorioPage() {
               isSessionLoading={isSessionLoading}
               errorMessage={errorMessage}
               onFilterByCard={() => navigate('/biblioteca')}
-              onRelateRecent={() => navigate('/oraculo/geral', { state: { source: 'weekly-card' } })}
             />
-
-            <section className={styles.oraclesSummarySection}>
-              <article className={styles.oracleMiniCard}>
-                <h2 className={styles.oracleMiniTitle}>Runas da Semana</h2>
-                {hasRunesWeekly ? (
-                  <>
-                    <span className={styles.oracleBadge}>Semanal • {runesWeekly.weekRef || 'Semana atual'}</span>
-                    <div className={styles.runesMiniVisual}>
-                      {runeSymbols.map((symbol, index) => (
-                        <span key={`${symbol}-${index}`} className={styles.runeMiniStone}>{symbol}</span>
-                      ))}
-                    </div>
-                    <p className={styles.oracleHeadline}>{getOracleHeadline(runesOutput)}</p>
-                    <Link to="/runas" className={styles.oracleLink}>Abrir</Link>
-                  </>
-                ) : (
-                  <>
-                    <p className={styles.oracleEmpty}>Seu módulo semanal de Runas ainda não foi gerado.</p>
-                    <Link to="/runas" className={styles.oracleLinkPrimary}>Gerar agora</Link>
-                  </>
-                )}
-              </article>
-
-              <article className={styles.oracleMiniCard}>
-                <h2 className={styles.oracleMiniTitle}>I Ching da Semana</h2>
-                {hasIChingWeekly ? (
-                  <>
-                    <span className={styles.oracleBadge}>Semanal • {ichingWeekly.weekRef || 'Semana atual'}</span>
-                    {ichingLines.length === 6 && (
-                      <div className={styles.hexagramMiniWrap}>
-                        <HexagramDisplay lines={ichingLines} />
-                      </div>
-                    )}
-                    <p className={styles.oracleHeadline}>{getOracleHeadline(ichingOutput)}</p>
-                    <Link to="/iching" className={styles.oracleLink}>Abrir</Link>
-                  </>
-                ) : (
-                  <>
-                    <p className={styles.oracleEmpty}>Seu módulo semanal de I Ching ainda não foi gerado.</p>
-                    <Link to="/iching" className={styles.oracleLinkPrimary}>Gerar agora</Link>
-                  </>
-                )}
-              </article>
-            </section>
 
             <section className={styles.historySection}>
               <GrimorioToolbar
