@@ -78,7 +78,6 @@ function NavDropdown({ entry, isOpen, onToggle, dropdownRef }) {
 function Header() {
   const { user, loading, signOut } = useAuth();
   const location = useLocation();
-  const isWelcome = location.pathname === '/';
 
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isAccountOpen, setIsAccountOpen] = useState(false);
@@ -149,11 +148,11 @@ function Header() {
 
   return (
     <header
-      className={`${styles.header} ${styles.headerInternal} ${
+      className={`${styles.header} ${
         isHidden && !isMenuOpen && !isAccountOpen && !openNavKey ? styles.headerHidden : ''
       }`}
     >
-      <nav className={`${styles.nav} ${styles.navLeft}`} aria-label="Navegação principal">
+      <div className={styles.logoBlock}>
         <button
           type="button"
           className={styles.menuButton}
@@ -165,10 +164,16 @@ function Header() {
           <span className={styles.menuIcon} />
         </button>
 
-        <Link to="/" className={styles.headerLogo} style={{ fontSize: '1.4rem', marginRight: '.5rem' }}>
-          ✦
+        <Link to="/" className={styles.logoLink}>
+          <span className={styles.logoIcon}>✦</span>
+          <span className={styles.logoText}>
+            ESOTERICON
+            <small className={styles.logoTagline}>TAROT · RUNAS · ORÁCULOS</small>
+          </span>
         </Link>
+      </div>
 
+      <nav className={styles.navCenter} aria-label="Navegação principal">
         {NAV_MENU.map((entry) => (
           <NavDropdown
             key={entry.key}
@@ -189,20 +194,12 @@ function Header() {
         )}
       </nav>
 
-      {isWelcome && (
-        <div className={styles.headerCenter}>
-          <Link to="/" className={styles.headerLogo}>
-            ESOTERICON
-          </Link>
-        </div>
-      )}
-
-      <nav className={`${styles.nav} ${styles.navRight}`} aria-label="Ações do usuário">
+      <nav className={styles.navRight} aria-label="Ações do usuário">
         {!loading && (
           <>
             <Link to="/tarot" className={styles.primaryButton}>
               <span className={styles.ctaFull}>Fazer leitura</span>
-              <span className={styles.ctaShort}>Leitura</span>
+              <span className={styles.ctaShort}>✦</span>
             </Link>
             {user ? (
               <div className={styles.accountWrapper} ref={accountRef}>
