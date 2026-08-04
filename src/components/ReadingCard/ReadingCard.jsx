@@ -66,7 +66,7 @@ function ReadingCard({ reading }) {
       <div className={styles.card}>
         <div className={styles.imageContainer}>
           {imageUrl ? (
-            <img src={imageUrl} alt={highlightCard.nome} className={styles.cardImage} />
+            <img src={imageUrl} alt={highlightCard.nome} className={styles.cardImage} loading="lazy" />
           ) : (
             <div className={styles.imagePlaceholder}></div>
           )}
@@ -79,10 +79,11 @@ function ReadingCard({ reading }) {
         
         <div className={styles.content}>
            <div className={styles.authorInfo}>
-            <img 
-              src={reading.profiles?.avatar_url || 'https://i.imgur.com/6VBx3io.png'} 
-              alt={reading.profiles?.username} 
-              className={styles.authorAvatar} 
+            <img
+              src={reading.profiles?.avatar_url || 'https://i.imgur.com/6VBx3io.png'}
+              alt={reading.profiles?.username}
+              className={styles.authorAvatar}
+              loading="lazy"
             />
             <span>@{reading.profiles?.username || 'Anônimo'}</span>
           </div>

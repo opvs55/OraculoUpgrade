@@ -190,7 +190,7 @@ function ReadingItem({ reading, userId, queryKey }) {
               return (
                 <div key={`${card?.nome || 'card'}-${index}`} className={styles.historyCardThumb}>
                   {imageUrl ? (
-                    <img src={imageUrl} alt={card?.nome || 'Carta'} />
+                    <img src={imageUrl} alt={card?.nome || 'Carta'} loading="lazy" />
                   ) : (
                     <div className={styles.historyCardThumbPlaceholder} />
                   )}

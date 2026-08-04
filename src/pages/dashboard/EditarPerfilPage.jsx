@@ -287,10 +287,11 @@ function EditarPerfilPage() {
             </div>
             <div className={styles.cardGrid}>
               {baralho.map(carta => (
-                <img 
-                  key={carta.id} 
-                  src={carta.img} 
-                  alt={carta.nome} 
+                <img
+                  key={carta.id}
+                  src={carta.img}
+                  alt={carta.nome}
+                  loading="lazy"
                   className={styles.cardOption}
                   onClick={() => {
                     setAvatarUrl(carta.img);

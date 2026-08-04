@@ -111,7 +111,7 @@ function CommentItem({
 
   return (
     <div className={`${styles.commentItem} ${isReply ? styles.replyItem : ''}`}>
-      <img src={avatarUrl} alt={`Avatar de ${username}`} className={styles.avatar} />
+      <img src={avatarUrl} alt={`Avatar de ${username}`} className={styles.avatar} loading="lazy" />
       <div className={styles.commentContent}>
         <div className={styles.commentHeader}>
           <Link to={`/perfil/${username}`} className={styles.username}>@{username}</Link>

@@ -24,10 +24,11 @@ function CardPreview({ card }) {
             src={card.video}
           />
         ) : (
-          <img 
-            src={card.img} 
-            alt={card.nome} 
-            className={styles.cardMedia} 
+          <img
+            src={card.img}
+            alt={card.nome}
+            className={styles.cardMedia}
+            loading="lazy"
           />
         )}
       </div>

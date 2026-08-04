@@ -163,6 +163,7 @@ const CelticCrossInterpretation = ({ data, cardsData = [] }) => {
                     src={cardsData[index]?.image || cardsData[index]?.img}
                     alt={cardsData[index]?.name || cardsData[index]?.nome || `Carta ${index + 1}`}
                     className={`${styles.positionCardThumb} ${(cardsData[index]?.isReversed || cardsData[index]?.invertida) ? styles.positionCardThumbInverted : ''}`}
+                    loading="lazy"
                   />
                 ) : (
                   <div className={styles.positionCardThumbPlaceholder} />
