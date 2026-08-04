@@ -136,8 +136,6 @@ function PastReadingPage() {
   return (
     <div className="content_wrapper">
       <div className={styles.container}>
-        {isTemporary && <GuestPrompt />}
-
         {/* --- 1. SEÇÃO DE CONTEÚDO (Comum a todos) --- */}
         <h2 className={styles.question}>
           Revisitando sua pergunta: "{getQuestionText(currentReading.question, currentReading.spread_type)}" {/* << Já usa a função corrigida */}
@@ -151,6 +149,10 @@ function PastReadingPage() {
             <ReadingDisplay readingData={currentReading} />
           </div>
         </div>
+
+        {/* O convite pra criar conta vem DEPOIS da leitura — a pessoa sente o
+            valor primeiro, o pedido não interrompe o clímax da revelação. */}
+        {isTemporary && <GuestPrompt />}
 
         {/* --- 2. SEÇÃO DE COMUNIDADE (Pública) --- */}
         {!isTemporary && (

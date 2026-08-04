@@ -27,7 +27,10 @@ function TarotPage() {
   const [question, setQuestion] = useState('');
   const [path1, setPath1] = useState('');
   const [path2, setPath2] = useState('');
-  const [selectedSpread, setSelectedSpread] = useState(null);
+  // "3 Cartas" é a porta de entrada padrão do app — as outras tiragens ficam
+  // disponíveis como opção secundária, reveladas só se a pessoa quiser trocar.
+  const [selectedSpread, setSelectedSpread] = useState('threeCards');
+  const [showOtherSpreads, setShowOtherSpreads] = useState(false);
   const [visitorHasRead, setVisitorHasRead] = useState(false);
   const [formError, setFormError] = useState(null);
   const [name1, setName1] = useState('');
@@ -127,13 +130,30 @@ function TarotPage() {
   // Formulário Padrão
   const defaultForm = (
     <div className={styles.formContainer}>
-      <p className={styles.subtitle}>Selecione um método de leitura abaixo.</p>
-      <div className={styles.buttonGroup}>
-        <button onClick={() => setSelectedSpread('celticCross')} className={`${styles.submitButton} ${selectedSpread === 'celticCross' ? styles.activeButton : ''}`}>Cruz Celta</button>
-        <button onClick={() => setSelectedSpread('threeCards')} className={`${styles.submitButton} ${selectedSpread === 'threeCards' ? styles.activeButton : ''}`}>3 Cartas</button>
-        <button onClick={() => setSelectedSpread('templeOfAphrodite')} className={`${styles.submitButton} ${selectedSpread === 'templeOfAphrodite' ? styles.activeButton : ''}`}>Templo de Afrodite</button>
-        <button onClick={() => setFormType('pathChoice')} className={styles.submitButton}>Escolha de Caminho</button>
-      </div>
+      <p className={styles.subtitle}>
+        {selectedSpread === 'threeCards'
+          ? 'Sua leitura de hoje: Passado, Presente e Futuro.'
+          : 'Selecione um método de leitura abaixo.'}
+      </p>
+
+      {/* "3 Cartas" é a experiência principal. As outras tiragens ficam atrás
+          de um toggle discreto, em vez de competir de igual pra igual logo de cara. */}
+      {!showOtherSpreads ? (
+        <button
+          type="button"
+          onClick={() => setShowOtherSpreads(true)}
+          className={styles.otherSpreadsToggle}
+        >
+          Prefere Cruz Celta, Templo de Afrodite ou Escolha de Caminho? Ver outras leituras →
+        </button>
+      ) : (
+        <div className={styles.buttonGroup}>
+          <button onClick={() => setSelectedSpread('threeCards')} className={`${styles.submitButton} ${selectedSpread === 'threeCards' ? styles.activeButton : ''}`}>3 Cartas</button>
+          <button onClick={() => setSelectedSpread('celticCross')} className={`${styles.submitButton} ${selectedSpread === 'celticCross' ? styles.activeButton : ''}`}>Cruz Celta</button>
+          <button onClick={() => setSelectedSpread('templeOfAphrodite')} className={`${styles.submitButton} ${selectedSpread === 'templeOfAphrodite' ? styles.activeButton : ''}`}>Templo de Afrodite</button>
+          <button onClick={() => setFormType('pathChoice')} className={styles.submitButton}>Escolha de Caminho</button>
+        </div>
+      )}
 
       {/* Mostra SÓ se uma tiragem for selecionada E NÃO FOR o Templo de Afrodite */}
       {selectedSpread && selectedSpread !== 'templeOfAphrodite' && (
@@ -233,7 +253,7 @@ function TarotPage() {
         {formError && <p className={styles.errorMessage}>{formError}</p>}
         {mutationError && <p className={styles.errorMessage}>Falha ao iniciar leitura: {mutationError.message}</p>}
 
-        {!user && visitorHasRead && formType !== 'pathChoice' && !selectedSpread && (
+        {!user && visitorHasRead && formType !== 'pathChoice' && (
           <p className={styles.limitMessage}>Você já utilizou sua leitura de teste gratuita. <Link to="/cadastro">Cadastre-se</Link> ou <Link to="/login">faça login</Link> para leituras ilimitadas.</p>
         )}
       </div>
