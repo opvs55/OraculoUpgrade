@@ -44,10 +44,12 @@ export function sortearTresCartas() {
 export function sortearCruzCelta() {
   console.log("Serviço de tarot: Sorteando 10 cartas para a Cruz Celta...");
   const sorteadas = getShuffledCards(10);
+  // Mantido em sincronia com POSICOES_CRUZ_CELTA (constants/tarotConstants.js)
+  // e com os rótulos "posicao" gerados pelo prompt da IA no backend.
   const posicoes = [
-    'Situação Atual', 'Obstáculo', 'Base da Questão', 'Passado Recente',
-    'Coroamento (Possível Futuro)', 'Futuro Próximo', 'O Consulente',
-    'O Ambiente', 'Esperanças e Medos', 'Resultado Final'
+    'O Coração da Matéria', 'O Desafio Imediato', 'A Base da Questão', 'O Passado Distante',
+    'O Objetivo', 'O Caminho', 'O Consulente',
+    'O Ambiente', 'Esperanças e Medos', 'O Resultado Final'
   ];
   return sorteadas.map((carta, index) => ({
     ...assignInversion(carta),
