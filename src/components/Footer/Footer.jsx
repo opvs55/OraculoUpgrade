@@ -12,15 +12,17 @@ function Footer() {
         </div>
 
         <nav className={styles.links} aria-label="Links do rodapé">
+          <span className={styles.linksLabel}>Explorar</span>
           <Link to="/tarot">Fazer leitura</Link>
+          <Link to="/oraculo/dia">Carta do Dia</Link>
           <Link to="/biblioteca">Biblioteca</Link>
-          <Link to="/numerologia">Numerologia</Link>
+          <Link to="/historico">Histórico</Link>
         </nav>
+      </div>
 
-        <div className={styles.meta}>
-          <span>© {new Date().getFullYear()} Esotericon</span>
-          <span>Privacidade e cuidado em cada leitura.</span>
-        </div>
+      <div className={styles.metaBar}>
+        <span>© {new Date().getFullYear()} Esotericon</span>
+        <span>Privacidade e cuidado em cada leitura.</span>
       </div>
     </footer>
   );

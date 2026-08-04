@@ -5,9 +5,9 @@ import styles from './WelcomePage.module.css';
 const listaDeVideos = ['/assets/video_welcome2.mp4', '/assets/video_welcome2.mp4'];
 
 const mobileOracles = [
-  { title: 'Tarot', description: 'Pergunta direta com leitura simbólica.', to: '/tarot' },
-  { title: 'Numerologia', description: 'Descubra seu número de jornada.', to: '/numerologia' },
-  { title: 'Leitura Geral', description: 'Síntese central do seu Grimório.', to: '/oraculo/geral' },
+  { title: '3 Cartas', description: 'Passado, presente e futuro — rápido e direto.', to: '/tarot' },
+  { title: 'Carta do Dia', description: 'Uma orientação rápida para hoje.', to: '/oraculo/dia' },
+  { title: 'Mapa do Ano', description: 'Sua jornada para os próximos 12 meses.', to: '/tarot/mapa-do-ano' },
 ];
 
 function WelcomePage() {
@@ -46,7 +46,7 @@ function WelcomePage() {
           </div>
 
           <div className={styles.mobileOraclesSection}>
-            <h2>Escolha seu oráculo</h2>
+            <h2>Comece por aqui</h2>
             <div className={styles.mobileOraclesScroller}>
               {mobileOracles.map((oracle) => (
                 <article key={oracle.title} className={styles.oracleCard}>

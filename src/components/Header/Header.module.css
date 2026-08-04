@@ -38,7 +38,13 @@
   letter-spacing: 1.6px;
 }
 
-.nav { display: flex; align-items: center; gap: 1.25rem; min-height: 30px; }
+.navCenter,
+.navRight {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  min-height: 30px;
+}
 .navCenter { justify-content: center; flex-wrap: wrap; }
 .navRight { justify-content: flex-end; }
 
@@ -47,30 +53,22 @@
 .menuIcon::before { position: absolute; top: -6px; left: 0; }
 .menuIcon::after { position: absolute; top: 6px; left: 0; }
 
-.navLink { color: rgba(224, 221, 213, 0.65); text-decoration: none; font-weight: 400; padding-bottom: 3px; border-bottom: 2px solid transparent; font-size: .92rem; transition: color .2s ease; }
+.navLink {
+  appearance: none;
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  color: rgba(224, 221, 213, 0.65);
+  cursor: pointer;
+  font: inherit;
+  text-decoration: none;
+  font-weight: 400;
+  padding: 0 0 3px;
+  font-size: .92rem;
+  transition: color .2s ease;
+}
 .navLink:hover { color: #f0e6cc; }
 .activeLink { color: #c9a96e; border-bottom-color: #c9a96e; }
-
-.leftDropdownWrapper { position: relative; }
-.leftDropdownButton {
-  border: 1px solid rgba(225,179,130,.45);
-  background: rgba(13, 12, 29, 0.55);
-  color: #f2dec7;
-  border-radius: 999px;
-  padding: .38rem .95rem;
-  font-weight: 700;
-}
-.leftDropdownMenu {
-  position: absolute;
-  top: calc(100% + .45rem);
-  left: 0;
-  min-width: 170px;
-  background: rgba(13, 12, 29, .96);
-  border: 1px solid rgba(225,179,130,.35);
-  border-radius: 12px;
-  padding: .45rem;
-  z-index: 15;
-}
 
 .signUpButton { background-color: #c9a96e; color: #0d0c1d !important; padding: .5rem 1rem; border-radius: 999px; text-decoration: none; font-weight: 600; }
 .primaryButton {

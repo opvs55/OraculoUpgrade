@@ -4,76 +4,15 @@ import { NavLink, Link, useLocation } from 'react-router-dom';
 import { useAutoHideHeader } from '../../hooks/useAutoHideHeader';
 import styles from './Header.module.css';
 
-// Estrutura única do menu — usada tanto no nav desktop (com dropdowns) quanto
-// no menu mobile. Fica visível pra qualquer visitante, logado ou não: as
-// rotas que exigem conta redirecionam pro login sozinhas via ProtectedRoute.
+// Nav enxuto e focado em Tarot — usado tanto no desktop quanto no menu
+// mobile. As demais leituras (numerologia, runas, i-ching) continuam
+// funcionando por URL direta, só não ficam mais em destaque na navegação.
 const NAV_MENU = [
-  {
-    key: 'tarot',
-    label: 'Tarot',
-    items: [
-      { label: 'Leitura de Tarot', to: '/tarot' },
-      { label: 'Carta do Dia', to: '/oraculo/dia' },
-      { label: 'Mapa do Ano', to: '/tarot/mapa-do-ano' },
-      { label: 'Leituras Passadas', to: '/historico' },
-    ],
-  },
-  {
-    key: 'numerologia',
-    label: 'Numerologia',
-    items: [
-      { label: 'Pessoal', to: '/numerologia' },
-      { label: 'Compatibilidade', to: '/numerologia/compatibilidade' },
-      { label: 'Trânsitos', to: '/numerologia/transitos' },
-    ],
-  },
-  { key: 'runas', label: 'Runas', to: '/runas' },
-  {
-    key: 'iching',
-    label: 'I Ching',
-    items: [
-      { label: 'Semanal', to: '/iching' },
-      { label: 'Consulta Ativa', to: '/iching/consulta' },
-    ],
-  },
-  { key: 'sintese', label: 'Síntese Semanal', to: '/oraculo/geral' },
+  { label: 'Leitura de Tarot', to: '/tarot' },
+  { label: 'Carta do Dia', to: '/oraculo/dia' },
+  { label: 'Mapa do Ano', to: '/tarot/mapa-do-ano' },
+  { label: 'Histórico', to: '/historico' },
 ];
-
-function NavDropdown({ entry, isOpen, onToggle, dropdownRef }) {
-  if (!entry.items) {
-    return (
-      <NavLink
-        to={entry.to}
-        className={({ isActive }) => (isActive ? `${styles.navLink} ${styles.activeLink}` : styles.navLink)}
-      >
-        {entry.label}
-      </NavLink>
-    );
-  }
-
-  return (
-    <div className={styles.leftDropdownWrapper} ref={isOpen ? dropdownRef : null}>
-      <button
-        type="button"
-        className={styles.navLink}
-        onClick={() => onToggle(entry.key)}
-        aria-haspopup="menu"
-        aria-expanded={isOpen}
-      >
-        {entry.label} ▾
-      </button>
-      {isOpen && (
-        <div className={styles.leftDropdownMenu} role="menu">
-          {entry.items.map((item) => (
-            <NavLink key={item.to} to={item.to} className={styles.accountMenuLink} role="menuitem">
-              {item.label}
-            </NavLink>
-          ))}
-        </div>
-      )}
-    </div>
-  );
-}
 
 function Header() {
   const { user, loading, signOut } = useAuth();
@@ -81,10 +20,8 @@ function Header() {
 
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isAccountOpen, setIsAccountOpen] = useState(false);
-  const [openNavKey, setOpenNavKey] = useState(null);
 
   const accountRef = useRef(null);
-  const navDropdownRef = useRef(null);
   const accountAnimationTimeout = useRef(null);
   const [isAccountAnimating, setIsAccountAnimating] = useState(false);
 
@@ -92,39 +29,36 @@ function Header() {
 
   const handleToggleMenu = () => setIsMenuOpen((prev) => !prev);
   const handleCloseMenu = () => setIsMenuOpen(false);
-  const handleToggleNav = (key) => setOpenNavKey((prev) => (prev === key ? null : key));
+
+  const navLinkClass = ({ isActive }) => (isActive ? `${styles.navLink} ${styles.activeLink}` : styles.navLink);
 
   // Fecha menus ao mudar de rota
   useEffect(() => {
     setIsMenuOpen(false);
     setIsAccountOpen(false);
-    setOpenNavKey(null);
   }, [location.pathname]);
 
-  // Fecha menus ao clicar fora
+  // Fecha o menu de conta ao clicar fora
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (accountRef.current && !accountRef.current.contains(event.target)) {
         setIsAccountOpen(false);
       }
-      if (navDropdownRef.current && !navDropdownRef.current.contains(event.target)) {
-        setOpenNavKey(null);
-      }
     };
 
-    if (isAccountOpen || openNavKey) {
+    if (isAccountOpen) {
       document.addEventListener('mousedown', handleClickOutside);
     }
 
     return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, [isAccountOpen, openNavKey]);
+  }, [isAccountOpen]);
 
   // Revela o header se algum menu estiver aberto
   useEffect(() => {
-    if (isMenuOpen || isAccountOpen || openNavKey) {
+    if (isMenuOpen || isAccountOpen) {
       reveal();
     }
-  }, [isMenuOpen, isAccountOpen, openNavKey, reveal]);
+  }, [isMenuOpen, isAccountOpen, reveal]);
 
   // Cleanup da animação
   useEffect(() => {
@@ -149,7 +83,7 @@ function Header() {
   return (
     <header
       className={`${styles.header} ${
-        isHidden && !isMenuOpen && !isAccountOpen && !openNavKey ? styles.headerHidden : ''
+        isHidden && !isMenuOpen && !isAccountOpen ? styles.headerHidden : ''
       }`}
     >
       <div className={styles.logoBlock}>
@@ -168,27 +102,20 @@ function Header() {
           <span className={styles.logoIcon}>✦</span>
           <span className={styles.logoText}>
             ESOTERICON
-            <small className={styles.logoTagline}>TAROT · RUNAS · ORÁCULOS</small>
+            <small className={styles.logoTagline}>LEITURAS DE TAROT COM IA</small>
           </span>
         </Link>
       </div>
 
       <nav className={styles.navCenter} aria-label="Navegação principal">
-        {NAV_MENU.map((entry) => (
-          <NavDropdown
-            key={entry.key}
-            entry={entry}
-            isOpen={openNavKey === entry.key}
-            onToggle={handleToggleNav}
-            dropdownRef={navDropdownRef}
-          />
+        {NAV_MENU.map((item) => (
+          <NavLink key={item.to} to={item.to} className={navLinkClass}>
+            {item.label}
+          </NavLink>
         ))}
 
         {!loading && user && (
-          <NavLink
-            to="/meu-grimorio"
-            className={({ isActive }) => (isActive ? `${styles.navLink} ${styles.activeLink}` : styles.navLink)}
-          >
+          <NavLink to="/meu-grimorio" className={navLinkClass}>
             Grimório
           </NavLink>
         )}
@@ -244,10 +171,7 @@ function Header() {
               </div>
             ) : (
               <>
-                <NavLink
-                  to="/login"
-                  className={({ isActive }) => (isActive ? `${styles.navLink} ${styles.activeLink}` : styles.navLink)}
-                >
+                <NavLink to="/login" className={navLinkClass}>
                   Entrar
                 </NavLink>
                 <NavLink to="/cadastro" className={styles.signUpButton}>
@@ -261,13 +185,11 @@ function Header() {
 
       <div id="menu-interno" className={`${styles.mobileMenu} ${isMenuOpen ? styles.mobileMenuOpen : ''}`}>
         <div className={styles.mobileMenuContent}>
-          {NAV_MENU.flatMap((entry) => (entry.items ? entry.items : [{ label: entry.label, to: entry.to }])).map(
-            (item) => (
-              <NavLink key={item.to} to={item.to} className={styles.mobileLink} onClick={handleCloseMenu}>
-                {item.label}
-              </NavLink>
-            ),
-          )}
+          {NAV_MENU.map((item) => (
+            <NavLink key={item.to} to={item.to} className={styles.mobileLink} onClick={handleCloseMenu}>
+              {item.label}
+            </NavLink>
+          ))}
           {user && (
             <>
               <NavLink to="/meu-grimorio" className={styles.mobileLink} onClick={handleCloseMenu}>
