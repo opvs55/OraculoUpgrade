@@ -9,7 +9,6 @@ export const API_ENDPOINTS = {
   numerologyWeekly: API_V1_ENDPOINTS.numerologyWeekly,
   runesReading: API_V1_ENDPOINTS.runesReadings,
   iChingReading: API_V1_ENDPOINTS.iChingReadings,
-  unifiedReadings: API_V1_ENDPOINTS.unifiedReadings,
 };
 
 export const API_CONFIG = {

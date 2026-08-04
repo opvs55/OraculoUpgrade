@@ -25,10 +25,6 @@ export function useUnifiedReading({ readingId, listParams } = {}) {
     enabled: !!userId && !!readingId,
   });
 
-  const createUnifiedReading = useMutation({
-    mutationFn: async ({ inputPayload }) => oraclesApi.createUnifiedReading(inputPayload),
-  });
-
   const generateCentralReading = useMutation({
     mutationFn: (payload) => oraclesApi.generateCentralReading(payload),
     onSuccess: () => {
@@ -38,11 +34,6 @@ export function useUnifiedReading({ readingId, listParams } = {}) {
   });
 
   return {
-    // legado
-    createUnifiedReading: createUnifiedReading.mutateAsync,
-    isCreatingUnifiedReading: createUnifiedReading.isPending,
-    errorCreatingUnifiedReading: createUnifiedReading.error,
-
     // novo fluxo backend-centric
     requirements: requirementsQuery.data,
     isLoadingRequirements: requirementsQuery.isLoading,

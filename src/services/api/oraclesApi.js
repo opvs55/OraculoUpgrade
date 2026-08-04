@@ -48,6 +48,13 @@ export const oraclesApi = {
     return postJson('numerologyWeekly', payload, { withAuth: true });
   },
 
+  async resetPersonalNumerology() {
+    return requestApi(resolveEndpointSequence('numerologyReset'), {
+      method: 'DELETE',
+      headers: await getAuthHeaders(),
+    });
+  },
+
   getRunesReading(payload) {
     return postJson('runesReadings', payload, { withAuth: true });
   },
@@ -76,10 +83,6 @@ export const oraclesApi = {
       method: 'GET',
       headers: await getAuthHeaders(),
     });
-  },
-
-  createUnifiedReading(payload) {
-    return postJson('unifiedReadings', payload, { withAuth: true });
   },
 
   async getCentralRequirements() {

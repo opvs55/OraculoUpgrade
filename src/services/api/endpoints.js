@@ -22,6 +22,9 @@ const endpointConfig = {
   numerologyWeekly: {
     v1: '/api/v1/numerology/weekly',
   },
+  numerologyReset: {
+    v1: '/api/v1/numerology/readings/current',
+  },
   centralRequirements: {
     v1: '/api/v1/oracles/central/requirements',
   },
@@ -51,9 +54,6 @@ const endpointConfig = {
   },
   ichingWeeklyMe: {
     v1: '/api/v1/oracles/iching/weekly/me',
-  },
-  unifiedReadings: {
-    v1: '/api/v1/unified/readings',
   },
 };
 

@@ -12,6 +12,7 @@ const STATUS_CODE_TO_KEY = {
   401: 'UNAUTHORIZED',
   404: 'NOT_FOUND',
   409: 'CONFLICT',
+  429: 'TOO_MANY_REQUESTS',
   500: 'INTERNAL_ERROR',
   503: 'SERVICE_UNAVAILABLE',
 };
@@ -21,6 +22,7 @@ const ERROR_MESSAGES = {
   UNAUTHORIZED: 'Sua sessão expirou. Faça login novamente para continuar.',
   NOT_FOUND: 'O recurso solicitado não foi encontrado.',
   CONFLICT: 'Já existe um registro para esta operação.',
+  TOO_MANY_REQUESTS: 'Muitas solicitações em pouco tempo. Aguarde um instante e tente de novo.',
   INTERNAL_ERROR: 'Ocorreu um erro interno ao consultar o oráculo.',
   SERVICE_UNAVAILABLE: 'O serviço está temporariamente indisponível.',
   LLM_LOCATION_UNSUPPORTED: FRIENDLY_LLM_LOCATION_MESSAGE,
@@ -41,8 +43,19 @@ export const buildApiUrl = (endpoint) => `${API_BASE_URL}${endpoint}`;
 const parseResponseBody = async (response) => response.json().catch(() => null);
 
 function toApiError(status, data) {
-  const normalizedCode = data?.code || STATUS_CODE_TO_KEY[status];
-  const mappedMessage = ERROR_MESSAGES[normalizedCode] || data?.message || data?.error;
+  const nested =
+    data && typeof data.error === 'object' && data.error !== null ? data.error : null;
+  const nestedCode = nested?.code;
+  const nestedMessage = nested?.message;
+
+  const flatErrorString = typeof data?.error === 'string' ? data.error : null;
+
+  const normalizedCode = nestedCode || data?.code || STATUS_CODE_TO_KEY[status];
+  const mappedMessage =
+    ERROR_MESSAGES[normalizedCode] ||
+    nestedMessage ||
+    flatErrorString ||
+    data?.message;
 
   return new ApiError(mappedMessage || `Erro no servidor (${status}).`, {
     status,

@@ -1,7 +1,7 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { supabase } from '../supabaseClient';
 import { useAuth } from '../context/AuthContext';
 import { useNumerology } from '../features/numerology/useNumerology';
+import { oraclesApi } from '../services/api/oraclesApi';
 
 export function useNumerologyReading() {
   const queryClient = useQueryClient();
@@ -22,9 +22,7 @@ export function useNumerologyReading() {
     mutationFn: async () => {
       if (!userId) throw new Error('Você precisa estar logado para resetar.');
 
-      const { error } = await supabase.from('numerology_readings').delete().eq('user_id', userId);
-      if (error) throw error;
-
+      await oraclesApi.resetPersonalNumerology();
       return true;
     },
     onSuccess: () => {
