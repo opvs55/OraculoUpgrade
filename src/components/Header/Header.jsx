@@ -4,32 +4,102 @@ import { NavLink, Link, useLocation } from 'react-router-dom';
 import { useAutoHideHeader } from '../../hooks/useAutoHideHeader';
 import styles from './Header.module.css';
 
+// Estrutura única do menu — usada tanto no nav desktop (com dropdowns) quanto
+// no menu mobile. Fica visível pra qualquer visitante, logado ou não: as
+// rotas que exigem conta redirecionam pro login sozinhas via ProtectedRoute.
+const NAV_MENU = [
+  {
+    key: 'tarot',
+    label: 'Tarot',
+    items: [
+      { label: 'Leitura de Tarot', to: '/tarot' },
+      { label: 'Carta do Dia', to: '/oraculo/dia' },
+      { label: 'Mapa do Ano', to: '/tarot/mapa-do-ano' },
+      { label: 'Leituras Passadas', to: '/historico' },
+    ],
+  },
+  {
+    key: 'numerologia',
+    label: 'Numerologia',
+    items: [
+      { label: 'Pessoal', to: '/numerologia' },
+      { label: 'Compatibilidade', to: '/numerologia/compatibilidade' },
+      { label: 'Trânsitos', to: '/numerologia/transitos' },
+    ],
+  },
+  { key: 'runas', label: 'Runas', to: '/runas' },
+  {
+    key: 'iching',
+    label: 'I Ching',
+    items: [
+      { label: 'Semanal', to: '/iching' },
+      { label: 'Consulta Ativa', to: '/iching/consulta' },
+    ],
+  },
+  { key: 'sintese', label: 'Síntese Semanal', to: '/oraculo/geral' },
+];
+
+function NavDropdown({ entry, isOpen, onToggle, dropdownRef }) {
+  if (!entry.items) {
+    return (
+      <NavLink
+        to={entry.to}
+        className={({ isActive }) => (isActive ? `${styles.navLink} ${styles.activeLink}` : styles.navLink)}
+      >
+        {entry.label}
+      </NavLink>
+    );
+  }
+
+  return (
+    <div className={styles.leftDropdownWrapper} ref={isOpen ? dropdownRef : null}>
+      <button
+        type="button"
+        className={styles.navLink}
+        onClick={() => onToggle(entry.key)}
+        aria-haspopup="menu"
+        aria-expanded={isOpen}
+      >
+        {entry.label} ▾
+      </button>
+      {isOpen && (
+        <div className={styles.leftDropdownMenu} role="menu">
+          {entry.items.map((item) => (
+            <NavLink key={item.to} to={item.to} className={styles.accountMenuLink} role="menuitem">
+              {item.label}
+            </NavLink>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
 function Header() {
   const { user, loading, signOut } = useAuth();
   const location = useLocation();
   const isWelcome = location.pathname === '/';
-  const isInternal = Boolean(user);
-  const isPublicHome = isWelcome && !user;
-  
+
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isAccountOpen, setIsAccountOpen] = useState(false);
-  const [isLeftDropdownOpen, setIsLeftDropdownOpen] = useState(false);
-  
+  const [openNavKey, setOpenNavKey] = useState(null);
+
   const accountRef = useRef(null);
-  const leftDropdownRef = useRef(null);
+  const navDropdownRef = useRef(null);
   const accountAnimationTimeout = useRef(null);
   const [isAccountAnimating, setIsAccountAnimating] = useState(false);
-  
+
   const { isHidden, reveal } = useAutoHideHeader(false);
 
   const handleToggleMenu = () => setIsMenuOpen((prev) => !prev);
   const handleCloseMenu = () => setIsMenuOpen(false);
+  const handleToggleNav = (key) => setOpenNavKey((prev) => (prev === key ? null : key));
 
   // Fecha menus ao mudar de rota
   useEffect(() => {
     setIsMenuOpen(false);
     setIsAccountOpen(false);
-    setIsLeftDropdownOpen(false);
+    setOpenNavKey(null);
   }, [location.pathname]);
 
   // Fecha menus ao clicar fora
@@ -38,24 +108,24 @@ function Header() {
       if (accountRef.current && !accountRef.current.contains(event.target)) {
         setIsAccountOpen(false);
       }
-      if (leftDropdownRef.current && !leftDropdownRef.current.contains(event.target)) {
-        setIsLeftDropdownOpen(false);
+      if (navDropdownRef.current && !navDropdownRef.current.contains(event.target)) {
+        setOpenNavKey(null);
       }
     };
 
-    if (isAccountOpen || isLeftDropdownOpen) {
+    if (isAccountOpen || openNavKey) {
       document.addEventListener('mousedown', handleClickOutside);
     }
 
     return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, [isAccountOpen, isLeftDropdownOpen]);
+  }, [isAccountOpen, openNavKey]);
 
   // Revela o header se algum menu estiver aberto
   useEffect(() => {
-    if (isMenuOpen || isAccountOpen || isLeftDropdownOpen) {
+    if (isMenuOpen || isAccountOpen || openNavKey) {
       reveal();
     }
-  }, [isMenuOpen, isAccountOpen, isLeftDropdownOpen, reveal]);
+  }, [isMenuOpen, isAccountOpen, openNavKey, reveal]);
 
   // Cleanup da animação
   useEffect(() => {
@@ -79,85 +149,47 @@ function Header() {
 
   return (
     <header
-      className={`${styles.header} ${isPublicHome ? styles.headerWelcome : ''} ${
-        isInternal ? styles.headerInternal : ''
-      } ${isInternal && isHidden && !isMenuOpen && !isAccountOpen ? styles.headerHidden : ''}`}
+      className={`${styles.header} ${styles.headerInternal} ${
+        isHidden && !isMenuOpen && !isAccountOpen && !openNavKey ? styles.headerHidden : ''
+      }`}
     >
       <nav className={`${styles.nav} ${styles.navLeft}`} aria-label="Navegação principal">
-        {isInternal && (
-          <button
-            type="button"
-            className={styles.menuButton}
-            onClick={handleToggleMenu}
-            aria-label="Abrir menu"
-            aria-expanded={isMenuOpen}
-            aria-controls="menu-interno"
-          >
-            <span className={styles.menuIcon} />
-          </button>
-        )}
+        <button
+          type="button"
+          className={styles.menuButton}
+          onClick={handleToggleMenu}
+          aria-label="Abrir menu"
+          aria-expanded={isMenuOpen}
+          aria-controls="menu-interno"
+        >
+          <span className={styles.menuIcon} />
+        </button>
+
+        <Link to="/" className={styles.headerLogo} style={{ fontSize: '1.4rem', marginRight: '.5rem' }}>
+          ✦
+        </Link>
+
+        {NAV_MENU.map((entry) => (
+          <NavDropdown
+            key={entry.key}
+            entry={entry}
+            isOpen={openNavKey === entry.key}
+            onToggle={handleToggleNav}
+            dropdownRef={navDropdownRef}
+          />
+        ))}
 
         {!loading && user && (
-          <>
-            <div className={styles.leftDropdownWrapper} ref={leftDropdownRef}>
-              <button
-                type="button"
-                className={styles.leftDropdownButton}
-                onClick={() => setIsLeftDropdownOpen((prev) => !prev)}
-                aria-expanded={isLeftDropdownOpen}
-              >
-                Explorar
-              </button>
-              {isLeftDropdownOpen && (
-                <div className={styles.leftDropdownMenu}>
-                  <NavLink to="/meu-grimorio" className={styles.accountMenuLink}>
-                    Grimório
-                  </NavLink>
-                  <NavLink to="/biblioteca" className={styles.accountMenuLink}>
-                    Biblioteca
-                  </NavLink>
-                  <NavLink to="/comunidade" className={styles.accountMenuLink}>
-                    Comunidade
-                  </NavLink>
-                </div>
-              )}
-            </div>
-            <NavLink
-              to="/tarot"
-              className={({ isActive }) => (isActive ? `${styles.navLink} ${styles.activeLink}` : styles.navLink)}
-            >
-              Tarot
-            </NavLink>
-            <NavLink
-              to="/numerologia"
-              className={({ isActive }) => (isActive ? `${styles.navLink} ${styles.activeLink}` : styles.navLink)}
-            >
-              Numerologia
-            </NavLink>
-            <NavLink
-              to="/runas"
-              className={({ isActive }) => (isActive ? `${styles.navLink} ${styles.activeLink}` : styles.navLink)}
-            >
-              Runas
-            </NavLink>
-            <NavLink
-              to="/iching"
-              className={({ isActive }) => (isActive ? `${styles.navLink} ${styles.activeLink}` : styles.navLink)}
-            >
-              I Ching
-            </NavLink>
-            <NavLink
-              to="/oraculo/geral"
-              className={({ isActive }) => (isActive ? `${styles.navLink} ${styles.activeLink}` : styles.navLink)}
-            >
-              Leitura Geral
-            </NavLink>
-          </>
+          <NavLink
+            to="/meu-grimorio"
+            className={({ isActive }) => (isActive ? `${styles.navLink} ${styles.activeLink}` : styles.navLink)}
+          >
+            Grimório
+          </NavLink>
         )}
-        {!loading && !user && <div style={{ minWidth: '100px' }} />}
       </nav>
 
-      {!isPublicHome && !isInternal && (
+      {isWelcome && (
         <div className={styles.headerCenter}>
           <Link to="/" className={styles.headerLogo}>
             ESOTERICON
@@ -168,12 +200,10 @@ function Header() {
       <nav className={`${styles.nav} ${styles.navRight}`} aria-label="Ações do usuário">
         {!loading && (
           <>
-            {isInternal && (
-              <Link to="/tarot" className={styles.primaryButton}>
-                <span className={styles.ctaFull}>Fazer leitura</span>
-                <span className={styles.ctaShort}>Leitura</span>
-              </Link>
-            )}
+            <Link to="/tarot" className={styles.primaryButton}>
+              <span className={styles.ctaFull}>Fazer leitura</span>
+              <span className={styles.ctaShort}>Leitura</span>
+            </Link>
             {user ? (
               <div className={styles.accountWrapper} ref={accountRef}>
                 <button
@@ -197,8 +227,17 @@ function Header() {
                 </button>
                 {isAccountOpen && (
                   <div className={styles.accountMenu} role="menu">
+                    <Link to="/biblioteca" role="menuitem" className={styles.accountMenuLink}>
+                      Biblioteca
+                    </Link>
+                    <Link to="/comunidade" role="menuitem" className={styles.accountMenuLink}>
+                      Comunidade
+                    </Link>
+                    <Link to="/historico" role="menuitem" className={styles.accountMenuLink}>
+                      Histórico
+                    </Link>
                     <Link to="/perfil/editar" role="menuitem" className={styles.accountMenuLink}>
-                      Perfil
+                      Configurações
                     </Link>
                     <button type="button" role="menuitem" onClick={signOut}>
                       Sair
@@ -223,42 +262,46 @@ function Header() {
         )}
       </nav>
 
-      {isInternal && (
-        <div id="menu-interno" className={`${styles.mobileMenu} ${isMenuOpen ? styles.mobileMenuOpen : ''}`}>
-          <div className={styles.mobileMenuContent}>
-            <NavLink to="/tarot" className={styles.mobileLink} onClick={handleCloseMenu}>
-              Tarot
-            </NavLink>
-            <NavLink to="/numerologia" className={styles.mobileLink} onClick={handleCloseMenu}>
-              Numerologia
-            </NavLink>
-            <NavLink to="/runas" className={styles.mobileLink} onClick={handleCloseMenu}>
-              Runas
-            </NavLink>
-            <NavLink to="/iching" className={styles.mobileLink} onClick={handleCloseMenu}>
-              I Ching
-            </NavLink>
-            <NavLink to="/oraculo/geral" className={styles.mobileLink} onClick={handleCloseMenu}>
-              Leitura Geral
-            </NavLink>
-            <NavLink to="/meu-grimorio" className={styles.mobileLink} onClick={handleCloseMenu}>
-              Grimório
-            </NavLink>
-            <NavLink to="/biblioteca" className={styles.mobileLink} onClick={handleCloseMenu}>
-              Biblioteca
-            </NavLink>
-            <NavLink to="/comunidade" className={styles.mobileLink} onClick={handleCloseMenu}>
-              Comunidade
-            </NavLink>
-            <NavLink to="/perfil/editar" className={styles.mobileLink} onClick={handleCloseMenu}>
-              Perfil
-            </NavLink>
-            <button type="button" className={styles.mobileGhostButton} onClick={signOut}>
-              Sair
-            </button>
-          </div>
+      <div id="menu-interno" className={`${styles.mobileMenu} ${isMenuOpen ? styles.mobileMenuOpen : ''}`}>
+        <div className={styles.mobileMenuContent}>
+          {NAV_MENU.flatMap((entry) => (entry.items ? entry.items : [{ label: entry.label, to: entry.to }])).map(
+            (item) => (
+              <NavLink key={item.to} to={item.to} className={styles.mobileLink} onClick={handleCloseMenu}>
+                {item.label}
+              </NavLink>
+            ),
+          )}
+          {user && (
+            <>
+              <NavLink to="/meu-grimorio" className={styles.mobileLink} onClick={handleCloseMenu}>
+                Grimório
+              </NavLink>
+              <NavLink to="/biblioteca" className={styles.mobileLink} onClick={handleCloseMenu}>
+                Biblioteca
+              </NavLink>
+              <NavLink to="/comunidade" className={styles.mobileLink} onClick={handleCloseMenu}>
+                Comunidade
+              </NavLink>
+              <NavLink to="/perfil/editar" className={styles.mobileLink} onClick={handleCloseMenu}>
+                Perfil
+              </NavLink>
+              <button type="button" className={styles.mobileGhostButton} onClick={signOut}>
+                Sair
+              </button>
+            </>
+          )}
+          {!user && !loading && (
+            <>
+              <NavLink to="/login" className={styles.mobileLink} onClick={handleCloseMenu}>
+                Entrar
+              </NavLink>
+              <NavLink to="/cadastro" className={styles.mobileLink} onClick={handleCloseMenu}>
+                Cadastrar
+              </NavLink>
+            </>
+          )}
         </div>
-      )}
+      </div>
     </header>
   );
 }

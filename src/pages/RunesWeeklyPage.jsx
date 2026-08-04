@@ -62,6 +62,9 @@ export default function RunesWeeklyPage() {
   const themes = toList(outputPayload?.themes);
   const recommendedActions = toList(outputPayload?.recommended_actions);
   const disclaimer = outputPayload?.disclaimer;
+  const runesForReading = Array.isArray(outputPayload?.runes) ? outputPayload.runes : [];
+  const ritual = outputPayload?.ritual;
+  const reflectionQuestion = outputPayload?.reflection_question;
 
   const handleGenerate = (forceRegenerate = false) => {
     generateMutation.mutate({
@@ -109,6 +112,23 @@ export default function RunesWeeklyPage() {
 
                   <RunesCast runes={outputPayload?.runes || []} />
 
+                  {runesForReading.length > 0 && (
+                    <div className={styles.sectionBlock}>
+                      <h3>Leitura por Posição</h3>
+                      <div className={styles.resultCard}>
+                        {runesForReading.map((rune) => (
+                          <div key={rune.position} className={styles.messageCard}>
+                            <p className={styles.eyebrow} style={{ marginBottom: '0.4rem' }}>
+                              {rune.position?.toUpperCase()} · {rune.name?.toUpperCase()}
+                              {rune.reversed ? ' (INVERTIDA)' : ''}
+                            </p>
+                            <p><strong>Leitura:</strong> {rune.meaning}</p>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
                   {themes.length > 0 && (
                     <div className={styles.sectionBlock}>
                       <h3>Temas</h3>
@@ -128,6 +148,14 @@ export default function RunesWeeklyPage() {
                           <li key={item}>{item}</li>
                         ))}
                       </ul>
+                    </div>
+                  )}
+
+                  {(ritual || reflectionQuestion) && (
+                    <div className={styles.sectionBlock}>
+                      <h3>Camada Avançada</h3>
+                      {ritual && <p><strong>Ritual sugerido:</strong> {ritual}</p>}
+                      {reflectionQuestion && <p><strong>Para refletir:</strong> {reflectionQuestion}</p>}
                     </div>
                   )}
 

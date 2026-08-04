@@ -44,6 +44,14 @@ const MeuGrimorioPage = lazy(() => import('../pages/dashboard/MeuGrimorioPage'))
 const EditarPerfilPage = lazy(() => import('../pages/dashboard/EditarPerfilPage'));
 const CommunityFeedPage = lazy(() => import('../pages/community/CommunityFeedPage'));
 
+// Features recuperadas (Carta do Dia, Mapa do Ano, Compatibilidade, Trânsitos, I Ching Ativo, Histórico)
+const CartaDoDiaPage = lazy(() => import('../pages/features/CartaDoDiaPage'));
+const YearMapPage = lazy(() => import('../pages/features/YearMapPage'));
+const CompatibilityPage = lazy(() => import('../pages/features/CompatibilityPage'));
+const TransitsPage = lazy(() => import('../pages/features/TransitsPage'));
+const IChingActivePage = lazy(() => import('../pages/features/IChingActivePage'));
+const HistoricoPage = lazy(() => import('../pages/features/HistoricoPage'));
+
 function AppRoutes() {
   return (
     // O Suspense continua para as outras páginas lazy
@@ -78,6 +86,12 @@ function AppRoutes() {
           <Route path="/oraculo/geral/:id" element={<GeneralOraclePage />} />
           <Route path="/runas" element={<RunesWeeklyPage />} />
           <Route path="/iching" element={<IChingWeeklyPage />} />
+          <Route path="/iching/consulta" element={<IChingActivePage />} />
+          <Route path="/oraculo/dia" element={<CartaDoDiaPage />} />
+          <Route path="/tarot/mapa-do-ano" element={<YearMapPage />} />
+          <Route path="/numerologia/compatibilidade" element={<CompatibilityPage />} />
+          <Route path="/numerologia/transitos" element={<TransitsPage />} />
+          <Route path="/historico" element={<HistoricoPage />} />
         </Route>
 
       </Routes>
