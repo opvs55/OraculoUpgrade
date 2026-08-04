@@ -153,9 +153,6 @@ function Header() {
                     <Link to="/biblioteca" role="menuitem" className={styles.accountMenuLink}>
                       Biblioteca
                     </Link>
-                    <Link to="/comunidade" role="menuitem" className={styles.accountMenuLink}>
-                      Comunidade
-                    </Link>
                     <Link to="/historico" role="menuitem" className={styles.accountMenuLink}>
                       Histórico
                     </Link>
@@ -196,9 +193,6 @@ function Header() {
               </NavLink>
               <NavLink to="/biblioteca" className={styles.mobileLink} onClick={handleCloseMenu}>
                 Biblioteca
-              </NavLink>
-              <NavLink to="/comunidade" className={styles.mobileLink} onClick={handleCloseMenu}>
-                Comunidade
               </NavLink>
               <NavLink to="/historico" className={styles.mobileLink} onClick={handleCloseMenu}>
                 Histórico

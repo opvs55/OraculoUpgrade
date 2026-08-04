@@ -155,9 +155,9 @@ function EditarPerfilPage() {
           <section className={styles.welcomeCard}>
             <h2>Bem-vindo(a) ao seu primeiro acesso!</h2>
             <p>
-              Este é o seu espaço sagrado para registrar leituras, acompanhar sua evolução e compartilhar
-              aprendizados com a comunidade. Para liberar todas as experiências, precisamos que você complete
-              o perfil agora. <strong>Todos os campos são obrigatórios.</strong>
+              Este é o seu espaço sagrado para registrar leituras e acompanhar sua evolução. Para liberar
+              todas as experiências, precisamos que você complete o perfil agora.{' '}
+              <strong>Todos os campos são obrigatórios.</strong>
             </p>
             <p className={styles.welcomeHint}>
               Assim que salvar, você será redirecionado para o seu diário e poderá iniciar suas leituras.
@@ -175,7 +175,7 @@ function EditarPerfilPage() {
                 alt="Avatar atual" 
                 className={styles.avatarPreview} 
               />
-              <p className={styles.avatarHint}>Escolha uma carta que represente sua energia para a comunidade.</p>
+              <p className={styles.avatarHint}>Escolha uma carta que represente sua energia.</p>
               <button 
                 type="button" 
                 onClick={() => setShowModal(true)} 
