@@ -1,10 +1,15 @@
 /* src/components/ThreeCardLayout/ThreeCardLayout.module.css */
 
+@keyframes cardFadeIn {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
 .layoutContainer {
   display: flex;
   justify-content: center;
   align-items: flex-start;
-  gap: 2rem; /* Espaçamento entre as cartas */
+  gap: 2.5rem; /* Espaçamento entre as cartas */
   padding: 2rem 0;
   flex-wrap: wrap; /* Permite que as cartas quebrem a linha em telas pequenas */
 }
@@ -23,4 +28,64 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+  width: 168px;
+  animation: cardFadeIn 0.5s ease-out backwards;
+}
+
+.flipTrigger {
+  width: 100%;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  filter: drop-shadow(0 4px 15px rgba(0, 0, 0, 0.4));
+  transition: transform 0.3s ease;
+}
+
+.flipTrigger:hover {
+  transform: translateY(-6px);
+}
+
+.positionName {
+  font-family: 'Cinzel', serif;
+  font-weight: 500;
+  font-size: 0.9rem;
+  color: #E1B382;
+  margin-top: 1rem;
+  margin-bottom: 0.25rem;
+  text-align: center;
+}
+
+.cardName {
+  font-family: 'Lato', sans-serif;
+  font-size: 0.8rem;
+  color: #c7c7c7;
+  margin: 0;
+  text-align: center;
+  font-style: italic;
+}
+
+.flipHint {
+  font-family: 'Lato', sans-serif;
+  font-size: 0.78rem;
+  color: rgba(201, 169, 110, 0.65);
+  margin: 0;
+  text-align: center;
+  letter-spacing: 0.02em;
+}
+
+@media (max-width: 768px) {
+  .cardPosition {
+    width: 118px;
+  }
+
+  .positionName {
+    font-size: 0.75rem;
+    margin-top: 0.75rem;
+  }
+
+  .cardName,
+  .flipHint {
+    font-size: 0.7rem;
+  }
 }

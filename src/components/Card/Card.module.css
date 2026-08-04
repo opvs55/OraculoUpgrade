@@ -26,7 +26,7 @@
 
 /* --- A Imagem da Carta --- */
 .card {
-  width: 130px; /* Um pouco maior para ter mais impacto */
+  width: 148px; /* Maior para ter mais impacto — a arte da carta é o produto */
   height: auto;   /* Mantém a proporção da imagem */
   border-radius: 8px; /* Bordas levemente arredondadas */
   

@@ -36,6 +36,10 @@
   object-fit: cover;
 }
 
+.imageInverted {
+  transform: rotate(180deg);
+}
+
 .cardFaceFront {
   /* A face da carta, que começa virada para longe */
   transform: rotateY(180deg);

@@ -66,6 +66,7 @@ function PastReadingPage() {
   const location = useLocation();
 
   const temporaryReadingData = location.state?.readingData;
+  const justRevealed = Boolean(location.state?.justRevealed);
   const { data: readingFromHook, isLoading: isLoadingHook, isError: isHookError, error: hookError } = useSingleReading(
     !temporaryReadingData && !readingId?.startsWith('temp-') ? readingId : null
   );
@@ -107,7 +108,11 @@ function PastReadingPage() {
 
     switch (currentReading.spread_type) {
       case 'threeCards':
-        return cards.length >= 3 ? <ThreeCardLayout cards={cards} basePath={basePath} /> : <p>Layout indisponível (dados incompletos).</p>;
+        return cards.length >= 3 ? (
+          <ThreeCardLayout cards={cards} basePath={basePath} justRevealed={justRevealed} />
+        ) : (
+          <p>Layout indisponível (dados incompletos).</p>
+        );
       case 'templeOfAphrodite':
         return cards.length >= 7 ? <TempleOfAphroditeLayout cards={cards} basePath={basePath} /> : <p>Layout indisponível (dados incompletos).</p>;
       case 'pathChoice':

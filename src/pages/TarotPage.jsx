@@ -76,9 +76,9 @@ function TarotPage() {
         if (data.id && data.id.startsWith('temp-')) {
           localStorage.setItem(VISITOR_READING_KEY, 'true');
           setVisitorHasRead(true);
-          navigate(`/leitura/${data.id}`, { state: { readingData: data } });
+          navigate(`/leitura/${data.id}`, { state: { readingData: data, justRevealed: true } });
         } else {
-          navigate(`/leitura/${data.id}`);
+          navigate(`/leitura/${data.id}`, { state: { justRevealed: true } });
         }
       },
       onError: (err) => {

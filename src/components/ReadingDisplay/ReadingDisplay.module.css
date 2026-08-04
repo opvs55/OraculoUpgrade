@@ -2,7 +2,7 @@
   background-color: transparent;
   padding: 1rem;
   width: 100%;
-  max-width: 100%;
+  max-width: 1100px;
   margin: 0.5rem auto;
   font-family: 'Lato', sans-serif;
 }
@@ -52,10 +52,11 @@
 }
 
 .analysisCard {
-  background-color: rgba(26, 26, 46, 0.5);
-  border: 1px solid #2c2c54;
+  background-color: rgba(38, 34, 64, 0.6);
+  border: 1px solid #423d68;
   border-radius: 8px;
   padding: 1.5rem;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
   transition: all 0.3s ease;
 }
 
@@ -76,7 +77,7 @@
 
 .analysisCard p {
   color: #e0e0e0;
-  line-height: 1.8;
+  line-height: 1.65;
   font-size: 1.1rem;
   margin: 0;
 }
