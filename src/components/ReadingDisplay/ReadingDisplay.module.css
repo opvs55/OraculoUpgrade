@@ -285,3 +285,100 @@
   color: #c7a37e;
   font-size: 0.95rem;
 }
+
+/* --- Cruz Celta: grupos + acordeão por carta --- */
+
+.celticGroup {
+  margin-bottom: 2.5rem;
+}
+
+.celticGroupHeader {
+  margin-bottom: 1rem;
+}
+
+.celticGroupTitle {
+  font-family: 'Cinzel', serif;
+  color: #E1B382;
+  font-size: 1.4rem;
+  margin: 0 0 0.3rem;
+}
+
+.celticGroupHint {
+  color: #a6a1b8;
+  font-size: 0.92rem;
+  margin: 0;
+}
+
+.celticAccordionList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.celticAccordionItem {
+  background-color: rgba(38, 34, 64, 0.6);
+  border: 1px solid #423d68;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.celticAccordionItem[open] {
+  border-color: rgba(225, 179, 130, 0.5);
+}
+
+.celticAccordionSummary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1rem 1.25rem;
+  cursor: pointer;
+  list-style: none;
+}
+
+.celticAccordionSummary::-webkit-details-marker {
+  display: none;
+}
+
+.celticAccordionSummary .positionCardMeta {
+  flex: 1;
+}
+
+.celticExpandIcon {
+  flex-shrink: 0;
+  width: 22px;
+  height: 22px;
+  position: relative;
+}
+
+.celticExpandIcon::before,
+.celticExpandIcon::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  background: #E1B382;
+  transform: translate(-50%, -50%);
+  transition: transform 0.2s ease;
+}
+
+.celticExpandIcon::before { width: 14px; height: 2px; }
+.celticExpandIcon::after { width: 2px; height: 14px; }
+
+.celticAccordionItem[open] .celticExpandIcon::after {
+  transform: translate(-50%, -50%) rotate(90deg);
+  opacity: 0;
+}
+
+.celticAccordionBody {
+  margin: 0;
+  padding: 0 1.25rem 1.25rem;
+  color: #e0e0e0;
+  line-height: 1.65;
+}
+
+@media (max-width: 768px) {
+  .celticGroupTitle { font-size: 1.2rem; }
+  .celticAccordionSummary { padding: 0.85rem 1rem; }
+  .celticAccordionBody { padding: 0 1rem 1rem; }
+}

@@ -133,7 +133,16 @@ const PathChoiceInterpretation = ({ data }) => {
   );
 };
 
-// <<< MUDANÇA PRINCIPAL: Componente da Cruz Celta com Layout VERTICAL >>>
+// A Cruz Celta tradicionalmente se divide em dois blocos: a cruz central
+// (situação, desafio, raízes, passado, potencial, futuro próximo) e o bastão
+// ao lado (você, ambiente, esperanças/medos, desfecho). Agrupar por esses
+// dois blocos — e deixar a análise de cada carta fechada até o toque — evita
+// a parede de texto de 10 blocos idênticos empilhados.
+const CELTIC_GROUPS = [
+  { label: 'O Centro', hint: 'A situação, o que pressiona agora e para onde ela tende.', start: 0, end: 6 },
+  { label: 'As Influências', hint: 'Você, o que está ao redor, e o desfecho provável.', start: 6, end: 10 },
+];
+
 const CelticCrossInterpretation = ({ data, cardsData = [] }) => {
   const { titulo_leitura, resumo_geral, analise_cartas, conselho_final } = data;
 
@@ -150,44 +159,48 @@ const CelticCrossInterpretation = ({ data, cardsData = [] }) => {
         <p className={styles.summary}>"{resumo_geral}"</p>
       </div>
 
-      {/* <<< MUDANÇA: Container Vertical em vez de Grid >>> */}
-      <div className={styles.verticalAnalysisContainer}>
-        {analise_cartas.map((analise, index) => (
-          // Usamos React.Fragment para poder adicionar o divisor
-          <React.Fragment key={index}>
-            {/* Mantemos o card para cada análise */}
-            <div className={styles.analysisCard}>
-              <div className={styles.positionCardMeta}>
-                {(cardsData[index]?.image || cardsData[index]?.img) ? (
-                  <img
-                    src={cardsData[index]?.image || cardsData[index]?.img}
-                    alt={cardsData[index]?.name || cardsData[index]?.nome || `Carta ${index + 1}`}
-                    className={`${styles.positionCardThumb} ${(cardsData[index]?.isReversed || cardsData[index]?.invertida) ? styles.positionCardThumbInverted : ''}`}
-                    loading="lazy"
-                  />
-                ) : (
-                  <div className={styles.positionCardThumbPlaceholder} />
-                )}
-                <div>
-                  <h4 className={styles.cardPositionTitle}>{analise.posicao || POSICOES_CRUZ_CELTA_META[index]?.title}</h4>
-                  <p className={styles.positionCardName}>
-                    {cardsData[index]?.name || cardsData[index]?.nome || 'Carta não identificada'}
-                    {(cardsData[index]?.isReversed || cardsData[index]?.invertida) ? ' (Invertida)' : ''}
-                  </p>
-                  <p className={styles.celticShortMeaning}>{POSICOES_CRUZ_CELTA_META[index]?.shortMeaning}</p>
-                </div>
-              </div>
-              <p>{analise.texto}</p>
-            </div>
+      {CELTIC_GROUPS.map((group) => (
+        <div key={group.label} className={styles.celticGroup}>
+          <div className={styles.celticGroupHeader}>
+            <h3 className={styles.celticGroupTitle}>{group.label}</h3>
+            <p className={styles.celticGroupHint}>{group.hint}</p>
+          </div>
 
-            {/* <<< MUDANÇA: Adiciona um divisor entre os cards (exceto após o último) >>> */}
-            {index < analise_cartas.length - 1 && (
-              <hr className={styles.verticalDivider} />
-              // Alternativa: <div className={styles.verticalDivider}></div>
-            )}
-          </React.Fragment>
-        ))}
-      </div>
+          <div className={styles.celticAccordionList}>
+            {analise_cartas.slice(group.start, group.end).map((analise, offset) => {
+              const index = group.start + offset;
+              return (
+                <details key={index} className={styles.celticAccordionItem}>
+                  <summary className={styles.celticAccordionSummary}>
+                    <div className={styles.positionCardMeta}>
+                      {(cardsData[index]?.image || cardsData[index]?.img) ? (
+                        <img
+                          src={cardsData[index]?.image || cardsData[index]?.img}
+                          alt={cardsData[index]?.name || cardsData[index]?.nome || `Carta ${index + 1}`}
+                          className={`${styles.positionCardThumb} ${(cardsData[index]?.isReversed || cardsData[index]?.invertida) ? styles.positionCardThumbInverted : ''}`}
+                          loading="lazy"
+                        />
+                      ) : (
+                        <div className={styles.positionCardThumbPlaceholder} />
+                      )}
+                      <div>
+                        <h4 className={styles.cardPositionTitle}>{analise.posicao || POSICOES_CRUZ_CELTA_META[index]?.title}</h4>
+                        <p className={styles.positionCardName}>
+                          {cardsData[index]?.name || cardsData[index]?.nome || 'Carta não identificada'}
+                          {(cardsData[index]?.isReversed || cardsData[index]?.invertida) ? ' (Invertida)' : ''}
+                        </p>
+                        <p className={styles.celticShortMeaning}>{POSICOES_CRUZ_CELTA_META[index]?.shortMeaning}</p>
+                      </div>
+                    </div>
+                    <span className={styles.celticExpandIcon} aria-hidden="true" />
+                  </summary>
+                  <p className={styles.celticAccordionBody}>{analise.texto}</p>
+                </details>
+              );
+            })}
+          </div>
+        </div>
+      ))}
 
       <div className={styles.finalAdvice}>
         <h4 className={styles.adviceTitle}>Conselho Final / Síntese</h4>
