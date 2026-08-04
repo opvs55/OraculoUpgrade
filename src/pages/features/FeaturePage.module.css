@@ -266,19 +266,6 @@
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
 }
 
-.dailyCardFrame {
-  width: 150px;
-  flex-shrink: 0;
-}
-
-.dayName {
-  font-family: 'Cinzel', serif;
-  color: #f0ce9f;
-  font-size: 1.6rem;
-  margin: 0.5rem 0 1.5rem;
-  font-style: italic;
-}
-
 .practicalHint {
   background: rgba(225, 179, 130, 0.08);
   border-left: 3px solid #e1b382;

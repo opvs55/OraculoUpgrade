@@ -9,8 +9,16 @@ import { oraclesApi } from '../../services/api/oraclesApi';
 import { resolveTarotCardImage } from '../../utils/resolveTarotCardImage';
 import { baralhoDetalhado } from '../../tarotDeck';
 import styles from './FeaturePage.module.css';
+import hero from './CartaDoDiaPage.module.css';
 
 const CARD_BACK_IMAGE = '/assets/cartas/verso.svg';
+const SPARKLE_POSITIONS = [
+  { top: '12%', left: '18%', delay: '0s' },
+  { top: '22%', left: '78%', delay: '0.6s' },
+  { top: '68%', left: '12%', delay: '1.2s' },
+  { top: '75%', left: '82%', delay: '1.8s' },
+  { top: '8%', left: '50%', delay: '2.4s' },
+];
 
 const formatOracleDate = (dateStr) => {
   if (!dateStr) return '';
@@ -41,6 +49,7 @@ export default function CartaDoDiaPage() {
   const { user } = useAuth();
   const userId = user?.id;
   const [isFlipped, setIsFlipped] = useState(false);
+  const [shareFeedback, setShareFeedback] = useState('');
 
   const query = useQuery({
     queryKey: ['oracles', 'daily-oracle', userId],
@@ -63,6 +72,30 @@ export default function CartaDoDiaPage() {
     const timer = setTimeout(() => setIsFlipped(true), 500);
     return () => clearTimeout(timer);
   }, [data?.oracle_date, data?.card_name]);
+
+  const handleShare = async () => {
+    if (!data) return;
+    const headline = message?.nome_do_dia ? `${message.nome_do_dia} — ` : '';
+    const shareText = `${headline}${data.card_name} é a carta do meu dia hoje no Esotericon.`;
+    const shareUrl = window.location.origin + '/oraculo/dia';
+
+    if (navigator.share) {
+      try {
+        await navigator.share({ title: 'Carta do Dia — Esotericon', text: shareText, url: shareUrl });
+        return;
+      } catch (err) {
+        // Pessoa cancelou o compartilhamento (fechou a folha nativa) — não é
+        // erro, não faz nada. Qualquer outra falha cai pro clipboard abaixo.
+        if (err?.name === 'AbortError') return;
+      }
+    }
+
+    if (navigator.clipboard) {
+      await navigator.clipboard.writeText(`${shareText} ${shareUrl}`);
+      setShareFeedback('Copiado! Cole onde quiser compartilhar.');
+      setTimeout(() => setShareFeedback(''), 3000);
+    }
+  };
 
   return (
     <div className={`content_wrapper ${styles.page}`}>
@@ -93,13 +126,21 @@ export default function CartaDoDiaPage() {
               <span className={styles.badge}>{formatOracleDate(data.oracle_date)}</span>
             </div>
 
-            {message?.nome_do_dia && (
-              <h2 className={styles.dayName}>{message.nome_do_dia}</h2>
-            )}
+            <div className={hero.stage}>
+              <div className={hero.glow} />
+              {SPARKLE_POSITIONS.map((pos, index) => (
+                <span
+                  key={index}
+                  className={hero.sparkle}
+                  style={{ top: pos.top, left: pos.left, animationDelay: pos.delay }}
+                  aria-hidden="true"
+                >
+                  ✦
+                </span>
+              ))}
 
-            <div className={styles.monthSpotlight}>
               {cardImage && (
-                <div className={styles.dailyCardFrame}>
+                <div className={hero.cardFrame}>
                   <FlippableCard
                     isFlipped={isFlipped}
                     frontImage={cardImage}
@@ -109,27 +150,33 @@ export default function CartaDoDiaPage() {
                 </div>
               )}
 
-              <div className={styles.monthSpotlightContent}>
-                <p className={styles.monthCardName}>{data.card_name}</p>
-                {keywords.length > 0 && (
-                  <div className={styles.chipsRow}>
-                    {keywords.map((word) => (
-                      <span key={word} className={styles.themeChip}>{word}</span>
-                    ))}
-                  </div>
-                )}
-                {message?.mensagem ? (
-                  <p>{message.mensagem}</p>
-                ) : (
-                  <p>Sua mensagem do dia está sendo preparada — volte em instantes.</p>
-                )}
-                {message?.intencao_pratica && (
-                  <p className={styles.practicalHint}>
-                    <strong>Pra hoje:</strong> {message.intencao_pratica}
-                  </p>
-                )}
-              </div>
+              {message?.nome_do_dia && <h2 className={hero.headline}>{message.nome_do_dia}</h2>}
+              <p className={hero.cardLabel}>{data.card_name}</p>
             </div>
+
+            <button type="button" className={hero.shareButton} onClick={handleShare}>
+              ✦ Compartilhar
+            </button>
+            {shareFeedback && <p className={hero.shareFeedback}>{shareFeedback}</p>}
+
+            {keywords.length > 0 && (
+              <div className={styles.chipsRow}>
+                {keywords.map((word) => (
+                  <span key={word} className={styles.themeChip}>{word}</span>
+                ))}
+              </div>
+            )}
+
+            {message?.mensagem ? (
+              <p>{message.mensagem}</p>
+            ) : (
+              <p>Sua mensagem do dia está sendo preparada — volte em instantes.</p>
+            )}
+            {message?.intencao_pratica && (
+              <p className={styles.practicalHint}>
+                <strong>Pra hoje:</strong> {message.intencao_pratica}
+              </p>
+            )}
 
             {cardInfo && (
               <div className={styles.sectionBlock}>

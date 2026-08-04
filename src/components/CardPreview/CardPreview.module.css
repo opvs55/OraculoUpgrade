@@ -26,6 +26,15 @@
   box-shadow: 0 8px 25px rgba(225, 179, 130, 0.4);
 }
 
+@keyframes ambientGlow {
+  0%, 100% { box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5); }
+  50% { box-shadow: 0 8px 28px rgba(225, 179, 130, 0.55); }
+}
+
+.mediaAmbient {
+  animation: ambientGlow 2.5s ease-in-out infinite;
+}
+
 .cardMedia {
   width: 100%;
   height: 100%;

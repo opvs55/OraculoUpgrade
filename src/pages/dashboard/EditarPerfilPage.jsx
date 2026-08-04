@@ -26,7 +26,6 @@ function EditarPerfilPage() {
   const [entidadeCultuada, setEntidadeCultuada] = useState(''); 
 
   const [message, setMessage] = useState('');
-  const [showModal, setShowModal] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const hasAutoSelectedAvatar = useRef(false);
 
@@ -114,13 +113,6 @@ function EditarPerfilPage() {
     });
   };
 
-  const handleRandomCardSelect = () => {
-    const randomIndex = Math.floor(Math.random() * baralho.length);
-    const randomCard = baralho[randomIndex];
-    setAvatarUrl(randomCard.img);
-    setShowModal(false);
-  };
-  
   const handleDeleteAccount = async () => {
     const confirmation = prompt('Esta ação é irreversível e apagará TODOS os seus dados, incluindo leituras e chats. Para confirmar, digite "DELETAR" nesta caixa:');
     if (confirmation !== 'DELETAR') {
@@ -181,26 +173,20 @@ function EditarPerfilPage() {
           <section className={styles.avatarSection}>
             <div className={styles.avatarPicker}>
               <p>Seu Arcano de Perfil</p>
-              <img 
-                src={avatarUrl || 'https://i.imgur.com/6VBx3io.png'} 
-                alt="Avatar atual" 
-                className={styles.avatarPreview} 
+              <img
+                src={avatarUrl || 'https://i.imgur.com/6VBx3io.png'}
+                alt="Avatar atual"
+                className={styles.avatarPreview}
               />
               {derivedInsights?.topCard && avatarUrl === baralho.find((card) => card.nome === derivedInsights.topCard)?.img ? (
                 <p className={styles.avatarHint}>
                   Esta é a carta que mais aparece nas suas leituras recentes — sua energia do momento.
                 </p>
               ) : (
-                <p className={styles.avatarHint}>Escolha uma carta que represente sua energia.</p>
+                <p className={styles.avatarHint}>
+                  Sua carta de perfil é definida automaticamente pela energia mais recorrente nas suas leituras.
+                </p>
               )}
-              <button 
-                type="button" 
-                onClick={() => setShowModal(true)} 
-                className={styles.editProfileButton}
-                disabled={isUpdating || isDeleting}
-              >
-                Escolher uma Carta
-              </button>
             </div>
           </section>
 
@@ -291,37 +277,7 @@ function EditarPerfilPage() {
             </details>
           </section> {/* Fechamento CORRETO da formSection */}
         </div> {/* Fechamento do editPageLayout */}
-
-      {/* Modal (fora do grid principal) - CÓDIGO COMPLETO AGORA */}
-      {showModal && (
-         <div className={styles.modalOverlay} onClick={() => setShowModal(false)}>
-          <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
-            <div className={styles.modalHeader}>
-              <h3>Escolha seu Arcano</h3>
-              <button type="button" onClick={handleRandomCardSelect} className={styles.randomCardButton}>
-                ✨ Escolher para mim
-              </button>
-            </div>
-            <div className={styles.cardGrid}>
-              {baralho.map(carta => (
-                <img
-                  key={carta.id}
-                  src={carta.img}
-                  alt={carta.nome}
-                  loading="lazy"
-                  className={styles.cardOption}
-                  onClick={() => {
-                    setAvatarUrl(carta.img);
-                    setShowModal(false);
-                  }}
-                /> // Certifique-se de que a tag img está auto-fechada corretamente
-              ))}
-            </div> {/* Fechamento do cardGrid */}
-            <button onClick={() => setShowModal(false)} className={styles.modalCloseButton}>Fechar</button>
-          </div> {/* Fechamento do modalContent */}
-        </div> // Fechamento do modalOverlay
-      )} 
-     </div> {/* Fechamento do editPageContainer - Linha 220 */}
+     </div> {/* Fechamento do editPageContainer */}
     </div> // Fechamento do content_wrapper
   );
 }
