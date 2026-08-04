@@ -7,6 +7,7 @@ import { useAuth } from '../../hooks/useAuth';
 import { useReadingsHistory } from '../../hooks/useReadings';
 import { oraclesApi } from '../../services/api/oraclesApi';
 import { formatSpreadType } from '../../utils/formatSpreadType';
+import { getQuestionText } from '../../utils/getQuestionText';
 import styles from './FeaturePage.module.css';
 
 const TABS = [
@@ -89,7 +90,9 @@ export default function HistoricoPage() {
                   onClick={() => navigate(`/leitura/${reading.id}`)}
                 >
                   <div>
-                    <p className={styles.historyItemTitle}>{reading.question || 'Leitura de Tarot'}</p>
+                    <p className={styles.historyItemTitle}>
+                      {getQuestionText(reading.question, reading.spread_type)}
+                    </p>
                     <p className={styles.historyItemMeta}>
                       {formatSpreadType(reading.spread_type)} · {formatDate(reading.created_at)}
                     </p>
