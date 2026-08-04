@@ -33,7 +33,14 @@
 }
 
 .cardName {
-  margin-top: 1rem;
-  font-size: 1rem;
-  font-weight: bold;
+  margin-top: 0.85rem;
+  font-family: 'Cinzel', serif;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #e9dfd2;
+  transition: color 0.25s ease;
+}
+
+.cardLink:hover .cardName {
+  color: #f0ce9f;
 }

@@ -2,8 +2,9 @@ import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { useUserProfile } from '../../hooks/useUserProfile';
+import { useGrimorioInsights, useDerivedGrimorioInsights } from '../../hooks/useGrimorioInsights';
 import { supabase } from '../../supabaseClient';
-import styles from './EditarPerfilPage.module.css'; 
+import styles from './EditarPerfilPage.module.css';
 import { baralho } from '../../tarotDeck';
 import Loader from '../../components/common/Loader/Loader';
 import ChangePasswordForm from '../../pages/auth/ChangePasswordForm/ChangePasswordForm';
@@ -14,7 +15,9 @@ function EditarPerfilPage() {
   const navigate = useNavigate();
   
   const { profile, updateProfile, isLoading: isProfileLoading, isUpdating, error: profileError } = useUserProfile(user?.id);
-  
+  const { data: insightsReadings, isLoading: isInsightsLoading } = useGrimorioInsights(user?.id);
+  const derivedInsights = useDerivedGrimorioInsights(insightsReadings);
+
   const [username, setUsername] = useState('');
   const [fullName, setFullName] = useState('');
   const [avatarUrl, setAvatarUrl] = useState('');
@@ -38,14 +41,22 @@ function EditarPerfilPage() {
     }
   }, [profile]);
 
+  // Escolhe o avatar automático no primeiro acesso: se a pessoa já tem
+  // histórico, usa a carta que mais se repete nas leituras recentes (uma
+  // identidade que já é dela, não sorteada); só cai no aleatório se ainda
+  // não houver leituras suficientes pra apontar uma carta recorrente.
   useEffect(() => {
-    if (!profile || profile.avatar_url || hasAutoSelectedAvatar.current) return;
-    const randomIndex = Math.floor(Math.random() * baralho.length);
-    const randomCard = baralho[randomIndex];
+    if (!profile || profile.avatar_url || hasAutoSelectedAvatar.current || isInsightsLoading) return;
+
+    const recurringCard = derivedInsights?.topCard
+      ? baralho.find((card) => card.nome === derivedInsights.topCard)
+      : null;
+    const chosenCard = recurringCard || baralho[Math.floor(Math.random() * baralho.length)];
+
     hasAutoSelectedAvatar.current = true;
-    setAvatarUrl(randomCard.img);
-    updateProfile({ avatar_url: randomCard.img });
-  }, [profile, updateProfile]);
+    setAvatarUrl(chosenCard.img);
+    updateProfile({ avatar_url: chosenCard.img });
+  }, [profile, updateProfile, isInsightsLoading, derivedInsights]);
 
   const formProfile = useMemo(() => ({
     username,
@@ -175,7 +186,13 @@ function EditarPerfilPage() {
                 alt="Avatar atual" 
                 className={styles.avatarPreview} 
               />
-              <p className={styles.avatarHint}>Escolha uma carta que represente sua energia.</p>
+              {derivedInsights?.topCard && avatarUrl === baralho.find((card) => card.nome === derivedInsights.topCard)?.img ? (
+                <p className={styles.avatarHint}>
+                  Esta é a carta que mais aparece nas suas leituras recentes — sua energia do momento.
+                </p>
+              ) : (
+                <p className={styles.avatarHint}>Escolha uma carta que represente sua energia.</p>
+              )}
               <button 
                 type="button" 
                 onClick={() => setShowModal(true)} 

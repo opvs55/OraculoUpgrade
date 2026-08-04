@@ -23,9 +23,11 @@ function LearningCardDetailPage() {
 
   return (
     <div className={`content_wrapper ${styles.pageContainer}`}>
+      <Link to="/biblioteca" className={styles.breadcrumb}>Biblioteca</Link>
+
       <div className={styles.header}>
         <h1 className={styles.cardName}>{card.nome}</h1>
-        <p className={styles.cardType}>{card.tipo}{card.naipe ? ` - ${card.naipe}` : ''}</p>
+        <p className={styles.cardType}>{card.tipo}{card.naipe ? ` · ${card.naipe}` : ''}</p>
       </div>
 
       <div className={styles.mainContent}>
@@ -37,16 +39,20 @@ function LearningCardDetailPage() {
 
           <div className={styles.keywords}>
             <div className={styles.keywordSection}>
-              <h3 className={styles.keywordTitle}>Palavras-Chave (Direito)</h3>
-              <ul>
-                {card.palavras_chave.direito.map((keyword, index) => <li key={index}>{keyword}</li>)}
-              </ul>
+              <h3 className={styles.keywordTitle}>Direito</h3>
+              <div className={styles.keywordChips}>
+                {card.palavras_chave.direito.map((keyword) => (
+                  <span key={keyword} className={styles.keywordChip}>{keyword}</span>
+                ))}
+              </div>
             </div>
             <div className={styles.keywordSection}>
-              <h3 className={styles.keywordTitle}>Palavras-Chave (Invertido)</h3>
-              <ul>
-                {card.palavras_chave.invertido.map((keyword, index) => <li key={index}>{keyword}</li>)}
-              </ul>
+              <h3 className={styles.keywordTitle}>Invertido</h3>
+              <div className={styles.keywordChips}>
+                {card.palavras_chave.invertido.map((keyword) => (
+                  <span key={keyword} className={`${styles.keywordChip} ${styles.keywordChipInverted}`}>{keyword}</span>
+                ))}
+              </div>
             </div>
           </div>
         </div>

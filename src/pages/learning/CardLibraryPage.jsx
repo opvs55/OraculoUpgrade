@@ -33,7 +33,10 @@ function CardLibraryPage() {
   // Uma função auxiliar para renderizar a seção de cartas
   const renderCardSection = (title, cards) => (
     <section className={styles.section}>
-      <h2 className={styles.sectionTitle}>{title}</h2>
+      <h2 className={styles.sectionTitle}>
+        {title}
+        <span className={styles.sectionCount}>{cards.length} cartas</span>
+      </h2>
       <div className={styles.cardGrid}>
         {cards.map(card => (
           // Usamos o novo componente CardPreview aqui
