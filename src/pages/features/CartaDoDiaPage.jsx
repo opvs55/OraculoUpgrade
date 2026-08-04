@@ -1,13 +1,16 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import DecorativeDivider from '../../components/common/DecorativeDivider/DecorativeDivider';
 import Loader from '../../components/common/Loader/Loader';
+import FlippableCard from '../../components/FlippableCard/FlippableCard';
 import { useAuth } from '../../hooks/useAuth';
 import { oraclesApi } from '../../services/api/oraclesApi';
 import { resolveTarotCardImage } from '../../utils/resolveTarotCardImage';
 import { baralhoDetalhado } from '../../tarotDeck';
 import styles from './FeaturePage.module.css';
+
+const CARD_BACK_IMAGE = '/assets/cartas/verso.svg';
 
 const formatOracleDate = (dateStr) => {
   if (!dateStr) return '';
@@ -20,9 +23,24 @@ const formatOracleDate = (dateStr) => {
   return formatted.charAt(0).toUpperCase() + formatted.slice(1);
 };
 
+// A mensagem vem como JSON serializado (nome_do_dia, mensagem,
+// intencao_pratica) — mas leituras antigas ou uma falha da IA podem ter
+// deixado só texto solto. Tenta o formato novo, cai pro texto puro.
+const parseInterpretation = (raw) => {
+  if (!raw) return null;
+  try {
+    const parsed = JSON.parse(raw);
+    if (parsed && typeof parsed === 'object' && parsed.mensagem) return parsed;
+  } catch {
+    // formato antigo: texto simples
+  }
+  return { mensagem: raw };
+};
+
 export default function CartaDoDiaPage() {
   const { user } = useAuth();
   const userId = user?.id;
+  const [isFlipped, setIsFlipped] = useState(false);
 
   const query = useQuery({
     queryKey: ['oracles', 'daily-oracle', userId],
@@ -34,6 +52,17 @@ export default function CartaDoDiaPage() {
   const cardImage = data ? resolveTarotCardImage(data.card_name) : null;
   const cardInfo = data ? baralhoDetalhado.find((card) => card.nome === data.card_name) : null;
   const keywords = cardInfo?.palavras_chave?.direito?.slice(0, 4) || [];
+  const message = parseInterpretation(data?.interpretation);
+
+  // A carta chega de costas e se revela sozinha pouco depois de carregar —
+  // um pequeno momento de pausa antes da mensagem do dia, em vez de tudo
+  // aparecer estático de uma vez.
+  useEffect(() => {
+    setIsFlipped(false);
+    if (!data) return;
+    const timer = setTimeout(() => setIsFlipped(true), 500);
+    return () => clearTimeout(timer);
+  }, [data?.oracle_date, data?.card_name]);
 
   return (
     <div className={`content_wrapper ${styles.page}`}>
@@ -64,22 +93,42 @@ export default function CartaDoDiaPage() {
               <span className={styles.badge}>{formatOracleDate(data.oracle_date)}</span>
             </div>
 
-            {cardImage && <img src={cardImage} alt={data.card_name} className={styles.cardImage} />}
+            {message?.nome_do_dia && (
+              <h2 className={styles.dayName}>{message.nome_do_dia}</h2>
+            )}
 
-            <div className={styles.messageCard}>
-              <h2>{data.card_name}</h2>
-              {keywords.length > 0 && (
-                <div className={styles.chipsRow}>
-                  {keywords.map((word) => (
-                    <span key={word} className={styles.themeChip}>{word}</span>
-                  ))}
+            <div className={styles.monthSpotlight}>
+              {cardImage && (
+                <div className={styles.dailyCardFrame}>
+                  <FlippableCard
+                    isFlipped={isFlipped}
+                    frontImage={cardImage}
+                    backImage={CARD_BACK_IMAGE}
+                    cardName={data.card_name}
+                  />
                 </div>
               )}
-              {data.interpretation ? (
-                <p>{data.interpretation}</p>
-              ) : (
-                <p>Sua mensagem do dia está sendo preparada — volte em instantes.</p>
-              )}
+
+              <div className={styles.monthSpotlightContent}>
+                <p className={styles.monthCardName}>{data.card_name}</p>
+                {keywords.length > 0 && (
+                  <div className={styles.chipsRow}>
+                    {keywords.map((word) => (
+                      <span key={word} className={styles.themeChip}>{word}</span>
+                    ))}
+                  </div>
+                )}
+                {message?.mensagem ? (
+                  <p>{message.mensagem}</p>
+                ) : (
+                  <p>Sua mensagem do dia está sendo preparada — volte em instantes.</p>
+                )}
+                {message?.intencao_pratica && (
+                  <p className={styles.practicalHint}>
+                    <strong>Pra hoje:</strong> {message.intencao_pratica}
+                  </p>
+                )}
+              </div>
             </div>
 
             {cardInfo && (
