@@ -1,12 +1,11 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import DecorativeDivider from '../../components/common/DecorativeDivider/DecorativeDivider';
 import Loader from '../../components/common/Loader/Loader';
 import { useAuth } from '../../hooks/useAuth';
 import { oraclesApi } from '../../services/api/oraclesApi';
 import { resolveTarotCardImage } from '../../utils/resolveTarotCardImage';
-import { baralho } from '../../tarotDeck';
+import { baralhoDetalhado } from '../../tarotDeck';
 import styles from './FeaturePage.module.css';
 
 export default function YearMapPage() {
@@ -30,7 +29,9 @@ export default function YearMapPage() {
 
   const activeMonth = selectedMonth ?? currentMonthNumber;
   const activeCard = cards.find((c) => c.month === activeMonth) || cards[0];
-  const activeCardInfo = activeCard ? baralho.find((c) => c.nome === activeCard.name) : null;
+  const activeCardInfo = activeCard ? baralhoDetalhado.find((c) => c.nome === activeCard.name) : null;
+  const isActivePeak = activeCard ? peakMonths.has(activeCard.month) : false;
+  const isActiveChallenge = activeCard ? challengeMonths.has(activeCard.month) : false;
   const otherCards = cards.filter((c) => c.month !== activeCard?.month);
 
   return (
@@ -90,18 +91,23 @@ export default function YearMapPage() {
                   <div className={styles.monthSpotlightContent}>
                     <p className={styles.monthCardName}>{activeCard.name}</p>
                     <div className={styles.chipsRow}>
-                      {peakMonths.has(activeCard.month) && <span className={styles.tagPeak}>Auge do ano</span>}
-                      {challengeMonths.has(activeCard.month) && <span className={styles.tagChallenge}>Desafio</span>}
+                      {isActivePeak && <span className={styles.tagPeak}>Auge do ano</span>}
+                      {isActiveChallenge && <span className={styles.tagChallenge}>Desafio</span>}
                       {activeCardInfo?.palavras_chave?.direito?.slice(0, 3).map((word) => (
                         <span key={word} className={styles.themeChip}>{word}</span>
                       ))}
                     </div>
                     {activeCardInfo && (
                       <>
-                        <p>{activeCardInfo.significados?.direito || activeCardInfo.descricao}</p>
-                        <Link to={`/biblioteca/${activeCardInfo.slug}`} className={styles.aboutLink}>
-                          Ver significado completo →
-                        </Link>
+                        <p>
+                          {isActivePeak
+                            ? `${activeCard.month_name} é um dos pontos altos do seu ano. `
+                            : isActiveChallenge
+                              ? `${activeCard.month_name} pede atenção redobrada. `
+                              : `Assim se apresenta a energia de ${activeCard.month_name}. `}
+                          {activeCardInfo.significados?.direito || activeCardInfo.descricao}
+                        </p>
+                        <p className={styles.disclaimer}>{activeCardInfo.descricao}</p>
                       </>
                     )}
                   </div>

@@ -6,8 +6,19 @@ import Loader from '../../components/common/Loader/Loader';
 import { useAuth } from '../../hooks/useAuth';
 import { oraclesApi } from '../../services/api/oraclesApi';
 import { resolveTarotCardImage } from '../../utils/resolveTarotCardImage';
-import { baralho } from '../../tarotDeck';
+import { baralhoDetalhado } from '../../tarotDeck';
 import styles from './FeaturePage.module.css';
+
+const formatOracleDate = (dateStr) => {
+  if (!dateStr) return '';
+  const [year, month, day] = dateStr.split('-').map(Number);
+  const formatted = new Date(year, month - 1, day).toLocaleDateString('pt-BR', {
+    weekday: 'long',
+    day: 'numeric',
+    month: 'long',
+  });
+  return formatted.charAt(0).toUpperCase() + formatted.slice(1);
+};
 
 export default function CartaDoDiaPage() {
   const { user } = useAuth();
@@ -21,7 +32,7 @@ export default function CartaDoDiaPage() {
 
   const data = query.data;
   const cardImage = data ? resolveTarotCardImage(data.card_name) : null;
-  const cardInfo = data ? baralho.find((card) => card.nome === data.card_name) : null;
+  const cardInfo = data ? baralhoDetalhado.find((card) => card.nome === data.card_name) : null;
   const keywords = cardInfo?.palavras_chave?.direito?.slice(0, 4) || [];
 
   return (
@@ -50,7 +61,7 @@ export default function CartaDoDiaPage() {
         {!query.isLoading && !query.isError && data && (
           <div className={styles.resultCard}>
             <div className={styles.statusRow}>
-              <span className={styles.badge}>{data.oracle_date}</span>
+              <span className={styles.badge}>{formatOracleDate(data.oracle_date)}</span>
             </div>
 
             {cardImage && <img src={cardImage} alt={data.card_name} className={styles.cardImage} />}
