@@ -27,7 +27,7 @@ function EditarPerfilPage() {
 
   const [message, setMessage] = useState('');
   const [isDeleting, setIsDeleting] = useState(false);
-  const hasAutoSelectedAvatar = useRef(false);
+  const hasAssignedRandomAvatar = useRef(false);
 
   useEffect(() => {
     if (profile) {
@@ -40,21 +40,33 @@ function EditarPerfilPage() {
     }
   }, [profile]);
 
-  // Escolhe o avatar automático no primeiro acesso: se a pessoa já tem
-  // histórico, usa a carta que mais se repete nas leituras recentes (uma
-  // identidade que já é dela, não sorteada); só cai no aleatório se ainda
-  // não houver leituras suficientes pra apontar uma carta recorrente.
+  // Avatar automático: usa a carta que mais se repete nas leituras recentes
+  // (uma identidade que já é dela, não sorteada) — e acompanha se essa carta
+  // mudar com o tempo, em vez de travar na primeira escolha. Só sorteia
+  // aleatório enquanto ainda não há leituras suficientes pra apontar uma
+  // carta recorrente, e isso sim acontece uma vez só (senão ficaria
+  // re-sorteando a cada carregamento da página).
   useEffect(() => {
-    if (!profile || profile.avatar_url || hasAutoSelectedAvatar.current || isInsightsLoading) return;
+    if (!profile || isInsightsLoading) return;
 
     const recurringCard = derivedInsights?.topCard
       ? baralho.find((card) => card.nome === derivedInsights.topCard)
       : null;
-    const chosenCard = recurringCard || baralho[Math.floor(Math.random() * baralho.length)];
 
-    hasAutoSelectedAvatar.current = true;
-    setAvatarUrl(chosenCard.img);
-    updateProfile({ avatar_url: chosenCard.img });
+    if (recurringCard) {
+      if (profile.avatar_url !== recurringCard.img) {
+        setAvatarUrl(recurringCard.img);
+        updateProfile({ avatar_url: recurringCard.img });
+      }
+      return;
+    }
+
+    if (!profile.avatar_url && !hasAssignedRandomAvatar.current) {
+      hasAssignedRandomAvatar.current = true;
+      const randomCard = baralho[Math.floor(Math.random() * baralho.length)];
+      setAvatarUrl(randomCard.img);
+      updateProfile({ avatar_url: randomCard.img });
+    }
   }, [profile, updateProfile, isInsightsLoading, derivedInsights]);
 
   const formProfile = useMemo(() => ({

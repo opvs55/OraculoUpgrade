@@ -4,7 +4,7 @@ import DecorativeDivider from '../../components/common/DecorativeDivider/Decorat
 import Loader from '../../components/common/Loader/Loader';
 import { useAuth } from '../../hooks/useAuth';
 import { oraclesApi } from '../../services/api/oraclesApi';
-import { resolveTarotCardImage } from '../../utils/resolveTarotCardImage';
+import { resolveTarotCardImage, normalizeCardName } from '../../utils/resolveTarotCardImage';
 import { baralhoDetalhado } from '../../tarotDeck';
 import styles from './FeaturePage.module.css';
 
@@ -29,10 +29,12 @@ export default function YearMapPage() {
 
   const activeMonth = selectedMonth ?? currentMonthNumber;
   const activeCard = cards.find((c) => c.month === activeMonth) || cards[0];
-  const activeCardInfo = activeCard ? baralhoDetalhado.find((c) => c.nome === activeCard.name) : null;
+  const activeCardInfo = activeCard ? baralhoDetalhado.find((c) => c.nome === normalizeCardName(activeCard.name)) : null;
   const isActivePeak = activeCard ? peakMonths.has(activeCard.month) : false;
   const isActiveChallenge = activeCard ? challengeMonths.has(activeCard.month) : false;
   const otherCards = cards.filter((c) => c.month !== activeCard?.month);
+  const peakMonthNames = cards.filter((c) => peakMonths.has(c.month)).map((c) => c.month_name);
+  const challengeMonthNames = cards.filter((c) => challengeMonths.has(c.month)).map((c) => c.month_name);
 
   return (
     <div className={`content_wrapper ${styles.page}`}>
@@ -74,6 +76,17 @@ export default function YearMapPage() {
               </div>
             )}
 
+            {(peakMonthNames.length > 0 || challengeMonthNames.length > 0) && (
+              <div className={styles.sectionBlock}>
+                {peakMonthNames.length > 0 && (
+                  <p><span className={styles.tagPeak}>Meses de auge</span> {peakMonthNames.join(', ')}</p>
+                )}
+                {challengeMonthNames.length > 0 && (
+                  <p><span className={styles.tagChallenge}>Atenção redobrada</span> {challengeMonthNames.join(', ')}</p>
+                )}
+              </div>
+            )}
+
             {activeCard && (
               <div className={styles.sectionBlock}>
                 <h3>
@@ -98,17 +111,24 @@ export default function YearMapPage() {
                       ))}
                     </div>
                     {activeCardInfo && (
-                      <>
-                        <p>
-                          {isActivePeak
-                            ? `${activeCard.month_name} é um dos pontos altos do seu ano. `
-                            : isActiveChallenge
-                              ? `${activeCard.month_name} pede atenção redobrada. `
-                              : `Assim se apresenta a energia de ${activeCard.month_name}. `}
-                          {activeCardInfo.significados?.direito || activeCardInfo.descricao}
-                        </p>
-                        <p className={styles.disclaimer}>{activeCardInfo.descricao}</p>
-                      </>
+                      <div className={styles.factGrid}>
+                        <div className={styles.factCard}>
+                          <h4 className={styles.factCardLabel}>
+                            {isActivePeak
+                              ? 'Por que este é um mês de auge'
+                              : isActiveChallenge
+                                ? 'Por que pede atenção redobrada'
+                                : 'O significado do mês'}
+                          </h4>
+                          <p>{activeCardInfo.significados?.direito || activeCardInfo.descricao}</p>
+                        </div>
+                        {activeCardInfo.significados?.direito && (
+                          <div className={styles.factCard}>
+                            <h4 className={styles.factCardLabel}>O que a carta representa</h4>
+                            <p>{activeCardInfo.descricao}</p>
+                          </div>
+                        )}
+                      </div>
                     )}
                   </div>
                 </div>

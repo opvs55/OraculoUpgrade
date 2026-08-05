@@ -17,24 +17,31 @@ const listaDeVideos = [
 const VISITOR_READING_KEY = 'visitorReadingDone';
 const mysticPhrase = 'O que o destino deseja revelar hoje?';
 
+// As 4 tiragens ficam sempre visíveis, lado a lado — nada de esconder atrás
+// de um toggle. "3 Cartas" é a porta de entrada padrão (por isso vem
+// primeiro e pré-selecionada), mas as outras competem de igual pra igual.
+const SPREADS = [
+  { id: 'threeCards', label: '3 Cartas', description: 'Passado, presente e futuro. Sua leitura padrão.' },
+  { id: 'celticCross', label: 'Cruz Celta', description: 'Uma análise profunda em 10 cartas.' },
+  { id: 'templeOfAphrodite', label: 'Templo de Afrodite', description: 'Duas pessoas, uma relação, 7 cartas.' },
+  { id: 'pathChoice', label: 'Escolha de Caminho', description: 'Dois caminhos possíveis, lado a lado.' },
+];
+
 function TarotPage() {
   const navigate = useNavigate();
   const { user } = useAuth();
   const { mutate: generateReading, isPending, error: mutationError, reset } = useGenerateReading();
   const [videoAtualIndex, setVideoAtualIndex] = useState(() => Math.floor(Math.random() * listaDeVideos.length));
 
-  const [formType, setFormType] = useState('default');
   const [question, setQuestion] = useState('');
   const [path1, setPath1] = useState('');
   const [path2, setPath2] = useState('');
-  // "3 Cartas" é a porta de entrada padrão do app — as outras tiragens ficam
-  // disponíveis como opção secundária, reveladas só se a pessoa quiser trocar.
   const [selectedSpread, setSelectedSpread] = useState('threeCards');
-  const [showOtherSpreads, setShowOtherSpreads] = useState(false);
   const [visitorHasRead, setVisitorHasRead] = useState(false);
   const [formError, setFormError] = useState(null);
   const [name1, setName1] = useState('');
   const [name2, setName2] = useState('');
+
   useEffect(() => {
     if (!user) {
       const hasDoneReading = localStorage.getItem(VISITOR_READING_KEY);
@@ -54,7 +61,7 @@ function TarotPage() {
     setName2('');
     stableReset();
     setFormError(null);
-  }, [selectedSpread, formType, stableReset]);
+  }, [selectedSpread, stableReset]);
 
   const handleVideoEnd = () => {
     setVideoAtualIndex((prevIndex) => (prevIndex + 1) % listaDeVideos.length);
@@ -68,8 +75,6 @@ function TarotPage() {
       setFormError('Você já realizou sua leitura de teste gratuita. Cadastre-se ou faça login para leituras ilimitadas!');
       return;
     }
-
-    console.log(`Iniciando leitura do tipo: ${spreadType}`);
 
     generateReading({ question: questionData, user: user || null, spreadType: spreadType }, {
       onSuccess: (data) => {
@@ -88,151 +93,42 @@ function TarotPage() {
   }, [user, visitorHasRead, generateReading, navigate, reset]);
 
   const handleStartReading = () => {
+    setFormError(null);
     let questionData;
-    let isValid = true;
 
     if (selectedSpread === 'templeOfAphrodite') {
       if (name1.trim() === '' || name2.trim() === '') {
         setFormError('Por favor, preencha o seu nome e o nome da pessoa.');
-        isValid = false;
+        return;
       }
       questionData = { name1, name2 };
+    } else if (selectedSpread === 'pathChoice') {
+      if (path1.trim() === '' || path2.trim() === '') {
+        setFormError('Por favor, descreva os dois caminhos.');
+        return;
+      }
+      questionData = { path1, path2 };
     } else {
-      if (!selectedSpread) {
-        setFormError('Por favor, selecione um tipo de tiragem.');
-        isValid = false;
-      } else if (question.trim() === '') {
+      if (question.trim() === '') {
         setFormError('Por favor, digite sua pergunta ou escolha uma sugestão.');
-        isValid = false;
+        return;
       }
       questionData = question;
     }
 
-    if (!isValid) return;
     handleGenerateReading(selectedSpread, questionData);
-  };
-
-  const handlePathChoiceReading = () => {
-    if (path1.trim() === '' || path2.trim() === '') {
-      setFormError('Por favor, descreva os dois caminhos.');
-      return;
-    }
-    const questionToSend = { path1, path2 };
-    handleGenerateReading('pathChoice', questionToSend);
   };
 
   if (isPending) {
     return <Loader customText="Canalizando a sabedoria dos arcanos..." />;
   }
 
-  // --- RENDERIZAÇÃO DOS FORMULÁRIOS ---
-
-  // Formulário Padrão
-  const defaultForm = (
-    <div className={styles.formContainer}>
-      <p className={styles.subtitle}>
-        {selectedSpread === 'threeCards'
-          ? 'Sua leitura de hoje: Passado, Presente e Futuro.'
-          : 'Selecione um método de leitura abaixo.'}
-      </p>
-
-      {/* "3 Cartas" é a experiência principal. As outras tiragens ficam atrás
-          de um toggle discreto, em vez de competir de igual pra igual logo de cara. */}
-      {!showOtherSpreads ? (
-        <button
-          type="button"
-          onClick={() => setShowOtherSpreads(true)}
-          className={styles.otherSpreadsToggle}
-        >
-          Prefere Cruz Celta, Templo de Afrodite ou Escolha de Caminho? Ver outras leituras →
-        </button>
-      ) : (
-        <div className={styles.buttonGroup}>
-          <button onClick={() => setSelectedSpread('threeCards')} className={`${styles.submitButton} ${selectedSpread === 'threeCards' ? styles.activeButton : ''}`}>3 Cartas</button>
-          <button onClick={() => setSelectedSpread('celticCross')} className={`${styles.submitButton} ${selectedSpread === 'celticCross' ? styles.activeButton : ''}`}>Cruz Celta</button>
-          <button onClick={() => setSelectedSpread('templeOfAphrodite')} className={`${styles.submitButton} ${selectedSpread === 'templeOfAphrodite' ? styles.activeButton : ''}`}>Templo de Afrodite</button>
-          <button onClick={() => setFormType('pathChoice')} className={styles.submitButton}>Escolha de Caminho</button>
-        </div>
-      )}
-
-      {/* Mostra SÓ se uma tiragem for selecionada E NÃO FOR o Templo de Afrodite */}
-      {selectedSpread && selectedSpread !== 'templeOfAphrodite' && (
-        <>
-          {suggestedQuestions[selectedSpread]?.length > 0 && (
-            <div className={styles.suggestionsContainer}>
-              <h4 className={styles.suggestionTitle}>Não sabe o que perguntar? Tente uma destas:</h4>
-              <ul className={styles.suggestionList}>
-                {suggestedQuestions[selectedSpread].map((q, index) => (
-                  <li key={index} onClick={() => setQuestion(q)} className={styles.suggestionItem}>"{q}"</li>
-                ))}
-              </ul>
-            </div>
-          )}
-          <textarea
-            className={styles.questionTextarea}
-            placeholder="Digite sua pergunta aqui ou clique em uma sugestão acima..."
-            value={question}
-            onChange={(e) => setQuestion(e.target.value)}
-            disabled={isPending || (!user && visitorHasRead)}
-          />
-        </>
-      )}
-
-      {/* Mostra SÓ SE FOR Templo de Afrodite */}
-      {selectedSpread === 'templeOfAphrodite' && (
-        <div className={styles.pathChoiceContainer}>
-          <p className={styles.subtitle}>Insira os nomes para a análise da relação:</p>
-          <input
-            type="text"
-            className={styles.pathInput}
-            placeholder="Seu nome (ou 'Eu')"
-            value={name1}
-            onChange={(e) => setName1(e.target.value)}
-            disabled={isPending || (!user && visitorHasRead)}
-          />
-          <input
-            type="text"
-            className={styles.pathInput}
-            placeholder="Nome da outra pessoa"
-            value={name2}
-            onChange={(e) => setName2(e.target.value)}
-            disabled={isPending || (!user && visitorHasRead)}
-          />
-        </div>
-      )}
-
-      {/* Mostra o botão de submeter se QUALQUER tiragem estiver selecionada */}
-      {selectedSpread && (
-        <button
-          onClick={handleStartReading}
-          disabled={isPending || (!user && visitorHasRead)}
-          className={styles.mainSubmitButton}
-        >
-          {(!user && visitorHasRead) ? 'Limite de teste atingido' : 'Revelar Leitura'}
-        </button>
-      )}
-    </div>
-  );
-
-  // Formulário de Escolha de Caminho (CORRIGIDO)
-  const pathChoiceForm = (
-    <div className={styles.formContainer}>
-      <p className={styles.subtitle}>Descreva os dois caminhos que você está considerando.</p>
-      <input type="text" className={styles.pathInput} placeholder="Caminho 1 (ex: Ficar no emprego atual)" value={path1} onChange={(e) => setPath1(e.target.value)} disabled={isPending || (!user && visitorHasRead)} />
-      <input type="text" className={styles.pathInput} placeholder="Caminho 2 (ex: Aceitar a nova proposta)" value={path2} onChange={(e) => setPath2(e.target.value)} disabled={isPending || (!user && visitorHasRead)} />
-
-      {/* <<< O TEXTO INDESEJADO FOI REMOVIDO DAQUI >>> */}
-
-      <div className={styles.buttonGroup}>
-        <button onClick={handlePathChoiceReading} disabled={isPending || (!user && visitorHasRead)} className={styles.mainSubmitButton}>
-          {(!user && visitorHasRead) ? 'Limite de teste atingido' : 'Revelar os Caminhos'}
-        </button>
-        <button onClick={() => { setFormType('default'); setSelectedSpread(null); }} disabled={isPending} className={styles.secondaryButton}>Voltar</button>
-      </div>
-    </div>
-  );
-
-  // --- RENDERIZAÇÃO DA PÁGINA ---
+  const isLimitReached = !user && visitorHasRead;
+  const submitLabel = isLimitReached
+    ? 'Limite de teste atingido'
+    : selectedSpread === 'pathChoice'
+      ? 'Revelar os Caminhos'
+      : 'Revelar Leitura';
 
   return (
     <div className={styles.homeContainer}>
@@ -247,15 +143,108 @@ function TarotPage() {
           {mysticPhrase}
         </p>
 
-        {formType === 'default' ? defaultForm : pathChoiceForm}
+        <div className={styles.formContainer}>
+          <p className={styles.subtitle}>
+            {selectedSpread === 'threeCards'
+              ? 'Sua leitura de hoje: Passado, Presente e Futuro.'
+              : 'Selecione um método de leitura abaixo.'}
+          </p>
 
-        {/* --- MOSTRAR ERROS --- */}
-        {formError && <p className={styles.errorMessage}>{formError}</p>}
-        {mutationError && <p className={styles.errorMessage}>Falha ao iniciar leitura: {mutationError.message}</p>}
+          <div className={styles.spreadPicker}>
+            {SPREADS.map((spread) => (
+              <button
+                key={spread.id}
+                type="button"
+                onClick={() => setSelectedSpread(spread.id)}
+                className={`${styles.spreadCard} ${selectedSpread === spread.id ? styles.spreadCardActive : ''}`}
+              >
+                <span className={styles.spreadCardLabel}>{spread.label}</span>
+                <span className={styles.spreadCardDescription}>{spread.description}</span>
+              </button>
+            ))}
+          </div>
 
-        {!user && visitorHasRead && formType !== 'pathChoice' && (
-          <p className={styles.limitMessage}>Você já utilizou sua leitura de teste gratuita. <Link to="/cadastro">Cadastre-se</Link> ou <Link to="/login">faça login</Link> para leituras ilimitadas.</p>
-        )}
+          {selectedSpread === 'templeOfAphrodite' && (
+            <div className={styles.pathChoiceContainer}>
+              <p className={styles.subtitle}>Insira os nomes para a análise da relação:</p>
+              <input
+                type="text"
+                className={styles.pathInput}
+                placeholder="Seu nome (ou 'Eu')"
+                value={name1}
+                onChange={(e) => setName1(e.target.value)}
+                disabled={isPending || isLimitReached}
+              />
+              <input
+                type="text"
+                className={styles.pathInput}
+                placeholder="Nome da outra pessoa"
+                value={name2}
+                onChange={(e) => setName2(e.target.value)}
+                disabled={isPending || isLimitReached}
+              />
+            </div>
+          )}
+
+          {selectedSpread === 'pathChoice' && (
+            <div className={styles.pathChoiceContainer}>
+              <p className={styles.subtitle}>Descreva os dois caminhos que você está considerando.</p>
+              <input
+                type="text"
+                className={styles.pathInput}
+                placeholder="Caminho 1 (ex: Ficar no emprego atual)"
+                value={path1}
+                onChange={(e) => setPath1(e.target.value)}
+                disabled={isPending || isLimitReached}
+              />
+              <input
+                type="text"
+                className={styles.pathInput}
+                placeholder="Caminho 2 (ex: Aceitar a nova proposta)"
+                value={path2}
+                onChange={(e) => setPath2(e.target.value)}
+                disabled={isPending || isLimitReached}
+              />
+            </div>
+          )}
+
+          {(selectedSpread === 'threeCards' || selectedSpread === 'celticCross') && (
+            <>
+              {suggestedQuestions[selectedSpread]?.length > 0 && (
+                <div className={styles.suggestionsContainer}>
+                  <h4 className={styles.suggestionTitle}>Não sabe o que perguntar? Tente uma destas:</h4>
+                  <ul className={styles.suggestionList}>
+                    {suggestedQuestions[selectedSpread].map((q, index) => (
+                      <li key={index} onClick={() => setQuestion(q)} className={styles.suggestionItem}>"{q}"</li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+              <textarea
+                className={styles.questionTextarea}
+                placeholder="Digite sua pergunta aqui ou clique em uma sugestão acima..."
+                value={question}
+                onChange={(e) => setQuestion(e.target.value)}
+                disabled={isPending || isLimitReached}
+              />
+            </>
+          )}
+
+          <button
+            onClick={handleStartReading}
+            disabled={isPending || isLimitReached}
+            className={styles.mainSubmitButton}
+          >
+            {submitLabel}
+          </button>
+
+          {formError && <p className={styles.errorMessage}>{formError}</p>}
+          {mutationError && <p className={styles.errorMessage}>Falha ao iniciar leitura: {mutationError.message}</p>}
+
+          {isLimitReached && (
+            <p className={styles.limitMessage}>Você já utilizou sua leitura de teste gratuita. <Link to="/cadastro">Cadastre-se</Link> ou <Link to="/login">faça login</Link> para leituras ilimitadas.</p>
+          )}
+        </div>
       </div>
     </div>
   );

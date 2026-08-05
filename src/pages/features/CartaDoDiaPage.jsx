@@ -168,14 +168,26 @@ export default function CartaDoDiaPage() {
             )}
 
             {message?.mensagem ? (
-              <p>{message.mensagem}</p>
+              <div className={styles.factGrid}>
+                <div className={styles.factCard}>
+                  <h4 className={styles.factCardLabel}>A energia do dia</h4>
+                  <p>{message.mensagem}</p>
+                </div>
+                {message.intencao_pratica && (
+                  <div className={styles.factCard}>
+                    <h4 className={styles.factCardLabel}>Pra hoje</h4>
+                    <p>{message.intencao_pratica}</p>
+                  </div>
+                )}
+                {message.energia_evitar && (
+                  <div className={styles.factCard}>
+                    <h4 className={styles.factCardLabel}>O que evitar</h4>
+                    <p>{message.energia_evitar}</p>
+                  </div>
+                )}
+              </div>
             ) : (
               <p>Sua mensagem do dia está sendo preparada — volte em instantes.</p>
-            )}
-            {message?.intencao_pratica && (
-              <p className={styles.practicalHint}>
-                <strong>Pra hoje:</strong> {message.intencao_pratica}
-              </p>
             )}
 
             {cardInfo && (

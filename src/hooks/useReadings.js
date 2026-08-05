@@ -197,9 +197,12 @@ export function useGenerateReading() {
       }
     },
     onSuccess: (data, variables) => {
-      if (data.user_id && variables.user?.id) { 
+      if (data.user_id && variables.user?.id) {
         console.log("Invalidando histórico para usuário:", variables.user.id);
         queryClient.invalidateQueries({ queryKey: ['readings', 'history', variables.user.id] });
+        // Sem isso, o avatar automático (carta mais recorrente) podia levar
+        // até 5min (staleTime padrão) pra refletir uma leitura recém-feita.
+        queryClient.invalidateQueries({ queryKey: ['grimorioInsights', variables.user.id] });
       } else {
         console.log("Leitura temporária, histórico não invalidado.");
       }

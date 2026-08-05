@@ -146,6 +146,35 @@
   opacity: 0.78;
 }
 
+/* --- Cartões rotulados: mesmo tratamento da leitura de 3 Cartas, pra
+   quebrar um bloco de texto único em fatias legíveis (Carta do Dia,
+   Mapa do Ano). --- */
+.factGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 12px;
+}
+
+.factCard {
+  border: 1px solid rgba(225, 179, 130, 0.24);
+  border-radius: 12px;
+  padding: 14px 16px;
+  background: rgba(38, 34, 64, 0.35);
+}
+
+.factCardLabel {
+  margin: 0 0 6px;
+  font-family: 'Cinzel', Georgia, serif;
+  color: #e1b382;
+  font-size: 0.92rem;
+}
+
+.factCard p {
+  margin: 0;
+  line-height: 1.6;
+  color: rgba(244, 239, 230, 0.92);
+}
+
 .primaryButton {
   width: fit-content;
   border-radius: 10px;

@@ -89,8 +89,8 @@
   font-size: 1.1rem;
   font-family: inherit;
   color: #e2e8f0;
-  background-color: rgba(17, 24, 39, 0.7);
-  border: 1px solid #4a5568;
+  background-color: rgba(13, 12, 29, 0.7);
+  border: 1px solid rgba(225, 179, 130, 0.32);
   border-radius: 8px;
   resize: vertical;
   transition: border-color 0.2s, box-shadow 0.2s;
@@ -99,55 +99,55 @@
 
 .questionTextarea:focus {
   outline: none;
-  border-color: #5b6cc1;
-  box-shadow: 0 0 0 3px rgba(91, 108, 193, 0.4);
+  border-color: #E1B382;
+  box-shadow: 0 0 0 3px rgba(225, 179, 130, 0.25);
 }
 
-.otherSpreadsToggle {
-  background: none;
-  border: none;
-  padding: 0;
-  font-family: 'Lato', sans-serif;
-  font-size: 0.9rem;
-  color: #a0a0a0;
-  text-decoration: underline;
-  text-underline-offset: 3px;
-  cursor: pointer;
-  transition: color 0.2s;
+/* --- Seletor de tiragem: as 4 opções sempre visíveis, lado a lado --- */
+.spreadPicker {
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  gap: 0.85rem;
 }
 
-.otherSpreadsToggle:hover {
-  color: #E1B382;
-}
-
-.buttonGroup {
+.spreadCard {
   display: flex;
-  justify-content: center;
-  gap: 1rem;
-  flex-wrap: wrap;
-}
-
-.submitButton {
-  padding: 0.75rem 1.5rem;
-  font-size: 1rem;
-  font-weight: bold;
-  color: #e2e8f0;
-  background-color: #4a5a9b;
-  border: 1px solid transparent;
-  border-radius: 6px;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.35rem;
+  text-align: left;
+  padding: 1rem 1.15rem;
+  background: linear-gradient(160deg, rgba(19, 15, 30, 0.85), rgba(26, 20, 38, 0.7));
+  border: 1px solid rgba(225, 179, 130, 0.25);
+  border-radius: 14px;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all 0.2s ease;
 }
 
-.submitButton:hover:not(:disabled) {
-  background-color: #5b6cc1;
+.spreadCard:hover {
+  border-color: rgba(225, 179, 130, 0.55);
   transform: translateY(-2px);
 }
 
-.submitButton:disabled {
-  background-color: #374151;
-  cursor: not-allowed;
-  opacity: 0.7;
+.spreadCardActive {
+  border-color: #E1B382;
+  background: linear-gradient(160deg, rgba(225, 179, 130, 0.18), rgba(26, 20, 38, 0.75));
+  box-shadow: 0 8px 24px rgba(225, 179, 130, 0.15);
+}
+
+.spreadCardLabel {
+  font-family: 'Cinzel', serif;
+  color: #f0ce9f;
+  font-size: 1.05rem;
+  font-weight: 600;
+}
+
+.spreadCardDescription {
+  font-family: 'Lato', sans-serif;
+  color: rgba(244, 239, 230, 0.72);
+  font-size: 0.85rem;
+  line-height: 1.4;
 }
 
 .errorMessage {
@@ -162,35 +162,16 @@
   font-size: 1rem;
   font-family: inherit;
   color: #e2e8f0;
-  background-color: rgba(17, 24, 39, 0.7);
-  border: 1px solid #4a5568;
+  background-color: rgba(13, 12, 29, 0.7);
+  border: 1px solid rgba(225, 179, 130, 0.32);
   border-radius: 8px;
+  transition: border-color 0.2s, box-shadow 0.2s;
 }
 
-.secondaryButton {
-  padding: 0.75rem 1.5rem;
-  font-size: 1rem;
-  font-weight: bold;
-  color: #a0a0a0;
-  background-color: transparent;
-  border: 1px solid #4a5568;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-
-.secondaryButton:hover:not(:disabled) {
-  background-color: #4a5568;
-  color: #e2e8f0;
-}
-
-/* --- NOVOS ESTILOS PARA PERGUNTAS SUGERIDAS --- */
-
-.activeButton {
-  background-color: #5b6cc1;
-  border: 1px solid #a1a9d8;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+.pathInput:focus {
+  outline: none;
+  border-color: #E1B382;
+  box-shadow: 0 0 0 3px rgba(225, 179, 130, 0.25);
 }
 
 .mainSubmitButton {
@@ -212,13 +193,20 @@
   box-shadow: 0 6px 20px rgba(225, 179, 130, 0.5);
 }
 
+.mainSubmitButton:disabled {
+  background-color: #4a4560;
+  color: rgba(226, 232, 240, 0.6);
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
 .suggestionsContainer {
   width: 100%;
   margin-top: 1rem;
   padding: 1rem;
   background-color: rgba(17, 24, 39, 0.5);
   border-radius: 8px;
-  border: 1px solid #2c2c54;
+  border: 1px solid rgba(225, 179, 130, 0.2);
 }
 
 .suggestionTitle {
@@ -251,6 +239,18 @@
   color: #E1B382;
 }
 
+.limitMessage {
+  font-family: 'Lato', sans-serif;
+  font-size: 0.95rem;
+  color: #c7c7c7;
+  margin-top: 0.5rem;
+}
+
+.limitMessage a {
+  color: #E1B382;
+  font-weight: bold;
+}
+
 /* --- RESPONSIVIDADE --- */
 
 @media (max-width: 768px) {
@@ -267,6 +267,10 @@
   .conteudoCentralizado {
     padding: 1rem;
   }
+
+  .spreadPicker {
+    grid-template-columns: 1fr 1fr;
+  }
 }
 
 @media (max-width: 480px) {
@@ -276,5 +280,9 @@
 
   .subtitle {
     font-size: 0.9rem;
+  }
+
+  .spreadPicker {
+    grid-template-columns: 1fr;
   }
 }
