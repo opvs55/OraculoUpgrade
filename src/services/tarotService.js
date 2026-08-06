@@ -1,6 +1,7 @@
 // src/services/tarotService.js (VERSÃO REFATORADA)
 
 import { baralhoDetalhado as baralho } from '../tarotDeck.js';
+import { POSICOES_TEMPLO_AFRODITE, POSICOES_ESCOLHA_CAMINHO } from '../constants/tarotConstants.js';
 
 // Função para embaralhar um array usando o algoritmo Fisher-Yates
 function embaralhar(array) {
@@ -60,27 +61,21 @@ export function sortearCruzCelta() {
 export function sortearTemploDeAfrodite() {
   console.log("Serviço de tarot: Sorteando 7 cartas para o Templo de Afrodite...");
   const sorteadas = getShuffledCards(7);
-  const posicoes = [
-    'Pilar 1: O Eu Interior', 'Pilar 2: O Outro', 'Viga 1: A Relação no Passado',
-    'Viga 2: A Relação no Presente', 'O Altar: O Desafio Central',
-    'A Oferenda: O que deve ser Cultivado', 'A Bênção de Afrodite: O Conselho Final'
-  ];
+  // Mesma fonte que TempleOfAphroditeLayout usa pra rotular o grid — evita
+  // que essa carta carregue um "posicao" que já nasce dessincronizado.
   return sorteadas.map((carta, index) => ({
       ...assignInversion(carta),
-      posicao: posicoes[index],
+      posicao: POSICOES_TEMPLO_AFRODITE[index],
   }));
 }
 
 export function sortearEscolhaDeCaminho() {
   console.log("Serviço de tarot: Sorteando 8 cartas para a Escolha de Caminho...");
   const sorteadas = getShuffledCards(8);
-  const posicoes = [
-    'O Consulente', 'A Situação da Escolha', 'O Caminho da Luz: Opção 1',
-    'O Caminho da Luz: Desfecho 1', 'O Caminho das Sombras: Opção 2',
-    'O Caminho das Sombras: Desfecho 2', 'O Conselho do Oráculo', 'O Resultado Mais Provável'
-  ];
+  // 4 posições, aplicadas duas vezes (Caminho 1 e Caminho 2) — mesma fonte
+  // que PathChoiceLayout usa pro grid.
   return sorteadas.map((carta, index) => ({
       ...assignInversion(carta),
-      posicao: posicoes[index],
+      posicao: POSICOES_ESCOLHA_CAMINHO[index % 4],
   }));
 }

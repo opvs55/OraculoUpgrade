@@ -34,13 +34,18 @@ export const POSICOES_TRES_CARTAS = [
   'O Futuro',
 ];
 
+// Ordem tem que bater com o prompt do Templo de Afrodite em
+// backendUpgrade/controllers/tarotController.js (Posição 1-3 = pessoa 1,
+// 4-6 = pessoa 2, sempre Pensamentos > Sentimentos > Atração) — senão o
+// grid de cartas mostra um rótulo enquanto o texto da IA fala de outro
+// para a mesma carta.
 export const POSICOES_TEMPLO_AFRODITE = [
-  'Você: Atração Física / Desejo',
-  'Você: O que Sente',
   'Você: O que Pensa',
-  'O Outro: Atração Física / Desejo',
-  'O Outro: O que Sente',
+  'Você: O que Sente',
+  'Você: Atração Física / Desejo',
   'O Outro: O que Pensa',
+  'O Outro: O que Sente',
+  'O Outro: Atração Física / Desejo',
   'Resultado Final e Conselho',
 ];
 
