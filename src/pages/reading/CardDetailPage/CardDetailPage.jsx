@@ -53,7 +53,7 @@ function CardDetailPage() {
       <div className={`content_wrapper ${styles.notFound}`}>
         <h1>Carta não encontrada</h1>
         <p>Não foi possível carregar os dados da carta. Por favor, volte.</p>
-        <Link to="/painel" className={styles.backLink}>Voltar ao Painel</Link>
+        <Link to="/diario" className={styles.backLink}>Voltar ao Diário</Link>
       </div>
     );
   }

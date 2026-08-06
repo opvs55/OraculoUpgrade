@@ -213,32 +213,3 @@ export function useGenerateReading() {
     }
   });
 }
-
-export function useUpdateDidacticCache() {
-  const queryClient = useQueryClient();
-  return useMutation({
-    mutationFn: async ({ readingId, updatedInterpretations }) => {
-      if (readingId?.startsWith('temp-')) {
-          console.warn("Tentativa de atualizar cache didático de leitura temporária ignorada.");
-          return;
-      }
-      const { error } = await supabase
-        .from('readings')
-        .update({ didactic_interpretations: updatedInterpretations })
-        .eq('id', readingId);
-      if (error) {
-          console.error("Erro ao atualizar cache didático no Supabase:", error);
-          throw new Error(`Erro ao salvar cache didático: ${error.message}`);
-      }
-    },
-    onSuccess: (data, variables) => {
-       if (!variables.readingId?.startsWith('temp-')) {
-           console.log('CACHE DIDÁTICO INVALIDADO:', variables.readingId);
-           queryClient.invalidateQueries({ queryKey: ['readings', 'detail', variables.readingId] });
-       }
-    },
-    onError: (error) => {
-        console.error("Erro na mutação useUpdateDidacticCache:", error);
-    }
-  });
-}

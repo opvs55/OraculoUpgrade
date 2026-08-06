@@ -146,6 +146,8 @@ export function useWeeklyCard(userId) {
     data: weeklyRecord,
     isLoading: isQueryLoading,
     isFetching,
+    isSuccess: isQuerySuccess,
+    error: queryError,
   } = useQuery({
     queryKey,
     enabled: !!userId && !isSessionLoading,
@@ -156,12 +158,21 @@ export function useWeeklyCard(userId) {
     staleTime: 1000 * 30,
     gcTime: 1000 * 60 * 5,
     retry: 1,
-    onSuccess: () => setErrorMessage(null),
-    onError: (error) => {
-      logSupabaseError(error, 'useQuery');
-      setErrorMessage(getFriendlyErrorMessage(error));
-    },
   });
+
+  // TanStack Query v5 removeu onSuccess/onError de useQuery (só existem em
+  // useMutation) — sem isso o erro real nunca aparecia, o botão de revelar
+  // só parecia "ainda não revelado".
+  useEffect(() => {
+    if (isQuerySuccess) setErrorMessage(null);
+  }, [isQuerySuccess]);
+
+  useEffect(() => {
+    if (queryError) {
+      logSupabaseError(queryError, 'useQuery');
+      setErrorMessage(getFriendlyErrorMessage(queryError));
+    }
+  }, [queryError]);
 
   // -------- MUTATION (REVEAL) --------
   const mutation = useMutation({
