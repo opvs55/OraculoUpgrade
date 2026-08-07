@@ -1,0 +1,202 @@
+.composer {
+  display: grid;
+  gap: 16px;
+}
+
+.composerLabel {
+  font-family: 'Cinzel', Georgia, serif;
+  color: #e1b382;
+  font-size: 1.1rem;
+  margin: 0;
+}
+
+.composerTextarea {
+  width: 100%;
+  min-height: 140px;
+  resize: vertical;
+  border: 1px solid rgba(225, 179, 130, 0.28);
+  background: linear-gradient(160deg, rgba(19, 15, 30, 0.9), rgba(26, 20, 38, 0.7));
+  border-radius: 14px;
+  padding: 18px 20px;
+  color: #f4efe6;
+  font-family: 'Lato', sans-serif;
+  font-size: 1.05rem;
+  line-height: 1.7;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.composerTextarea::placeholder {
+  color: rgba(244, 239, 230, 0.45);
+  font-style: italic;
+}
+
+.composerTextarea:focus {
+  outline: none;
+  border-color: #e1b382;
+  box-shadow: 0 0 0 3px rgba(225, 179, 130, 0.15);
+}
+
+.saveRow {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+.saveButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0.75rem 1.8rem;
+  border-radius: 999px;
+  border: none;
+  background: linear-gradient(135deg, #f0e6cc, #c9a96e);
+  color: #0d0c1d;
+  font-weight: 700;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.saveButton:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(201, 169, 110, 0.35);
+}
+
+.saveButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.entryGrid {
+  display: grid;
+  gap: 18px;
+}
+
+.entryCard {
+  border: 1px solid rgba(225, 179, 130, 0.22);
+  border-radius: 16px;
+  padding: 22px 24px;
+  background: linear-gradient(160deg, rgba(19, 15, 30, 0.92), rgba(26, 20, 38, 0.78));
+  box-shadow: 0 14px 32px rgba(0, 0, 0, 0.28);
+  display: grid;
+  gap: 14px;
+}
+
+.entryHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+
+.entryDate {
+  display: inline-flex;
+  border: 1px solid rgba(225, 179, 130, 0.4);
+  border-radius: 999px;
+  padding: 4px 12px;
+  font-size: 0.76rem;
+  letter-spacing: 0.03em;
+  color: #f9ddbf;
+  background: rgba(225, 179, 130, 0.08);
+}
+
+.entryDeleteButton {
+  background: none;
+  border: none;
+  color: rgba(244, 239, 230, 0.5);
+  font-size: 0.82rem;
+  cursor: pointer;
+  padding: 0;
+  transition: color 0.2s ease;
+}
+
+.entryDeleteButton:hover:not(:disabled) { color: #e1b382; }
+.entryDeleteButton:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.entryContent {
+  margin: 0;
+  color: rgba(244, 239, 230, 0.94);
+  font-size: 1.02rem;
+  line-height: 1.75;
+  white-space: pre-wrap;
+}
+
+.reflectButton {
+  justify-self: start;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0.6rem 1.4rem;
+  border-radius: 999px;
+  border: 1px solid rgba(225, 179, 130, 0.4);
+  background: rgba(225, 179, 130, 0.08);
+  color: #f0ce9f;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.reflectButton:hover:not(:disabled) {
+  border-color: #e1b382;
+  background: rgba(225, 179, 130, 0.16);
+  transform: translateY(-1px);
+}
+
+.reflectButton:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+
+.reflectionBlock {
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+  border-top: 1px solid rgba(225, 179, 130, 0.16);
+  padding-top: 16px;
+}
+
+.reflectionImage {
+  width: 64px;
+  border-radius: 8px;
+  flex-shrink: 0;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+}
+
+.reflectionText {
+  display: grid;
+  gap: 4px;
+}
+
+.reflectionCardName {
+  margin: 0;
+  font-family: 'Cinzel', Georgia, serif;
+  color: #e1b382;
+  font-size: 0.92rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.reflectionMessage {
+  margin: 0;
+  color: rgba(244, 239, 230, 0.92);
+  line-height: 1.7;
+  font-style: italic;
+}
+
+.emptyState {
+  text-align: center;
+  padding: 48px 20px;
+  border: 1px dashed rgba(225, 179, 130, 0.3);
+  border-radius: 16px;
+  color: rgba(244, 239, 230, 0.72);
+}
+
+.emptyState p {
+  margin: 0;
+  font-size: 1.02rem;
+}
+
+.loadMoreRow {
+  display: flex;
+  justify-content: center;
+}
