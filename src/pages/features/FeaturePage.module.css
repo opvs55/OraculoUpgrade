@@ -90,6 +90,48 @@
 
 .messageCard p:last-child { margin-bottom: 0; }
 
+/* --- Bloco de abertura centralizado, no mesmo efeito da leitura de 3
+   Cartas (ReadingDisplay.module.css .header/.mainTitle/.summary): título
+   grande centralizado + parágrafo com respiro, em vez de texto alinhado
+   à esquerda dentro de um card comum. --- */
+.readingHeadline {
+  text-align: center;
+  padding: 4px 4px 20px;
+  margin-bottom: 4px;
+  border-bottom: 1px solid rgba(225, 179, 130, 0.2);
+}
+
+.readingHeadline h2 {
+  font-family: 'Cinzel', Georgia, serif;
+  font-weight: 600;
+  font-size: clamp(1.5rem, 3vw, 2.15rem);
+  color: #f0ce9f;
+  line-height: 1.35;
+  margin: 0 auto 14px;
+  max-width: 720px;
+}
+
+.readingHeadline p {
+  font-size: 1.05rem;
+  color: rgba(244, 239, 230, 0.88);
+  max-width: 640px;
+  margin: 0 auto 10px;
+  line-height: 1.75;
+}
+
+.readingHeadline p:last-of-type { margin-bottom: 0; }
+
+.readingThemeBadge {
+  display: inline-flex;
+  margin-top: 6px;
+  border: 1px solid rgba(225, 179, 130, 0.45);
+  border-radius: 999px;
+  padding: 6px 14px;
+  font-size: 0.82rem;
+  color: #f9ddbf;
+  background: rgba(225, 179, 130, 0.1);
+}
+
 .sectionBlock {
   display: grid;
   gap: 8px;

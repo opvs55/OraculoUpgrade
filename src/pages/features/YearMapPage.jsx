@@ -62,15 +62,15 @@ export default function YearMapPage() {
         {!query.isLoading && !query.isError && data && (
           <div className={styles.resultCard}>
             {finalReading ? (
-              <div className={styles.messageCard}>
+              <div className={styles.readingHeadline}>
                 <h2>{finalReading.headline}</h2>
                 <p>{finalReading.overview}</p>
                 {finalReading.year_theme && (
-                  <p><strong>Tema do ano:</strong> {finalReading.year_theme}</p>
+                  <span className={styles.readingThemeBadge}>Tema do ano: {finalReading.year_theme}</span>
                 )}
               </div>
             ) : (
-              <div className={styles.messageCard}>
+              <div className={styles.readingHeadline}>
                 <h2>Mapa em construção</h2>
                 <p>As 12 cartas já foram sorteadas — a síntese do ano ainda está sendo preparada.</p>
               </div>
