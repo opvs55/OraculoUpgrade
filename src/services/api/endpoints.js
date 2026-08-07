@@ -73,6 +73,9 @@ const endpointConfig = {
   weeklyCardMessage: {
     v1: '/api/v1/features/weekly-card/message',
   },
+  journalEntries: {
+    v1: '/api/v1/journal/entries',
+  },
 };
 
 export const API_V1_ENDPOINTS = Object.fromEntries(

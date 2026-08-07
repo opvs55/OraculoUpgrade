@@ -1,4 +1,5 @@
 import React, { useMemo, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { useDebouncedValue } from '../../hooks/useDebouncedValue';
 import { useGrimorioReadings } from '../../hooks/useGrimorioReadings';
@@ -82,6 +83,21 @@ function MeuGrimorioPage() {
       <div className={styles.conteudoSobreposto}>
         <div className={styles.grimorioLayout}>
           <div className={styles.mainColumn}>
+            <section className={styles.ritualSection}>
+              <div className={styles.ritualHeader}>
+                <div>
+                  <p className={styles.ritualEyebrow}>Memórias</p>
+                  <h2 className={styles.ritualTitle}>Suas Memórias</h2>
+                  <p className={styles.ritualSubtitle}>
+                    Um pequeno diário pra registrar sua trajetória com as cartas.
+                  </p>
+                </div>
+                <Link to="/diario/memorias" className={styles.ritualLinkButton}>
+                  Abrir suas memórias →
+                </Link>
+              </div>
+            </section>
+
             <section className={styles.historySection}>
               <GrimorioToolbar
                 searchTerm={searchTerm}

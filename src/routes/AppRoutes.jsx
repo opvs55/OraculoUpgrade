@@ -42,6 +42,7 @@ const CardLibraryPage = lazy(() => import('../pages/learning/CardLibraryPage'));
 const LearningCardDetailPage = lazy(() => import('../pages/learning/LearningCardDetailPage'));
 const MeuGrimorioPage = lazy(() => import('../pages/dashboard/MeuGrimorioPage'));
 const EditarPerfilPage = lazy(() => import('../pages/dashboard/EditarPerfilPage'));
+const MemoriasPage = lazy(() => import('../pages/dashboard/MemoriasPage'));
 const CommunityFeedPage = lazy(() => import('../pages/community/CommunityFeedPage'));
 
 // Features recuperadas (Carta do Dia, Mapa do Ano, Compatibilidade, Trânsitos, I Ching Ativo, Histórico)
@@ -79,6 +80,7 @@ function AppRoutes() {
         {/* --- Rotas Protegidas (Agrupadas) --- */}
         <Route element={<ProtectedRoute />}>
           <Route path="/diario" element={<MeuGrimorioPage />} />
+          <Route path="/diario/memorias" element={<MemoriasPage />} />
           <Route path="/perfil/editar" element={<EditarPerfilPage />} />
           <Route path="/biblioteca" element={<CardLibraryPage />} />
           <Route path="/biblioteca/:cardSlug" element={<LearningCardDetailPage />} />
