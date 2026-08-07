@@ -46,6 +46,7 @@ const CommunityFeedPage = lazy(() => import('../pages/community/CommunityFeedPag
 
 // Features recuperadas (Carta do Dia, Mapa do Ano, Compatibilidade, Trânsitos, I Ching Ativo, Histórico)
 const CartaDoDiaPage = lazy(() => import('../pages/features/CartaDoDiaPage'));
+const WeeklyCardPage = lazy(() => import('../pages/features/WeeklyCardPage'));
 const YearMapPage = lazy(() => import('../pages/features/YearMapPage'));
 const CompatibilityPage = lazy(() => import('../pages/features/CompatibilityPage'));
 const TransitsPage = lazy(() => import('../pages/features/TransitsPage'));
@@ -88,6 +89,7 @@ function AppRoutes() {
           <Route path="/iching" element={<IChingWeeklyPage />} />
           <Route path="/iching/consulta" element={<IChingActivePage />} />
           <Route path="/oraculo/dia" element={<CartaDoDiaPage />} />
+          <Route path="/oraculo/semana" element={<WeeklyCardPage />} />
           <Route path="/tarot/mapa-do-ano" element={<YearMapPage />} />
           <Route path="/numerologia/compatibilidade" element={<CompatibilityPage />} />
           <Route path="/numerologia/transitos" element={<TransitsPage />} />

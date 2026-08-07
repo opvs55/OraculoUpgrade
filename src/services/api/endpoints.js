@@ -70,6 +70,9 @@ const endpointConfig = {
   ichingActive: {
     v1: '/api/v1/features/iching/active',
   },
+  weeklyCardMessage: {
+    v1: '/api/v1/features/weekly-card/message',
+  },
 };
 
 export const API_V1_ENDPOINTS = Object.fromEntries(

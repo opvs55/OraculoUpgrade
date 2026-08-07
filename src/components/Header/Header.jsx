@@ -10,6 +10,7 @@ import styles from './Header.module.css';
 const NAV_MENU = [
   { label: 'Leitura de Tarot', to: '/tarot' },
   { label: 'Carta do Dia', to: '/oraculo/dia' },
+  { label: 'Carta da Semana', to: '/oraculo/semana' },
   { label: 'Mapa do Ano', to: '/tarot/mapa-do-ano' },
 ];
 

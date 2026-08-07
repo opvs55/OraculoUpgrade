@@ -156,4 +156,8 @@ export const oraclesApi = {
       headers: await getAuthHeaders(),
     });
   },
+
+  getWeeklyCardMessage(payload) {
+    return postJson('weeklyCardMessage', payload, { withAuth: true });
+  },
 };

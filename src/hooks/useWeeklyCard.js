@@ -1,8 +1,9 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '../supabaseClient';
 import { sortearUmaCarta } from '../services/tarotService';
 import { baralhoDetalhado } from '../tarotDeck';
+import { oraclesApi } from '../services/api/oraclesApi';
 
 // Semana começa na segunda-feira em UTC
 const getWeekStartUtc = (date = new Date()) => {
@@ -253,6 +254,42 @@ export function useWeeklyCard(userId) {
     },
   });
 
+  // -------- MENSAGEM DA IA (gerada uma vez, persistida em metadata) --------
+  const [isGeneratingMessage, setIsGeneratingMessage] = useState(false);
+  const generatingForId = useRef(null);
+
+  useEffect(() => {
+    if (!weeklyRecord || weeklyRecord.metadata?.mensagem) return;
+    if (generatingForId.current === weeklyRecord.id) return;
+    generatingForId.current = weeklyRecord.id;
+    setIsGeneratingMessage(true);
+
+    oraclesApi
+      .getWeeklyCardMessage({ cardName: weeklyRecord.card_name })
+      .then(async ({ mensagem }) => {
+        const updatedMetadata = { ...(weeklyRecord.metadata || {}), mensagem };
+        const { data, error } = await supabase
+          .from('weekly_cards')
+          .update({ metadata: updatedMetadata })
+          .eq('id', weeklyRecord.id)
+          .select('id, user_id, week_start, card_id, card_name, created_at, metadata')
+          .single();
+
+        if (!error && data) {
+          queryClient.setQueryData(queryKey, data);
+        } else if (error) {
+          logSupabaseError(error, 'update weekly_cards metadata');
+        }
+      })
+      .catch((err) => {
+        // A carta em si já foi revelada com sucesso — a mensagem é um
+        // complemento, então uma falha aqui não deve virar erro visível.
+        logSupabaseError(err, 'getWeeklyCardMessage');
+      })
+      .finally(() => setIsGeneratingMessage(false));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [weeklyRecord?.id, weeklyRecord?.metadata?.mensagem]);
+
   const cardDetails = resolveCardDetails(weeklyRecord);
 
   const isLoading = isSessionLoading || isQueryLoading || isFetching;
@@ -274,5 +311,7 @@ export function useWeeklyCard(userId) {
     isSessionLoading,
     isLoading,
     errorMessage,
+    weeklyMessage: weeklyRecord?.metadata?.mensagem || null,
+    isGeneratingMessage,
   };
 }

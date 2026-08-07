@@ -34,6 +34,16 @@ export function translateSupabaseError(error) {
       return "Muitas tentativas. Por favor, aguarde um pouco.";
   }
 
+  // A checagem de username livre no cadastro (SELECT antes do signUp) não é
+  // atômica — em uma corrida rara (dois cadastros simultâneos com o mesmo
+  // username), o conflito só aparece aqui, como erro de constraint única.
+  if (
+    error.message.includes('duplicate key') &&
+    (error.message.includes('username') || error.message.includes('profiles'))
+  ) {
+    return 'Este nome de usuário já está em uso. Escolha outro.';
+  }
+
   // Se não encontrar uma tradução específica, retorna a mensagem padrão ou a original (para debug)
   // Em produção, talvez seja melhor retornar sempre a padrão por segurança.
   console.warn("Erro Supabase não traduzido:", error.message); // Log para debug

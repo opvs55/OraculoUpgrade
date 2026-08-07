@@ -1,19 +1,15 @@
 import React, { useMemo, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { useDebouncedValue } from '../../hooks/useDebouncedValue';
 import { useGrimorioReadings } from '../../hooks/useGrimorioReadings';
-import { useWeeklyCard } from '../../hooks/useWeeklyCard';
 import { useGrimorioInsights, useDerivedGrimorioInsights } from '../../hooks/useGrimorioInsights';
 import GrimorioToolbar from './Grimorio/GrimorioToolbar';
-import WeeklyCardRitual from './Grimorio/WeeklyCardRitual';
 import ReadingHistoryList from './Grimorio/ReadingHistoryList';
 import InsightsPanel from './Grimorio/InsightsPanel';
 import styles from './MeuGrimorioPage.module.css';
 
 function MeuGrimorioPage() {
   const [videoAtualIndex, setVideoAtualIndex] = useState(() => Math.floor(Math.random() * 2));
-  const navigate = useNavigate();
   const { user } = useAuth();
   const [searchTerm, setSearchTerm] = useState('');
   const [spreadType, setSpreadType] = useState('');
@@ -25,15 +21,6 @@ function MeuGrimorioPage() {
   const [cardFilter, setCardFilter] = useState('');
 
   const debouncedSearch = useDebouncedValue(searchTerm, 350);
-  const {
-    weekStart,
-    cardDetails,
-    revealAllowed,
-    revealCard,
-    isRevealing,
-    isSessionLoading,
-    errorMessage,
-  } = useWeeklyCard(user?.id);
   const { data: insightsReadings, isLoading: isInsightsLoading } = useGrimorioInsights(user?.id);
   const derivedInsights = useDerivedGrimorioInsights(insightsReadings);
 
@@ -95,16 +82,6 @@ function MeuGrimorioPage() {
       <div className={styles.conteudoSobreposto}>
         <div className={styles.grimorioLayout}>
           <div className={styles.mainColumn}>
-            <WeeklyCardRitual
-              cardDetails={cardDetails}
-              revealAllowed={revealAllowed}
-              onReveal={revealCard}
-              isRevealing={isRevealing}
-              isSessionLoading={isSessionLoading}
-              errorMessage={errorMessage}
-              onFilterByCard={() => navigate('/biblioteca')}
-            />
-
             <section className={styles.historySection}>
               <GrimorioToolbar
                 searchTerm={searchTerm}
@@ -151,9 +128,6 @@ function MeuGrimorioPage() {
 
           <div className={styles.insightsColumn}>
             <InsightsPanel insights={derivedInsights} isLoading={isInsightsLoading} />
-            <div className={styles.insightsFootnote}>
-              Semana iniciada em {weekStart}
-            </div>
           </div>
         </div>
       </div>

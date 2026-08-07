@@ -57,7 +57,11 @@ export function useGrimorioReadings({
         .eq('user_id', userId);
 
       if (searchTerm) {
-        const safeTerm = searchTerm.replace(/%/g, '').trim();
+        // % já era removido; , ( ) também têm significado especial no
+        // filtro .or() do PostgREST (separador de condição / agrupamento)
+        // e não eram escapados — um termo de busca malicioso podia alterar
+        // a estrutura do filtro.
+        const safeTerm = searchTerm.replace(/[%,()]/g, '').trim();
         if (safeTerm) {
           request = request.or(
             `question.ilike.%${safeTerm}%,shared_title.ilike.%${safeTerm}%,main_interpretation.ilike.%${safeTerm}%,cards_data::text.ilike.%${safeTerm}%`,
